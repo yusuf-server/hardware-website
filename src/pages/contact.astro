@@ -1,0 +1,190 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+---
+
+<MainLayout title="Contact Us - LUMENLAB">
+
+  <!-- Hero Banner -->
+  <div class="nyBanner relative h-[250px] md:h-[300px] overflow-hidden">
+    <div class="img">
+      <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Contact">
+    </div>
+    <div class="desc absolute inset-0 bg-black/40">
+      <div class="w1520 container max-w-7xl mx-auto px-8 md:px-16 h-full flex flex-col justify-center">
+        <div class="atit text-4xl md:text-5xl font-extrabold text-white mb-2" style="font-weight: 900;">Contact Us</div>
+        <div class="btit text-xl md:text-2xl text-blue-400 font-medium" style="font-weight: 600;">Contact</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub Navigation -->
+  <div class="submenu bg-[#0a0d14] border-b border-white/10 py-4">
+    <div class="w1520 container max-w-7xl mx-auto px-8 md:px-16">
+      <div class="submenubox">
+        <ul class="flex gap-8">
+          <li>
+            <a href="#contact1" class="text-gray-300 hover:text-blue-400 transition-colors" style="font-weight: 500;">Contact Info</a>
+          </li>
+          <li>
+            <a href="#contact2" class="text-gray-300 hover:text-blue-400 transition-colors" style="font-weight: 500;">Online Message</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Info Section -->
+  <div class="py-8 lg:py-14 bg-[#06080d]" id="contact1">
+    <div class="w1520 container max-w-7xl mx-auto px-8 md:px-16">
+      <strong class="block text-2xl lg:text-4xl font-normal text-white mb-1" style="font-weight: 700;">We Look Forward To Hearing From You</strong>
+      <p class="text-gray-400 mb-8" style="font-weight: 400;">We will provide you with professional solutions. You can contact us by phone, chat, email, etc.</p>
+
+      <div class="grid lg:grid-cols-12 gap-4 lg:gap-6 mb-6">
+        <!-- Left: Contact Info -->
+        <div class="lg:col-span-4">
+          <div class="bg-gradient-to-br from-white/5 to-white/2 border border-white/10 rounded-2xl p-8 lg:p-12 backdrop-blur-sm">
+            <strong class="block text-3xl font-normal text-white mb-6" style="font-weight: 700;">LUMENLAB Inc.</strong>
+
+            <div class="contact-info space-y-6">
+              <dl class="flex gap-4">
+                <dt class="flex-shrink-0">
+                  <div class="icon w-10 h-10 flex items-center justify-center">
+                    <i data-lucide="smartphone" class="w-6 h-6 text-blue-400"></i>
+                  </div>
+                </dt>
+                <dd>
+                  <p class="text-gray-400 text-sm mb-1" style="font-weight: 400;">Contact Hotline</p>
+                  <h5 class="text-white text-lg font-bold" style="font-weight: 700;">+1 (555) 123-4567</h5>
+                </dd>
+              </dl>
+
+              <dl class="flex gap-4">
+                <dt class="flex-shrink-0">
+                  <div class="icon w-10 h-10 flex items-center justify-center">
+                    <i data-lucide="phone" class="w-6 h-6 text-blue-400"></i>
+                  </div>
+                </dt>
+                <dd>
+                  <p class="text-gray-400 text-sm mb-1" style="font-weight: 400;">Service Hotline</p>
+                  <h5 class="text-white text-lg font-bold" style="font-weight: 700;">+1 (800) 999-8888</h5>
+                </dd>
+              </dl>
+
+              <dl class="flex gap-4">
+                <dt class="flex-shrink-0">
+                  <div class="icon w-10 h-10 flex items-center justify-center">
+                    <i data-lucide="mail" class="w-6 h-6 text-blue-400"></i>
+                  </div>
+                </dt>
+                <dd>
+                  <p class="text-gray-400 text-sm mb-1" style="font-weight: 400;">Company Email</p>
+                  <h5 class="text-white text-lg font-bold" style="font-weight: 700;">info@lumenlab.com</h5>
+                </dd>
+              </dl>
+
+              <dl class="flex gap-4">
+                <dt class="flex-shrink-0">
+                  <div class="icon w-10 h-10 flex items-center justify-center">
+                    <i data-lucide="map-pin" class="w-6 h-6 text-blue-400"></i>
+                  </div>
+                </dt>
+                <dd>
+                  <p class="text-gray-400 text-sm mb-1" style="font-weight: 400;">Headquarters Address</p>
+                  <h5 class="text-white text-base font-bold leading-relaxed" style="font-weight: 700;">123 Business Street, Tech City Center, TC 12345</h5>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Map -->
+        <div class="lg:col-span-8">
+          <div id="wrap" class="my-map bg-gradient-to-br from-white/5 to-white/2 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
+            <div id="mapContainer" class="w-full h-[500px]">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0861326729437!2d-122.41941492346468!3d37.77492977186469!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sTwitter%20HQ!5e0!3m2!1sen!2sus!4v1701234567890!5m2!1sen!2sus"
+                width="100%"
+                height="500"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                class="w-full h-full">
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Online Consultation Section -->
+  <div class="py-6 lg:py-14 bg-gradient-to-b from-white/5 to-transparent" id="contact2">
+    <div class="w1520 container max-w-7xl mx-auto px-8 md:px-16">
+      <strong class="block text-xl font-normal lg:text-4xl text-white mb-2" style="font-weight: 700;">Online Consultation</strong>
+      <p class="mb-5 lg:mb-10 text-gray-400" style="font-weight: 400;">Fill in your phone and email information, which will help us contact you in time and solve your questions as soon as possible.</p>
+
+      <div class="list message">
+        <form id="form_message" autocomplete="off">
+          <ul class="grid lg:grid-cols-3 gap-3 lg:gap-10">
+            <li>
+              <label for="name" class="block text-sm text-gray-300 mb-2" style="font-weight: 500;">Name</label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Please enter your name"
+                class="w-full px-4 py-3 rounded-lg bg-[#0a0d14] border border-white/10 text-gray-300 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
+                style="font-weight: 400;">
+            </li>
+            <li>
+              <label for="phone" class="block text-sm text-gray-300 mb-2" style="font-weight: 500;">Phone Number</label>
+              <input
+                type="text"
+                name="phone"
+                id="phone"
+                placeholder="Please enter your phone number"
+                class="w-full px-4 py-3 rounded-lg bg-[#0a0d14] border border-white/10 text-gray-300 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
+                style="font-weight: 400;">
+            </li>
+            <li>
+              <label for="email" class="block text-sm text-gray-300 mb-2" style="font-weight: 500;">Email</label>
+              <input
+                type="text"
+                name="email"
+                id="email"
+                placeholder="Please enter your email address"
+                class="w-full px-4 py-3 rounded-lg bg-[#0a0d14] border border-white/10 text-gray-300 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all"
+                style="font-weight: 400;">
+            </li>
+            <li class="lg:col-span-3">
+              <label for="content" class="block text-sm text-gray-300 mb-2" style="font-weight: 500;">Message Requirements</label>
+              <textarea
+                name="content"
+                id="content"
+                cols="30"
+                rows="6"
+                placeholder="Please enter your message"
+                class="w-full px-4 py-3 rounded-lg bg-[#0a0d14] border border-white/10 text-gray-300 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all resize-none"
+                style="font-weight: 400;"></textarea>
+            </li>
+            <li class="flex gap-4">
+              <input
+                type="submit"
+                value="Submit"
+                class="px-8 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-all shadow-lg cursor-pointer"
+                style="font-weight: 700;">
+              <input
+                type="reset"
+                value="Reset"
+                class="px-8 py-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 hover:text-white font-medium transition-all cursor-pointer"
+                style="font-weight: 600;">
+            </li>
+          </ul>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</MainLayout>
+

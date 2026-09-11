@@ -1,0 +1,158 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+
+// 新闻分类
+const newsCategories = [
+  { id: 1, name: 'Company News', slug: 'company-news' },
+  { id: 2, name: 'Exhibition Information', slug: 'exhibition' },
+  { id: 3, name: 'New Product Launch', slug: 'new-products' },
+  { id: 4, name: 'Hot Topics', slug: 'hot-topics' },
+];
+
+// 示例新闻列表
+const newsList = [
+  {
+    id: 1,
+    title: 'OKE 2026 New Product Launch Conference Successfully Held!',
+    summary: 'Recently, Zhuzhou OKE CNC Precision Tools Co., Ltd. held an online live conference, launching three major new products - the Tiger series high-performance ultra-hard tools, Yinglong series steel high-efficiency wheel cutting tools, curved shaft special tools, and coating special cutting tools.',
+    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80',
+    date: '2026-07-07',
+    category: 'Company News'
+  },
+  {
+    id: 2,
+    title: 'OKE Wins "2026 Metal Processing Industry Technology Innovation Award"!',
+    summary: 'On June 25, the "2026 Metal Processing Industry Technology Innovation Award" award ceremony was held in Suzhou. OKE\'s OMPQ general-purpose vertical milling cutter stood out from many participating companies and won the "2026 Metal Processing Industry Technology Innovation Award".',
+    image: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=800&q=80',
+    date: '2026-06-25',
+    category: 'Company News'
+  },
+  {
+    id: 3,
+    title: 'OKE Participates in International Manufacturing Exhibition',
+    summary: 'OKE showcased its latest cutting tool technology at the International Manufacturing Technology Exhibition, attracting numerous industry professionals and potential customers.',
+    image: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=800&q=80',
+    date: '2026-05-15',
+    category: 'Exhibition Information'
+  },
+];
+---
+
+<MainLayout title="News - LUMENLAB">
+
+  <!-- Hero Banner -->
+  <div class="nybanner relative h-[300px] md:h-[400px] overflow-hidden">
+    <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=2000&q=80" class="absolute inset-0 w-full h-full object-cover" alt="News">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="container max-w-7xl mx-auto px-8 md:px-16 relative z-10 h-full flex items-center">
+      <div class="title">
+        <h3 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white" style="font-weight: 900;">News & Updates</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Breadcrumb -->
+  <div class="crumb bg-[#0a0d14] border-b border-white/5 py-4">
+    <div class="container max-w-7xl mx-auto px-8 md:px-16 flex items-center text-sm text-gray-400">
+      <i data-lucide="home" class="w-4 h-4 mr-2"></i>
+      <a href="/" class="hover:text-blue-400 transition-colors">Home</a>
+      <span class="mx-2">></span>
+      <a href="/news" class="hover:text-blue-400 transition-colors">News</a>
+      <span class="mx-2">></span>
+      <span class="text-blue-400">Company News</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <section class="relative py-16 px-8 md:px-16 bg-[#06080d]">
+    <div class="container max-w-7xl mx-auto">
+      <div class="flex flex-col lg:flex-row gap-8">
+
+        <!-- Left Sidebar -->
+        <aside class="lg:w-80 flex-shrink-0">
+          <div class="sticky top-24 subnav bg-white/5 rounded-lg overflow-hidden">
+            <ul>
+              {newsCategories.map((category, index) => (
+                <li class="erji">
+                  <a href={`/news/${category.slug}`} class={index === 0 ? 'cur' : ''}>
+                    <span>{category.name}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Right Main Content -->
+        <main class="flex-1">
+
+          <!-- News List -->
+          <div class="news-list">
+            <ul class="space-y-8">
+
+              {newsList.map((news) => (
+                <li class="border-b border-white/10 pb-8">
+                  <a href={`/news/detail/${news.id}`} class="flex flex-col md:flex-row gap-8 hover:opacity-80 transition-opacity">
+                    <div class="pic w-full md:w-[300px] flex-shrink-0">
+                      <div class="aspect-video rounded-lg overflow-hidden">
+                        <img src={news.image} alt={news.title} class="w-full h-full object-cover">
+                      </div>
+                    </div>
+                    <div class="text flex-1 flex flex-col justify-between py-2">
+                      <div>
+                        <div class="tt text-xl font-bold text-white mb-4 leading-tight" style="font-weight: 700;">
+                          {news.title}
+                        </div>
+                        <div class="desc text-sm text-gray-400 leading-relaxed mb-6" style="font-weight: 400;">
+                          {news.summary}
+                        </div>
+                      </div>
+                      <div class="date_more flex items-center justify-between mt-auto">
+                        <div class="date flex items-center gap-2 text-gray-500 text-xs">
+                          <i data-lucide="clock" class="w-4 h-4"></i>
+                          <span>{news.date}</span>
+                        </div>
+                        <div class="more text-xs text-blue-400 border border-blue-500/50 px-5 py-2 rounded" style="font-weight: 600;">
+                          MORE+
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              ))}
+
+            </ul>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pages mt-12 flex justify-center">
+            <ul class="flex items-center gap-2">
+              <li>
+                <button class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-blue-600/10 text-gray-400 hover:text-white transition-all flex items-center justify-center">
+                  <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                </button>
+              </li>
+              <li>
+                <button class="w-10 h-10 rounded-lg bg-blue-600 border border-blue-500 text-white font-medium transition-all" style="font-weight: 600;">1</button>
+              </li>
+              <li>
+                <button class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-blue-600/10 text-gray-400 hover:text-white transition-all" style="font-weight: 500;">2</button>
+              </li>
+              <li>
+                <button class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-blue-600/10 text-gray-400 hover:text-white transition-all" style="font-weight: 500;">3</button>
+              </li>
+              <li>
+                <button class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-blue-600/10 text-gray-400 hover:text-white transition-all flex items-center justify-center">
+                  <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+        </main>
+
+      </div>
+    </div>
+  </section>
+
+</MainLayout>

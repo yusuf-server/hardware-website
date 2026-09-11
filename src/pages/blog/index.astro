@@ -1,0 +1,108 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPosts } from '@/lib/wordpress';
+
+let posts = [];
+let error = null;
+
+try {
+  posts = await getPosts(20);
+} catch (e) {
+  error = e instanceof Error ? e.message : '获取文章失败';
+  console.error('Error fetching posts:', e);
+}
+---
+
+<BaseLayout title="博客 - 五金网站">
+  <h1>所有文章</h1>
+
+  {error && (
+    <div class="error">
+      <p>⚠️ {error}</p>
+      <p>请在 .env 文件中配置 WORDPRESS_API_URL</p>
+    </div>
+  )}
+
+  {!error && posts.length === 0 && (
+    <p>暂无文章</p>
+  )}
+
+  <div class="posts-list">
+    {posts.map((post) => (
+      <article class="post-item">
+        <h2>
+          <a href={`/blog/${post.slug}`} set:html={post.title.rendered} />
+        </h2>
+        <time datetime={post.date}>
+          {new Date(post.date).toLocaleDateString('zh-CN')}
+        </time>
+        <div class="excerpt" set:html={post.excerpt.rendered} />
+        <a href={`/blog/${post.slug}`} class="read-more">阅读全文 →</a>
+      </article>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  h1 {
+    font-size: 2.5rem;
+    color: #1f2937;
+    margin-bottom: 2rem;
+  }
+
+  .error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    color: #991b1b;
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .post-item {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  .post-item h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+  }
+
+  .post-item h2 a {
+    color: #1f2937;
+    text-decoration: none;
+  }
+
+  .post-item h2 a:hover {
+    color: #3b82f6;
+  }
+
+  time {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .excerpt {
+    margin: 1rem 0;
+    color: #4b5563;
+  }
+
+  .read-more {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .read-more:hover {
+    color: #2563eb;
+  }
+</style>

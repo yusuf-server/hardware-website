@@ -1,0 +1,110 @@
+{
+  "key": "group_section5_testimonials",
+  "title": "Section 5 - Testimonials (客户评价)",
+  "fields": [
+    {
+      "key": "field_section5_background_video",
+      "label": "背景视频 URL",
+      "name": "section5_background_video",
+      "type": "url",
+      "instructions": "背景视频的 URL（支持 MP4 格式）",
+      "required": 0,
+      "default_value": "https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4",
+      "placeholder": "https://example.com/video.mp4"
+    },
+    {
+      "key": "field_section5_title",
+      "label": "主标题",
+      "name": "section5_title",
+      "type": "textarea",
+      "instructions": "可以使用 <br> 换行",
+      "required": 0,
+      "default_value": "Customer Satisfaction Is<br>Our Greatest Achievement",
+      "placeholder": "",
+      "rows": 3
+    },
+    {
+      "key": "field_section5_testimonials",
+      "label": "客户评价列表",
+      "name": "section5_testimonials",
+      "type": "repeater",
+      "instructions": "添加客户评价（每 2 个为一组显示）",
+      "required": 0,
+      "min": 0,
+      "max": 0,
+      "layout": "block",
+      "button_label": "添加评价",
+      "sub_fields": [
+        {
+          "key": "field_section5_testimonial_quote",
+          "label": "评价内容",
+          "name": "quote",
+          "type": "textarea",
+          "instructions": "客户的评价文字",
+          "required": 1,
+          "default_value": "",
+          "placeholder": "请输入客户评价...",
+          "rows": 4
+        },
+        {
+          "key": "field_section5_testimonial_avatar",
+          "label": "客户头像",
+          "name": "avatar",
+          "type": "image",
+          "instructions": "上传客户头像图片（建议尺寸：120x120px，正方形）",
+          "required": 0,
+          "return_format": "url",
+          "preview_size": "thumbnail",
+          "library": "all"
+        },
+        {
+          "key": "field_section5_testimonial_name",
+          "label": "客户姓名",
+          "name": "name",
+          "type": "text",
+          "instructions": "客户的姓名",
+          "required": 1,
+          "default_value": "",
+          "placeholder": "John Doe"
+        },
+        {
+          "key": "field_section5_testimonial_title",
+          "label": "客户职位/公司",
+          "name": "title",
+          "type": "text",
+          "instructions": "客户的职位和公司名称",
+          "required": 0,
+          "default_value": "",
+          "placeholder": "CEO, Company Name"
+        },
+        {
+          "key": "field_section5_testimonial_grayscale",
+          "label": "头像灰度显示",
+          "name": "grayscale",
+          "type": "true_false",
+          "instructions": "是否将头像显示为灰度（黑白）",
+          "required": 0,
+          "default_value": 0,
+          "ui": 1
+        }
+      ]
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "page",
+        "operator": "==",
+        "value": "45308"
+      }
+    ]
+  ],
+  "menu_order": 5,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": "",
+  "active": true,
+  "description": "Section 5: 客户评价轮播区域"
+}

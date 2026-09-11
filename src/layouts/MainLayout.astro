@@ -1,0 +1,550 @@
+---
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import FloatingContact from '@/components/FloatingContact.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = '五金工具专业制造商' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content={description}>
+  <title>{title}</title>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+</head>
+<body class="overflow-x-hidden bg-[#06080d] text-white select-none">
+  <Header />
+  <slot />
+  <!-- <Footer /> -->
+  <FloatingContact />
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>
+
+<style is:global>
+  body {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-weight: 400;
+    background-color: #06080d;
+    color: #ffffff;
+  }
+
+  .font-syne {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-weight: 400;
+  }
+
+  /* 字体粗细变体 */
+  h1, h2, h3, .font-black {
+    font-weight: 900;
+  }
+
+  h4, h5, .font-bold {
+    font-weight: 700;
+  }
+
+  .font-semibold {
+    font-weight: 600;
+  }
+
+  .font-medium {
+    font-weight: 500;
+  }
+
+  .font-normal, p, span {
+    font-weight: 400;
+  }
+
+  .font-light {
+    font-weight: 300;
+  }
+
+  /* 全屏吸附滚动容器 */
+  .snap-container {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    height: 100vh;
+    scrollbar-width: none;
+  }
+  .snap-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .snap-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    min-height: 100vh;
+  }
+
+  /* 毛玻璃卡片基础样式 */
+  .glass-card {
+    background: rgba(13, 19, 30, 0.68);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .glass-card:hover {
+    background: rgba(19, 29, 46, 0.85);
+    border-color: rgba(37, 99, 235, 0.45);
+    transform: translateX(4px);
+  }
+
+  /* 高亮激活边框 */
+  .glass-card-active {
+    background: rgba(14, 24, 42, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1.5px solid #2563eb;
+    box-shadow: 0 0 25px rgba(37, 99, 235, 0.25);
+  }
+
+  /* 悬浮卡片样式 */
+  .cat-hero-card {
+    background: linear-gradient(135deg, rgba(16, 26, 44, 0.85) 0%, rgba(8, 12, 20, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cat-hero-card:hover {
+    border-color: rgba(59, 130, 246, 0.55);
+    box-shadow: 0 20px 40px -15px rgba(37, 99, 235, 0.2), 0 0 0 1px rgba(59, 130, 246, 0.3);
+    transform: translateY(-3px);
+  }
+
+  .cat-sub-card {
+    background: rgba(12, 18, 28, 0.65);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cat-sub-card:hover {
+    background: rgba(18, 27, 43, 0.9);
+    border-color: rgba(59, 130, 246, 0.35);
+    transform: translateX(6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  /* 渐变标题 */
+  .hero-gradient-text {
+    background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 45%, #93c5fd 80%, #2563eb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* 手风琴卡片动效 */
+  .accordion-item {
+    flex: 1;
+    min-width: 76px;
+    transition: flex 0.65s cubic-bezier(0.25, 1, 0.2, 1), transform 0.4s ease, border-color 0.4s ease;
+    will-change: flex;
+  }
+
+  .accordion-item.active,
+  .accordion-item:hover {
+    flex: 5.5;
+  }
+
+  .accordion-group:hover .accordion-item:not(:hover) {
+    flex: 1;
+  }
+
+  .accordion-item .expanded-content {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .accordion-item.active .expanded-content,
+  .accordion-item:hover .expanded-content {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    transition-delay: 0.15s;
+  }
+
+  .accordion-item .collapsed-title {
+    opacity: 1;
+    transition: opacity 0.25s ease;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+
+  .accordion-item.active .collapsed-title,
+  .accordion-item:hover .collapsed-title {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .stroke-text {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.06);
+    color: transparent;
+  }
+
+  /* 支柱柱状卡片 */
+  .pillar-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.5rem;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+  }
+  .pillar-card:hover {
+    background: rgba(30, 58, 138, 0.15);
+    border-color: rgba(96, 165, 250, 0.35);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    transform: translateY(-4px);
+  }
+
+  /* CNC Tab 切换过渡动效 */
+  .cnc-tab-btn {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cnc-tab-btn.active {
+    background-color: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.45);
+  }
+  .cnc-tab-btn:not(.active) {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .cnc-tab-btn:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+  }
+
+  .tab-content-panel {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+  }
+  .tab-content-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    position: relative;
+  }
+
+  .tab-image-panel {
+    opacity: 0;
+    transform: scale(0.96) translateX(15px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+  }
+  .tab-image-panel.active {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+    pointer-events: auto;
+    position: relative;
+  }
+
+  /* 应用领域专属样式 */
+  .app-bg-layer {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .app-bg-layer.active {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+
+  /* 银光流动线 */
+  @keyframes silverLightFlow {
+    0% { top: -20%; opacity: 0; }
+    25% { opacity: 0.9; }
+    75% { opacity: 0.9; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  .silver-stream-line {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .silver-stream-line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 1.5px;
+    height: 120px;
+    background: linear-gradient(180deg, transparent, rgba(147, 197, 253, 0.95), #ffffff, rgba(147, 197, 253, 0.95), transparent);
+    box-shadow: 0 0 12px 1.5px rgba(59, 130, 246, 0.8);
+    animation: silverLightFlow 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  .app-col:nth-child(2) .silver-stream-line::after { animation-delay: 0.7s; }
+  .app-col:nth-child(3) .silver-stream-line::after { animation-delay: 1.4s; }
+  .app-col:nth-child(4) .silver-stream-line::after { animation-delay: 2.1s; }
+  .app-col:nth-child(5) .silver-stream-line::after { animation-delay: 2.8s; }
+  .app-col:nth-child(6) .silver-stream-line::after { animation-delay: 3.5s; }
+
+  /* 应用领域扩散效果 */
+  .app-ripple-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(37, 99, 235, 0.4) 0%, rgba(29, 78, 216, 0.2) 55%, transparent 100%);
+    transform: scale(0.3);
+    opacity: 0;
+    filter: blur(10px);
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .app-col:hover .app-ripple-bg,
+  .app-col.active .app-ripple-bg {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .app-content-box {
+    transform: translateY(28px);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .app-col:hover .app-content-box,
+  .app-col.active .app-content-box {
+    transform: translateY(0);
+  }
+
+  .app-action-btn {
+    opacity: 0;
+    transform: translateY(18px) scale(0.85);
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .app-col:hover .app-action-btn,
+  .app-col.active .app-action-btn {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    transition-delay: 0.08s;
+  }
+
+  /* Testimonials */
+  .testimonial-slide {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+  }
+  .testimonial-slide.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    position: relative;
+  }
+
+  /* Section 3: Hero Tab 样式 */
+  .hero-nav-bar-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .hero-tab-item {
+    position: relative;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  /* Hover 微光效果 - 顶部和菜单标签下方 */
+  .hero-tab-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .hero-tab-item .hero-tab-span::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .hero-tab-item:hover::before,
+  .hero-tab-item:hover .hero-tab-span::after {
+    opacity: 1;
+  }
+
+  /* Active pill 背景 */
+  .hero-tab-item.active .hero-tab-span {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    position: relative;
+  }
+
+  .hero-tab-item:not(.active) .hero-tab-span {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .hero-tab-item:hover .hero-tab-span {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Showcase viewport */
+  .hero-showcase-viewport {
+    position: relative;
+  }
+
+  .hero-panel {
+    opacity: 0;
+    transform: scale(0.98);
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .hero-panel.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  /* Product Page - Sidebar Navigation */
+  .subnav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .subnav .erji > a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .subnav .erji > a:hover,
+  .subnav .erji > a.cur {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border-left: 3px solid #3b82f6;
+  }
+
+  .subnav .erji > ul {
+    display: none;
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .subnav .sanji > a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px 12px 35px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+  }
+
+  .subnav .sanji > a:hover,
+  .subnav .sanji > a.cur {
+    background: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+    padding-left: 40px;
+  }
+
+  .subnav .sanji > ul {
+    display: none;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .subnav .siji > a {
+    display: block;
+    padding: 10px 20px 10px 50px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 400;
+    font-size: 13px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    transition: all 0.3s ease;
+  }
+
+  .subnav .siji > a:hover,
+  .subnav .siji > a.cur {
+    background: rgba(59, 130, 246, 0.08);
+    color: #60a5fa;
+    padding-left: 55px;
+  }
+
+  .subnav .siji > a::before {
+    content: "•";
+    margin-right: 8px;
+    color: rgba(59, 130, 246, 0.5);
+  }
+
+  /* Product Detail Page - Title Styles */
+  .product-title::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 28px;
+    background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+    margin-right: 12px;
+    vertical-align: middle;
+    border-radius: 2px;
+  }
+
+  .product-detail-title::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+    margin-right: 12px;
+    vertical-align: middle;
+    border-radius: 2px;
+  }
+</style>

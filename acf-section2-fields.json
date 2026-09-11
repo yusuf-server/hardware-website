@@ -1,0 +1,351 @@
+{
+  "key": "group_section2_applications",
+  "title": "Section 2 - 应用领域",
+  "fields": [
+    {
+      "key": "field_section2_title_cn",
+      "label": "Section 2 - 中文标题",
+      "name": "section2_title_cn",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "应用领域",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_title_en",
+      "label": "Section 2 - 英文副标题",
+      "name": "section2_title_en",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "APPLICATION AREA",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_1_bg_image",
+      "label": "应用领域 1 - 背景图片",
+      "name": "section2_application_1_bg_image",
+      "type": "image",
+      "instructions": "",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_1_icon",
+      "label": "应用领域 1 - 图标图片",
+      "name": "section2_application_1_icon",
+      "type": "image",
+      "instructions": "上传图标图片（建议尺寸：64x64px 或更大，PNG/SVG格式）",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_1_title_cn",
+      "label": "应用领域 1 - 中文标题",
+      "name": "section2_application_1_title_cn",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "航空航天",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_1_title_en",
+      "label": "应用领域 1 - 英文副标题",
+      "name": "section2_application_1_title_en",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Aerospace",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_1_link",
+      "label": "应用领域 1 - 链接地址",
+      "name": "section2_application_1_link",
+      "type": "url",
+      "instructions": "",
+      "required": 0,
+      "default_value": "",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_2_bg_image",
+      "label": "应用领域 2 - 背景图片",
+      "name": "section2_application_2_bg_image",
+      "type": "image",
+      "instructions": "",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_2_icon",
+      "label": "应用领域 2 - 图标图片",
+      "name": "section2_application_2_icon",
+      "type": "image",
+      "instructions": "上传图标图片（建议尺寸：64x64px 或更大，PNG/SVG格式）",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_2_title_cn",
+      "label": "应用领域 2 - 中文标题",
+      "name": "section2_application_2_title_cn",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "汽车行业",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_2_title_en",
+      "label": "应用领域 2 - 英文副标题",
+      "name": "section2_application_2_title_en",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Motor-dom",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_2_link",
+      "label": "应用领域 2 - 链接地址",
+      "name": "section2_application_2_link",
+      "type": "url",
+      "instructions": "",
+      "required": 0,
+      "default_value": "",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_3_bg_image",
+      "label": "应用领域 3 - 背景图片",
+      "name": "section2_application_3_bg_image",
+      "type": "image",
+      "instructions": "",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_3_icon",
+      "label": "应用领域 3 - 图标图片",
+      "name": "section2_application_3_icon",
+      "type": "image",
+      "instructions": "上传图标图片（建议尺寸：64x64px 或更大，PNG/SVG格式）",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_3_title_cn",
+      "label": "应用领域 3 - 中文标题",
+      "name": "section2_application_3_title_cn",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "轨道交通",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_3_title_en",
+      "label": "应用领域 3 - 英文副标题",
+      "name": "section2_application_3_title_en",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Rail Transit",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_3_link",
+      "label": "应用领域 3 - 链接地址",
+      "name": "section2_application_3_link",
+      "type": "url",
+      "instructions": "",
+      "required": 0,
+      "default_value": "",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_4_bg_image",
+      "label": "应用领域 4 - 背景图片",
+      "name": "section2_application_4_bg_image",
+      "type": "image",
+      "instructions": "",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_4_icon",
+      "label": "应用领域 4 - 图标图片",
+      "name": "section2_application_4_icon",
+      "type": "image",
+      "instructions": "上传图标图片（建议尺寸：64x64px 或更大，PNG/SVG格式）",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_4_title_cn",
+      "label": "应用领域 4 - 中文标题",
+      "name": "section2_application_4_title_cn",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "新能源",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_4_title_en",
+      "label": "应用领域 4 - 英文副标题",
+      "name": "section2_application_4_title_en",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "New Energy",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_4_link",
+      "label": "应用领域 4 - 链接地址",
+      "name": "section2_application_4_link",
+      "type": "url",
+      "instructions": "",
+      "required": 0,
+      "default_value": "",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_5_bg_image",
+      "label": "应用领域 5 - 背景图片",
+      "name": "section2_application_5_bg_image",
+      "type": "image",
+      "instructions": "",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_5_icon",
+      "label": "应用领域 5 - 图标图片",
+      "name": "section2_application_5_icon",
+      "type": "image",
+      "instructions": "上传图标图片（建议尺寸：64x64px 或更大，PNG/SVG格式）",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_5_title_cn",
+      "label": "应用领域 5 - 中文标题",
+      "name": "section2_application_5_title_cn",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "模具制造行业",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_5_title_en",
+      "label": "应用领域 5 - 英文副标题",
+      "name": "section2_application_5_title_en",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Mold Manufacturing",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_5_link",
+      "label": "应用领域 5 - 链接地址",
+      "name": "section2_application_5_link",
+      "type": "url",
+      "instructions": "",
+      "required": 0,
+      "default_value": "",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_6_bg_image",
+      "label": "应用领域 6 - 背景图片",
+      "name": "section2_application_6_bg_image",
+      "type": "image",
+      "instructions": "",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_6_icon",
+      "label": "应用领域 6 - 图标图片",
+      "name": "section2_application_6_icon",
+      "type": "image",
+      "instructions": "上传图标图片（建议尺寸：64x64px 或更大，PNG/SVG格式）",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section2_application_6_title_cn",
+      "label": "应用领域 6 - 中文标题",
+      "name": "section2_application_6_title_cn",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "3C行业",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_6_title_en",
+      "label": "应用领域 6 - 英文副标题",
+      "name": "section2_application_6_title_en",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "3C Industry",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_application_6_link",
+      "label": "应用领域 6 - 链接地址",
+      "name": "section2_application_6_link",
+      "type": "url",
+      "instructions": "",
+      "required": 0,
+      "default_value": "",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_footer_left",
+      "label": "Section 2 - 底部左侧文字",
+      "name": "section2_footer_left",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "GLOBAL INDUSTRY PRECISION SOLUTIONS",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section2_footer_right",
+      "label": "Section 2 - 底部右侧文字",
+      "name": "section2_footer_right",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "HOVER EACH VERTICAL TO EXPLORE",
+      "placeholder": ""
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "page",
+        "operator": "==",
+        "value": "45308"
+      }
+    ]
+  ],
+  "menu_order": 2,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": "",
+  "active": true,
+  "description": "Section 2 应用领域部分的所有字段"
+}

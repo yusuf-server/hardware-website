@@ -1,0 +1,156 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+
+// 应用领域分类结构
+const applicationCategories = [
+  {
+    id: 1,
+    name: 'Aerospace',
+    slug: 'aerospace',
+    children: [
+      { id: 11, name: 'Landing Gear', slug: 'landing-gear' },
+      { id: 12, name: 'Fuselage/Composites/Skin', slug: 'fuselage' },
+      { id: 13, name: 'Cavity', slug: 'cavity' },
+      { id: 14, name: 'Impeller', slug: 'impeller' },
+      { id: 15, name: 'Casing', slug: 'casing' },
+      { id: 16, name: 'Support Beam', slug: 'support-beam' },
+      { id: 17, name: 'Aircraft Connectors', slug: 'connectors' },
+    ]
+  },
+  {
+    id: 2,
+    name: 'Automotive Industry',
+    slug: 'automotive',
+    children: [
+      { id: 21, name: 'Crankshaft', slug: 'crankshaft' },
+      { id: 22, name: 'Cylinder Head', slug: 'cylinder-head' },
+    ]
+  },
+  {
+    id: 3,
+    name: 'Rail Transit',
+    slug: 'rail-transit',
+    children: [
+      { id: 31, name: 'Hub', slug: 'hub' },
+      { id: 32, name: 'Axle', slug: 'axle' },
+      { id: 33, name: 'Motor Shaft', slug: 'motor-shaft' },
+    ]
+  },
+  {
+    id: 4,
+    name: 'New Energy',
+    slug: 'new-energy',
+    children: [
+      { id: 41, name: 'Wind Turbine Base', slug: 'wind-base' },
+      { id: 42, name: 'Hub', slug: 'hub' },
+      { id: 43, name: 'Main Shaft', slug: 'main-shaft' },
+      { id: 44, name: 'Flange', slug: 'flange' },
+    ]
+  },
+  {
+    id: 5,
+    name: 'Mold Manufacturing',
+    slug: 'mold-manufacturing',
+    children: []
+  },
+];
+---
+
+<MainLayout title="Applications - LUMENLAB">
+
+  <!-- Hero Banner -->
+  <div class="nybanner relative h-[300px] md:h-[400px] overflow-hidden">
+    <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=2000&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Applications">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="container max-w-7xl mx-auto px-8 md:px-16 relative z-10 h-full flex items-center">
+      <div class="title">
+        <h3 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white" style="font-weight: 900;">Application Fields</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Breadcrumb -->
+  <div class="crumb bg-[#0a0d14] border-b border-white/5 py-4">
+    <div class="container max-w-7xl mx-auto px-8 md:px-16 flex items-center text-sm text-gray-400">
+      <i data-lucide="home" class="w-4 h-4 mr-2"></i>
+      <a href="/" class="hover:text-blue-400 transition-colors">Home</a>
+      <span class="mx-2">></span>
+      <a href="/applications" class="text-blue-400">Application Fields</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <section class="relative py-16 px-8 md:px-16 bg-[#06080d]">
+    <div class="container max-w-7xl mx-auto">
+      <div class="flex flex-col lg:flex-row gap-8">
+
+        <!-- Left Sidebar -->
+        <aside class="lg:w-80 flex-shrink-0">
+          <div class="sticky top-24 subnav bg-white/5 rounded-lg overflow-hidden">
+            <ul>
+              {applicationCategories.map((category, catIndex) => (
+                <li class="erji">
+                  <a href="javascript:;" class={catIndex === 0 ? 'cur' : ''}>
+                    <span>{category.name}</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                  </a>
+                  {category.children && category.children.length > 0 && (
+                    <ul style={catIndex === 0 ? 'display: block;' : ''}>
+                      {category.children.map((subCat, subIndex) => (
+                        <li class="sanji">
+                          <a href={`/applications/${subCat.slug}`} class={catIndex === 0 && subIndex === 0 ? 'cur' : ''}>
+                            <span>{subCat.name}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Right Main Content -->
+        <main class="flex-1">
+
+          <!-- Application Image Display -->
+          <div class="application-display">
+            <div class="relative rounded-2xl overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1600&q=80" alt="Landing Gear Application" class="w-full h-auto">
+            </div>
+          </div>
+
+        </main>
+
+      </div>
+    </div>
+  </section>
+
+</MainLayout>
+
+<script>
+  // 左侧菜单折叠/展开功能
+  document.addEventListener('DOMContentLoaded', () => {
+    // 一级分类点击
+    const erjiLinks = document.querySelectorAll('.subnav .erji > a');
+    erjiLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const parentLi = this.parentElement;
+        const subUl = parentLi.querySelector(':scope > ul');
+
+        if (subUl) {
+          // 切换显示/隐藏
+          if (subUl.style.display === 'block') {
+            subUl.style.display = 'none';
+            this.classList.remove('cur');
+          } else {
+            subUl.style.display = 'block';
+            this.classList.add('cur');
+          }
+        }
+      });
+    });
+  });
+</script>

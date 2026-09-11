@@ -1,0 +1,162 @@
+{
+  "key": "group_section3_part1",
+  "title": "Section 3 - Part 1 (Tabs & Panel 1)",
+  "fields": [
+    {
+      "key": "field_section3_tab_1_icon",
+      "label": "Tab 1 - 图标名称",
+      "name": "section3_tab_1_icon",
+      "type": "text",
+      "instructions": "Lucide 图标名称，如：building",
+      "required": 0,
+      "default_value": "building",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_tab_1_title",
+      "label": "Tab 1 - 标题",
+      "name": "section3_tab_1_title",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Company Information",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_tab_2_icon",
+      "label": "Tab 2 - 图标名称",
+      "name": "section3_tab_2_icon",
+      "type": "text",
+      "instructions": "Lucide 图标名称，如：star",
+      "required": 0,
+      "default_value": "star",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_tab_2_title",
+      "label": "Tab 2 - 标题",
+      "name": "section3_tab_2_title",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Customer Reviews",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_tab_3_icon",
+      "label": "Tab 3 - 图标名称",
+      "name": "section3_tab_3_icon",
+      "type": "text",
+      "instructions": "Lucide 图标名称，如：shopping-bag",
+      "required": 0,
+      "default_value": "shopping-bag",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_tab_3_title",
+      "label": "Tab 3 - 标题",
+      "name": "section3_tab_3_title",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Buyer Show",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_tab_4_icon",
+      "label": "Tab 4 - 图标名称",
+      "name": "section3_tab_4_icon",
+      "type": "text",
+      "instructions": "Lucide 图标名称，如：factory",
+      "required": 0,
+      "default_value": "factory",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_tab_4_title",
+      "label": "Tab 4 - 标题",
+      "name": "section3_tab_4_title",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Production Process",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_panel_1_video",
+      "label": "Panel 1 - 视频文件 URL",
+      "name": "section3_panel_1_video",
+      "type": "url",
+      "instructions": "视频文件的完整 URL 地址，如：/videos/company.mp4",
+      "required": 0,
+      "default_value": "/videos/33-1.mp4",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_panel_1_poster",
+      "label": "Panel 1 - 视频封面图",
+      "name": "section3_panel_1_poster",
+      "type": "image",
+      "instructions": "视频加载前显示的封面图片",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section3_panel_1_title",
+      "label": "Panel 1 - 标题",
+      "name": "section3_panel_1_title",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "LUMENLAB TOOLS CO., LTD.",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_panel_1_content",
+      "label": "Panel 1 - 内容描述",
+      "name": "section3_panel_1_content",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "default_value": "We are located in the largest trading center of labor, quantity and cutting tools in Zhejiang province, China, and have operated offline physical stores for more than 20 years. Factory direct sales, massive inventory, integrity management, quality assurance.",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_panel_1_button_text",
+      "label": "Panel 1 - 按钮文字",
+      "name": "section3_panel_1_button_text",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Read More",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section3_panel_1_button_link",
+      "label": "Panel 1 - 按钮链接",
+      "name": "section3_panel_1_button_link",
+      "type": "url",
+      "instructions": "",
+      "required": 0,
+      "default_value": "/about",
+      "placeholder": ""
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "page",
+        "operator": "==",
+        "value": "45308"
+      }
+    ]
+  ],
+  "menu_order": 3,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": "",
+  "active": true,
+  "description": "Section 3 Part 1: Tab 导航栏和 Panel 1（公司信息）"
+}

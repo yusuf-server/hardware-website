@@ -1,0 +1,340 @@
+{
+  "key": "group_section4_manifesto",
+  "title": "Section 4 - Manifesto (Four Pillars)",
+  "fields": [
+    {
+      "key": "field_section4_background_image",
+      "label": "背景图片",
+      "name": "section4_background_image",
+      "type": "image",
+      "instructions": "",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section4_top_label",
+      "label": "顶部标签",
+      "name": "section4_top_label",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "WHY LUMENLAB — FOUR PILLARS",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_top_right_label",
+      "label": "右侧标签",
+      "name": "section4_top_right_label",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "MANIFESTO",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_title",
+      "label": "主标题",
+      "name": "section4_title",
+      "type": "textarea",
+      "instructions": "可以使用 <br> 换行",
+      "required": 0,
+      "default_value": "Why brands ship<br>with LUMENLAB.",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_subtitle",
+      "label": "副标题",
+      "name": "section4_subtitle",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Precision engineering, full compliance, and zero-compromise manufacturing.",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_1_number",
+      "label": "Pillar 1 - 编号",
+      "name": "section4_pillar_1_number",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "01",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_1_big_number",
+      "label": "Pillar 1 - 大数字",
+      "name": "section4_pillar_1_big_number",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "12",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_1_big_label",
+      "label": "Pillar 1 - 大标签",
+      "name": "section4_pillar_1_big_label",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "IN-HOUSE DESIGNERS",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_1_icon",
+      "label": "Pillar 1 - 图标图片",
+      "name": "section4_pillar_1_icon",
+      "type": "image",
+      "instructions": "上传图标图片（建议尺寸：64x64px 或更大，PNG/SVG格式）",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section4_pillar_1_title",
+      "label": "Pillar 1 - 标题",
+      "name": "section4_pillar_1_title",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "In-House Design Studio",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_1_description",
+      "label": "Pillar 1 - 描述",
+      "name": "section4_pillar_1_description",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "default_value": "12 designers tracking Milan, NYC, and industrial trends. 60+ new molds released every season. ODM-friendly sample development.",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_2_number",
+      "label": "Pillar 2 - 编号",
+      "name": "section4_pillar_2_number",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "02",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_2_big_number",
+      "label": "Pillar 2 - 大数字",
+      "name": "section4_pillar_2_big_number",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "60+",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_2_big_label",
+      "label": "Pillar 2 - 大标签",
+      "name": "section4_pillar_2_big_label",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "PANTONE COLORS",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_2_icon",
+      "label": "Pillar 2 - 图标图片",
+      "name": "section4_pillar_2_icon",
+      "type": "image",
+      "instructions": "上传图标图片（建议尺寸：64x64px 或更大，PNG/SVG格式）",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section4_pillar_2_title",
+      "label": "Pillar 2 - 标题",
+      "name": "section4_pillar_2_title",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Custom Color Lab",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_2_description",
+      "label": "Pillar 2 - 描述",
+      "name": "section4_pillar_2_description",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Pantone-matched acetate sheets pressed in-house. Gradient, transparent, metallic, and high-density finish options.",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_3_number",
+      "label": "Pillar 3 - 编号",
+      "name": "section4_pillar_3_number",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "03",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_3_big_number",
+      "label": "Pillar 3 - 大数字",
+      "name": "section4_pillar_3_big_number",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "7d",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_3_big_label",
+      "label": "Pillar 3 - 大标签",
+      "name": "section4_pillar_3_big_label",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "SAMPLE LEAD TIME",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_3_icon",
+      "label": "Pillar 3 - 图标图片",
+      "name": "section4_pillar_3_icon",
+      "type": "image",
+      "instructions": "上传图标图片（建议尺寸：64x64px 或更大，PNG/SVG格式）",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section4_pillar_3_title",
+      "label": "Pillar 3 - 标题",
+      "name": "section4_pillar_3_title",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "25-day Sample Turnaround",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_3_description",
+      "label": "Pillar 3 - 描述",
+      "name": "section4_pillar_3_description",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Rapid prototyping with 3D industrial printing for frame fronts. First physical samples ready in 7 days.",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_4_number",
+      "label": "Pillar 4 - 编号",
+      "name": "section4_pillar_4_number",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "04",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_4_big_number",
+      "label": "Pillar 4 - 大数字",
+      "name": "section4_pillar_4_big_number",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "100%",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_4_big_label",
+      "label": "Pillar 4 - 大标签",
+      "name": "section4_pillar_4_big_label",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "QC PASS RATE",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_4_icon",
+      "label": "Pillar 4 - 图标图片",
+      "name": "section4_pillar_4_icon",
+      "type": "image",
+      "instructions": "上传图标图片（建议尺寸：64x64px 或更大，PNG/SVG格式）",
+      "required": 0,
+      "return_format": "url"
+    },
+    {
+      "key": "field_section4_pillar_4_title",
+      "label": "Pillar 4 - 标题",
+      "name": "section4_pillar_4_title",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "Compliance-Ready Out of Box",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_pillar_4_description",
+      "label": "Pillar 4 - 描述",
+      "name": "section4_pillar_4_description",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "default_value": "CE, FDA, ANSI Z80.3, EN ISO 12312-1, RoHS, REACH, Prop-65. Fully documented for international customs clearance.",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_gallery_images",
+      "label": "图片轮播 - 图片集",
+      "name": "section4_gallery_images",
+      "type": "gallery",
+      "instructions": "上传多张图片用于轮播展示（建议至少 5 张）",
+      "required": 0,
+      "return_format": "url",
+      "library": "all",
+      "min": 0,
+      "max": 0
+    },
+    {
+      "key": "field_section4_footer_left",
+      "label": "底部左侧文字",
+      "name": "section4_footer_left",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "4 PILLARS — 1 PROMISE — 0 COMPROMISE",
+      "placeholder": ""
+    },
+    {
+      "key": "field_section4_footer_right",
+      "label": "底部右侧文字",
+      "name": "section4_footer_right",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "default_value": "\"PRECISION ENGINE OF MODERN HARDWARE\"",
+      "placeholder": ""
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "page",
+        "operator": "==",
+        "value": "45308"
+      }
+    ]
+  ],
+  "menu_order": 4,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": "",
+  "active": true,
+  "description": "Section 4 Manifesto: Four Pillars 和图片轮播"
+}
