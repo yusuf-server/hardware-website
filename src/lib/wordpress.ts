@@ -113,6 +113,71 @@ export interface HomePageACF {
   section4_background_image?: ACFImage | number | string;
   section4_gallery_images?: string[] | number[];
 
+  // Section: Hero Pieces (Accordion) - 新增手风琴区域动态字段
+  accordion_title?: string;
+  accordion_view_all_text?: string;
+  accordion_view_all_link?: string;
+
+  accordion_item_1_bg?: ACFImage | number | string;
+  accordion_item_1_badge?: string;
+  accordion_item_1_sku?: string;
+  accordion_item_1_title?: string;
+  accordion_item_1_desc?: string;
+  accordion_item_1_moq?: string;
+  accordion_item_1_lead_time?: string;
+  accordion_item_1_link?: string;
+  accordion_item_1_btn_text?: string;
+
+  accordion_item_2_bg?: ACFImage | number | string;
+  accordion_item_2_badge?: string;
+  accordion_item_2_sku?: string;
+  accordion_item_2_title?: string;
+  accordion_item_2_desc?: string;
+  accordion_item_2_moq?: string;
+  accordion_item_2_lead_time?: string;
+  accordion_item_2_link?: string;
+  accordion_item_2_btn_text?: string;
+
+  accordion_item_3_bg?: ACFImage | number | string;
+  accordion_item_3_badge?: string;
+  accordion_item_3_sku?: string;
+  accordion_item_3_title?: string;
+  accordion_item_3_desc?: string;
+  accordion_item_3_moq?: string;
+  accordion_item_3_lead_time?: string;
+  accordion_item_3_link?: string;
+  accordion_item_3_btn_text?: string;
+
+  accordion_item_4_bg?: ACFImage | number | string;
+  accordion_item_4_badge?: string;
+  accordion_item_4_sku?: string;
+  accordion_item_4_title?: string;
+  accordion_item_4_desc?: string;
+  accordion_item_4_moq?: string;
+  accordion_item_4_lead_time?: string;
+  accordion_item_4_link?: string;
+  accordion_item_4_btn_text?: string;
+
+  accordion_item_5_bg?: ACFImage | number | string;
+  accordion_item_5_badge?: string;
+  accordion_item_5_sku?: string;
+  accordion_item_5_title?: string;
+  accordion_item_5_desc?: string;
+  accordion_item_5_moq?: string;
+  accordion_item_5_lead_time?: string;
+  accordion_item_5_link?: string;
+  accordion_item_5_btn_text?: string;
+
+  accordion_item_6_bg?: ACFImage | number | string;
+  accordion_item_6_badge?: string;
+  accordion_item_6_sku?: string;
+  accordion_item_6_title?: string;
+  accordion_item_6_desc?: string;
+  accordion_item_6_moq?: string;
+  accordion_item_6_lead_time?: string;
+  accordion_item_6_link?: string;
+  accordion_item_6_btn_text?: string;
+
   // Section 5 - Testimonials
   section5_background_video?: string;
   section5_title?: string;
@@ -183,7 +248,7 @@ export async function getHomePage(): Promise<WordPressPageWithACF | null> {
     // 收集所有需要转换的图片 ID
     const imageFieldsToFetch: Array<{ field: string; id: number }> = [];
 
-    // 检查所有可能是 ID 的图片字段
+    // 检查所有可能是 ID 的图片字段（包含手风琴区域的 6 张背景图）
     const allImageFields = [
       'hero_background_image_1',
       'hero_background_image_2',
@@ -202,6 +267,13 @@ export async function getHomePage(): Promise<WordPressPageWithACF | null> {
       'section2_application_6_icon',
       'section3_panel_1_poster',
       'section4_background_image',
+      // 新增手风琴背景图字段
+      'accordion_item_1_bg',
+      'accordion_item_2_bg',
+      'accordion_item_3_bg',
+      'accordion_item_4_bg',
+      'accordion_item_5_bg',
+      'accordion_item_6_bg',
     ];
 
     for (const field of allImageFields) {
@@ -237,7 +309,7 @@ export async function getHomePage(): Promise<WordPressPageWithACF | null> {
         try {
           const media = await fetchAPI(`/media/${id}`);
 
-          // Hero section 返回对象，其他返回 URL
+          // Hero section 返回对象，其他返回 URL 字符串
           if (field.startsWith('hero_background')) {
             return {
               field,
@@ -272,7 +344,7 @@ export async function getHomePage(): Promise<WordPressPageWithACF | null> {
 
     const results = await Promise.all(allImagePromises);
 
-    // 应用结果
+    // 应用解析出的图片 URL
     const galleryUrls: string[] = [];
     for (const result of results) {
       if ('type' in result && result.type === 'gallery') {
@@ -293,6 +365,180 @@ export async function getHomePage(): Promise<WordPressPageWithACF | null> {
     return data;
   } catch (error) {
     console.error('Error fetching homepage:', error);
+    return null;
+  }
+}
+
+// ==================== 产品管理接口 ====================
+
+// 产品数据接口
+export interface WPProduct {
+  id: number;
+  title: {
+    rendered: string;
+  };
+  content: {
+    rendered: string;
+  };
+  excerpt: {
+    rendered: string;
+  };
+  slug: string;
+  featured_media: number;
+  _embedded?: {
+    'wp:featuredmedia'?: Array<{
+      source_url: string;
+      alt_text: string;
+    }>;
+  };
+  acf: {
+    product_images?: Array<{
+      id: number;
+      url: string;
+      alt: string;
+      width: number;
+      height: number;
+    }>;
+    spec_display_type?: 'table' | 'image';
+    specifications_table?: Array<{
+      model?: string;
+      ic?: string;
+      d?: string;
+      l?: string;
+      s?: string;
+      r?: string;
+      grade?: string;
+    }>;
+    specifications_image?: {
+      id: number;
+      url: string;
+      alt: string;
+      width: number;
+      height: number;
+    };
+    catalog_link?: string;
+  };
+  product_category?: number[];
+  product_series?: number[];
+}
+
+// 产品分类接口
+export interface WPProductCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  count: number;
+  parent: number;
+}
+
+// 获取所有产品
+export async function getProducts(perPage: number = 20, categoryId?: number): Promise<WPProduct[]> {
+  try {
+    const params: Record<string, string> = {
+      per_page: perPage.toString(),
+      _embed: 'true',
+    };
+
+    if (categoryId) {
+      params['product-categories'] = categoryId.toString();
+    }
+
+    const products = await fetchAPI('/products', params);
+    return products || [];
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
+}
+
+// 根据 slug 获取单个产品
+export async function getProductBySlug(slug: string): Promise<WPProduct | null> {
+  try {
+    const products = await fetchAPI('/products', {
+      slug,
+      _embed: 'true',
+    });
+
+    return products.length > 0 ? products[0] : null;
+  } catch (error) {
+    console.error('Error fetching product by slug:', error);
+    return null;
+  }
+}
+
+// 获取产品分类
+export async function getProductCategories(): Promise<WPProductCategory[]> {
+  try {
+    const categories = await fetchAPI('/product-categories', {
+      per_page: '100',
+    });
+    return categories || [];
+  } catch (error) {
+    console.error('Error fetching product categories:', error);
+    return [];
+  }
+}
+
+// 获取子分类
+export async function getSubCategories(parentId: number): Promise<WPProductCategory[]> {
+  try {
+    const categories = await fetchAPI('/product-categories', {
+      parent: parentId.toString(),
+      per_page: '100',
+    });
+    return categories || [];
+  } catch (error) {
+    console.error('Error fetching subcategories:', error);
+    return [];
+  }
+}
+
+// ==================== 应用领域接口 ====================
+
+// 应用领域分类接口
+export interface WPApplicationCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  count: number;
+  parent: number;
+  acf?: {
+    banner_image?: {
+      id: number;
+      url: string;
+      alt: string;
+      width: number;
+      height: number;
+    };
+    description?: string;
+    key_features?: Array<{
+      feature_text: string;
+    }>;
+  };
+}
+
+// 获取应用领域分类
+export async function getApplicationCategories(): Promise<WPApplicationCategory[]> {
+  try {
+    const categories = await fetchAPI('/application-categories', {
+      per_page: '100',
+    });
+    return categories || [];
+  } catch (error) {
+    console.error('Error fetching application categories:', error);
+    return [];
+  }
+}
+
+// 根据 ID 获取应用领域分类
+export async function getApplicationCategoryById(id: number): Promise<WPApplicationCategory | null> {
+  try {
+    const category = await fetchAPI(`/application-categories/${id}`);
+    return category || null;
+  } catch (error) {
+    console.error('Error fetching application category by id:', error);
     return null;
   }
 }

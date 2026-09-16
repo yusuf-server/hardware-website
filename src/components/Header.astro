@@ -1,4 +1,23 @@
 ---
+import { getProductCategories, getApplicationCategories } from '@/lib/wordpress';
+
+// 获取产品分类（只获取一级分类）
+let productCategories = [];
+try {
+  const allCategories = await getProductCategories();
+  productCategories = allCategories.filter(cat => cat.parent === 0).slice(0, 6); // 最多显示6个
+} catch (e) {
+  console.error('Error fetching product categories:', e);
+}
+
+// 获取应用领域分类（只获取一级分类）
+let applicationCategories = [];
+try {
+  const allCategories = await getApplicationCategories();
+  applicationCategories = allCategories.filter(cat => cat.parent === 0).slice(0, 6); // 最多显示6个
+} catch (e) {
+  console.error('Error fetching application categories:', e);
+}
 ---
 
 <!-- Header -->
@@ -13,8 +32,73 @@
   <nav class="hidden md:flex items-center gap-8 text-sm text-gray-400" style="font-weight: 400;">
     <a href="/" class="hover:text-white transition-colors duration-200" style="font-weight: 300;">Home</a>
     <a href="/about" class="hover:text-white transition-colors duration-200" style="font-weight: 300;">About</a>
-    <a href="/products" class="hover:text-white transition-colors duration-200" style="font-weight: 300;">Products</a>
-    <a href="/applications" class="hover:text-white transition-colors duration-200" style="font-weight: 300;">Applications</a>
+
+    <!-- Products with Dropdown -->
+    <div class="relative group">
+      <a href="/products" class="hover:text-white transition-colors duration-200 flex items-center gap-1" style="font-weight: 300;">
+        Products
+        <i data-lucide="chevron-down" class="w-3 h-3"></i>
+      </a>
+
+      {productCategories.length > 0 && (
+        <div class="absolute top-full left-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+          <div class="py-2">
+            {productCategories.map((category) => (
+              <a
+                href={`/products#category-${category.id}`}
+                class="block px-4 py-2.5 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors text-sm"
+                style="font-weight: 400;"
+              >
+                {category.name}
+              </a>
+            ))}
+            <div class="border-t border-gray-200 mt-2 pt-2">
+              <a
+                href="/products"
+                class="block px-4 py-2.5 text-blue-600 hover:bg-blue-50 transition-colors text-sm font-medium"
+                style="font-weight: 500;"
+              >
+                View All Products →
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <!-- Applications with Dropdown -->
+    <div class="relative group">
+      <a href="/applications" class="hover:text-white transition-colors duration-200 flex items-center gap-1" style="font-weight: 300;">
+        Applications
+        <i data-lucide="chevron-down" class="w-3 h-3"></i>
+      </a>
+
+      {applicationCategories.length > 0 && (
+        <div class="absolute top-full left-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+          <div class="py-2">
+            {applicationCategories.map((category) => (
+              <a
+                href={`/applications#category-${category.id}`}
+                class="block px-4 py-2.5 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors text-sm"
+                style="font-weight: 400;"
+              >
+                {category.name}
+              </a>
+            ))}
+            <div class="border-t border-gray-200 mt-2 pt-2">
+              <a
+                href="/applications"
+                class="block px-4 py-2.5 text-blue-600 hover:bg-blue-50 transition-colors text-sm font-medium"
+                style="font-weight: 500;"
+              >
+                View All Applications →
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+
     <a href="/news" class="hover:text-white transition-colors duration-200" style="font-weight: 300;">News</a>
     <a href="/contact" class="hover:text-white transition-colors duration-200" style="font-weight: 300;">Contact</a>
   </nav>

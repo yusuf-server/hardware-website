@@ -1,59 +1,43 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
+import { getApplicationCategories } from '@/lib/wordpress';
 
-// 应用领域分类结构
-const applicationCategories = [
-  {
-    id: 1,
-    name: 'Aerospace',
-    slug: 'aerospace',
-    children: [
-      { id: 11, name: 'Landing Gear', slug: 'landing-gear' },
-      { id: 12, name: 'Fuselage/Composites/Skin', slug: 'fuselage' },
-      { id: 13, name: 'Cavity', slug: 'cavity' },
-      { id: 14, name: 'Impeller', slug: 'impeller' },
-      { id: 15, name: 'Casing', slug: 'casing' },
-      { id: 16, name: 'Support Beam', slug: 'support-beam' },
-      { id: 17, name: 'Aircraft Connectors', slug: 'connectors' },
-    ]
-  },
-  {
-    id: 2,
-    name: 'Automotive Industry',
-    slug: 'automotive',
-    children: [
-      { id: 21, name: 'Crankshaft', slug: 'crankshaft' },
-      { id: 22, name: 'Cylinder Head', slug: 'cylinder-head' },
-    ]
-  },
-  {
-    id: 3,
-    name: 'Rail Transit',
-    slug: 'rail-transit',
-    children: [
-      { id: 31, name: 'Hub', slug: 'hub' },
-      { id: 32, name: 'Axle', slug: 'axle' },
-      { id: 33, name: 'Motor Shaft', slug: 'motor-shaft' },
-    ]
-  },
-  {
-    id: 4,
-    name: 'New Energy',
-    slug: 'new-energy',
-    children: [
-      { id: 41, name: 'Wind Turbine Base', slug: 'wind-base' },
-      { id: 42, name: 'Hub', slug: 'hub' },
-      { id: 43, name: 'Main Shaft', slug: 'main-shaft' },
-      { id: 44, name: 'Flange', slug: 'flange' },
-    ]
-  },
-  {
-    id: 5,
-    name: 'Mold Manufacturing',
-    slug: 'mold-manufacturing',
-    children: []
-  },
-];
+// 获取应用领域分类
+let categories = [];
+try {
+  categories = await getApplicationCategories();
+} catch (e) {
+  console.error('Error fetching application categories:', e);
+}
+
+// 构建分类树结构
+const buildCategoryTree = (cats: any[]) => {
+  const categoryMap = new Map();
+
+  cats.forEach(cat => {
+    categoryMap.set(cat.id, { ...cat, children: [] });
+  });
+
+  const roots: any[] = [];
+  cats.forEach(cat => {
+    const category = categoryMap.get(cat.id);
+    if (cat.parent === 0) {
+      roots.push(category);
+    } else {
+      const parent = categoryMap.get(cat.parent);
+      if (parent) {
+        parent.children.push(category);
+      }
+    }
+  });
+
+  return roots;
+};
+
+const categoryTree = buildCategoryTree(categories);
+
+// 默认选中第一个分类
+const defaultCategory = categoryTree[0]?.children?.[0] || categoryTree[0];
 ---
 
 <MainLayout title="Applications - LUMENLAB">
@@ -70,8 +54,8 @@ const applicationCategories = [
   </div>
 
   <!-- Breadcrumb -->
-  <div class="crumb bg-[#0a0d14] border-b border-white/5 py-4">
-    <div class="container max-w-7xl mx-auto px-8 md:px-16 flex items-center text-sm text-gray-400">
+  <div class="crumb bg-gray-50 border-b border-gray-100 py-4">
+    <div class="container max-w-7xl mx-auto px-8 md:px-16 flex items-center text-sm text-gray-600">
       <i data-lucide="home" class="w-4 h-4 mr-2"></i>
       <a href="/" class="hover:text-blue-400 transition-colors">Home</a>
       <span class="mx-2">></span>
@@ -80,17 +64,22 @@ const applicationCategories = [
   </div>
 
   <!-- Main Content -->
-  <section class="relative py-16 px-8 md:px-16 bg-[#06080d]">
+  <section class="relative py-16 px-8 md:px-16 bg-white">
     <div class="container max-w-7xl mx-auto">
       <div class="flex flex-col lg:flex-row gap-8">
 
         <!-- Left Sidebar -->
         <aside class="lg:w-80 flex-shrink-0">
-          <div class="sticky top-24 subnav bg-white/5 rounded-lg overflow-hidden">
+          <div class="sticky top-24 subnav bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
             <ul>
-              {applicationCategories.map((category, catIndex) => (
+              {categoryTree.map((category, catIndex) => (
                 <li class="erji">
-                  <a href="javascript:;" class={catIndex === 0 ? 'cur' : ''}>
+                  <a
+                    href="javascript:;"
+                    class={catIndex === 0 ? 'cur' : ''}
+                    data-category-id={category.id}
+                    data-category-data={JSON.stringify(category.acf || {})}
+                  >
                     <span>{category.name}</span>
                     <i data-lucide="chevron-down" class="w-4 h-4"></i>
                   </a>
@@ -98,7 +87,12 @@ const applicationCategories = [
                     <ul style={catIndex === 0 ? 'display: block;' : ''}>
                       {category.children.map((subCat, subIndex) => (
                         <li class="sanji">
-                          <a href={`/applications/${subCat.slug}`} class={catIndex === 0 && subIndex === 0 ? 'cur' : ''}>
+                          <a
+                            href="javascript:;"
+                            class={catIndex === 0 && subIndex === 0 ? 'cur' : ''}
+                            data-category-id={subCat.id}
+                            data-category-data={JSON.stringify(subCat.acf || {})}
+                          >
                             <span>{subCat.name}</span>
                           </a>
                         </li>
@@ -114,11 +108,47 @@ const applicationCategories = [
         <!-- Right Main Content -->
         <main class="flex-1">
 
-          <!-- Application Image Display -->
-          <div class="application-display">
-            <div class="relative rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1600&q=80" alt="Landing Gear Application" class="w-full h-auto">
-            </div>
+          <!-- Application Display -->
+          <div id="applicationDisplay" class="application-display">
+            {defaultCategory && (
+              <div>
+                {/* 默认显示第一个分类的内容 */}
+                {defaultCategory.acf?.banner_image && (
+                  <div class="relative rounded-2xl overflow-hidden mb-8">
+                    <img
+                      src={defaultCategory.acf.banner_image.url}
+                      alt={defaultCategory.acf.banner_image.alt || defaultCategory.name}
+                      class="w-full h-auto"
+                    />
+                  </div>
+                )}
+
+                <h2 class="text-3xl font-bold text-gray-900 mb-6" style="font-weight: 800;">{defaultCategory.name}</h2>
+
+                {defaultCategory.acf?.description && (
+                  <div class="prose prose-lg max-w-none text-gray-700 mb-8
+                              prose-img:rounded-xl prose-img:shadow-lg
+                              prose-headings:text-gray-900
+                              prose-p:leading-relaxed">
+                    <Fragment set:html={defaultCategory.acf.description} />
+                  </div>
+                )}
+
+                {defaultCategory.acf?.key_features && defaultCategory.acf.key_features.length > 0 && (
+                  <div class="key-features mt-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4" style="font-weight: 700;">Key Features</h3>
+                    <ul class="space-y-3">
+                      {defaultCategory.acf.key_features.map((feature: any) => (
+                        <li class="flex items-start gap-3">
+                          <i data-lucide="check-circle" class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5"></i>
+                          <span class="text-gray-700 text-lg">{feature.feature_text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
         </main>
@@ -130,8 +160,146 @@ const applicationCategories = [
 </MainLayout>
 
 <script>
-  // 左侧菜单折叠/展开功能
   document.addEventListener('DOMContentLoaded', () => {
+    const displayArea = document.getElementById('applicationDisplay');
+
+    // 渲染分类内容
+    function renderCategory(categoryData: any, categoryName: string, parentName: string = '') {
+      const acf = categoryData;
+
+      let html = '<div>';
+
+      // 标题（放在最前面）
+      html += `<h2 class="text-3xl font-bold text-gray-900 mb-6" style="font-weight: 800;">${categoryName}</h2>`;
+
+      // Banner 图片
+      if (acf.banner_image) {
+        let imageUrl = '';
+
+        // 判断是 URL 字符串还是 ID 数字
+        if (typeof acf.banner_image === 'string') {
+          imageUrl = acf.banner_image;
+        } else if (typeof acf.banner_image === 'number') {
+          // 如果是 ID，构建 WordPress 媒体 URL（需要通过 API 获取）
+          imageUrl = `https://darkgrey-woodcock-712173.hostingersite.com/wp-json/wp/v2/media/${acf.banner_image}`;
+          // 发送请求获取图片 URL
+          fetch(imageUrl)
+            .then(res => res.json())
+            .then(media => {
+              const img = document.querySelector('#applicationDisplay img[data-image-id="' + acf.banner_image + '"]');
+              if (img && media.source_url) {
+                img.src = media.source_url;
+              }
+            });
+          imageUrl = ''; // 暂时为空，等待异步加载
+        } else if (acf.banner_image.url) {
+          imageUrl = acf.banner_image.url;
+        }
+
+        if (imageUrl) {
+          html += `
+            <div class="relative rounded-2xl overflow-hidden mb-8">
+              <img src="${imageUrl}" alt="${categoryName}" class="w-full h-auto" />
+            </div>
+          `;
+        } else if (typeof acf.banner_image === 'number') {
+          // 如果是 ID，先显示占位符
+          html += `
+            <div class="relative rounded-2xl overflow-hidden mb-8">
+              <img src="" alt="${categoryName}" class="w-full h-auto" data-image-id="${acf.banner_image}" />
+            </div>
+          `;
+        }
+      }
+
+      // 描述
+      if (acf.description) {
+        html += `
+          <div class="prose prose-lg max-w-none text-gray-700 mb-8
+                      prose-img:rounded-xl prose-img:shadow-lg
+                      prose-headings:text-gray-900
+                      prose-p:leading-relaxed">
+            ${acf.description}
+          </div>
+        `;
+      }
+
+      // 关键特点
+      if (acf.key_features && acf.key_features.length > 0) {
+        html += `
+          <div class="key-features mt-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4" style="font-weight: 700;">Key Features</h3>
+            <ul class="space-y-3">
+        `;
+
+        acf.key_features.forEach((feature: any) => {
+          html += `
+            <li class="flex items-start gap-3">
+              <i data-lucide="check-circle" class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5"></i>
+              <span class="text-gray-700 text-lg">${feature.feature_text}</span>
+            </li>
+          `;
+        });
+
+        html += `
+            </ul>
+          </div>
+        `;
+      }
+
+      // 如果没有任何内容
+      if (!acf.banner_image && !acf.description && (!acf.key_features || acf.key_features.length === 0)) {
+        html += `<p class="text-gray-500 text-center py-12">No content available for this category yet.</p>`;
+      }
+
+      html += '</div>';
+
+      if (displayArea) {
+        displayArea.innerHTML = html;
+        // 重新初始化 Lucide 图标
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }
+
+      // 更新面包屑
+      updateBreadcrumb(parentName, categoryName);
+    }
+
+    // 更新面包屑
+    function updateBreadcrumb(parentName: string, currentName: string) {
+      const breadcrumb = document.querySelector('.crumb .container');
+      if (!breadcrumb) return;
+
+      let breadcrumbHTML = `
+        <i data-lucide="home" class="w-4 h-4 mr-2"></i>
+        <a href="/" class="hover:text-blue-400 transition-colors">Home</a>
+        <span class="mx-2">></span>
+        <a href="/applications" class="hover:text-blue-400 transition-colors">Application Fields</a>
+      `;
+
+      if (parentName) {
+        breadcrumbHTML += `
+          <span class="mx-2">></span>
+          <span class="text-gray-600">${parentName}</span>
+        `;
+      }
+
+      if (currentName) {
+        breadcrumbHTML += `
+          <span class="mx-2">></span>
+          <span class="text-blue-400">${currentName}</span>
+        `;
+      }
+
+      breadcrumb.innerHTML = breadcrumbHTML;
+
+      // 重新初始化图标
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
     // 一级分类点击
     const erjiLinks = document.querySelectorAll('.subnav .erji > a');
     erjiLinks.forEach(link => {
@@ -142,14 +310,45 @@ const applicationCategories = [
 
         if (subUl) {
           // 切换显示/隐藏
-          if (subUl.style.display === 'block') {
-            subUl.style.display = 'none';
-            this.classList.remove('cur');
-          } else {
-            subUl.style.display = 'block';
-            this.classList.add('cur');
-          }
+          const isOpen = subUl.style.display === 'block';
+          subUl.style.display = isOpen ? 'none' : 'block';
+          this.classList.toggle('cur', !isOpen);
         }
+
+        // 获取分类数据
+        const categoryData = JSON.parse(this.getAttribute('data-category-data') || '{}');
+        const categoryName = this.querySelector('span')?.textContent || '';
+
+        // 渲染内容（一级分类没有父分类）
+        renderCategory(categoryData, categoryName, '');
+
+        // 更新选中状态
+        document.querySelectorAll('.subnav a').forEach(a => a.classList.remove('cur'));
+        this.classList.add('cur');
+      });
+    });
+
+    // 二级分类点击
+    const sanjiLinks = document.querySelectorAll('.subnav .sanji > a');
+    sanjiLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // 获取分类数据
+        const categoryData = JSON.parse(this.getAttribute('data-category-data') || '{}');
+        const categoryName = this.querySelector('span')?.textContent || '';
+
+        // 获取父分类名称
+        const parentLi = this.closest('.erji');
+        const parentLink = parentLi?.querySelector(':scope > a');
+        const parentName = parentLink?.querySelector('span')?.textContent || '';
+
+        // 渲染内容（传递父分类名称）
+        renderCategory(categoryData, categoryName, parentName);
+
+        // 更新选中状态
+        document.querySelectorAll('.subnav a').forEach(a => a.classList.remove('cur'));
+        this.classList.add('cur');
       });
     });
   });

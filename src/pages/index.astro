@@ -1,5 +1,6 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
+import Footer from '@/components/Footer.astro';
 import { getFeaturedProducts, getCategories } from '@/lib/woocommerce';
 import { getHomePage } from '@/lib/wordpress';
 
@@ -187,7 +188,38 @@ const defaultGalleryImages = [
 const galleryImages = section4GalleryImages && section4GalleryImages.length > 0
   ? section4GalleryImages
   : defaultGalleryImages;
+// Section: Hero Pieces (手风琴卡片动态字段定义)
+const accordionTitle = heroData.accordion_title || "This season's heroes.";
+const accordionViewAllText = heroData.accordion_view_all_text || 'VIEW ALL';
+const accordionViewAllLink = heroData.accordion_view_all_link || '/products';
 
+// 6个产品卡片数据映射（支持后台 ACF 重复字段 repeater 或独立命名模式）
+const accordionCards = [1, 2, 3, 4, 5, 6].map((i) => {
+  const bgImage = getImageUrl(
+    heroData[`accordion_item_${i}_bg`] || heroData[`hero_piece_${i}_image`],
+    [
+      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=1000&q=80'
+    ][i - 1]
+  );
+
+  return {
+    badge: heroData[`accordion_item_${i}_badge`] || (i === 1 || i === 3 ? 'HARDWARE' : i === 2 ? 'TOOLING' : 'PRECISION'),
+    sku: heroData[`accordion_item_${i}_sku`] || `RC-TL-00${i}`,
+    title: heroData[`accordion_item_${i}_title`] || `Hero Product 0${i}`,
+    desc: heroData[`accordion_item_${i}_desc`] || 'High precision CNC machined accessories with premium wear resistance.',
+    moq: heroData[`accordion_item_${i}_moq`] || 'MOQ 300',
+    leadTime: heroData[`accordion_item_${i}_lead_time`] || '25-30 days',
+    link: heroData[`accordion_item_${i}_link`] || '/products',
+    linkText: heroData[`accordion_item_${i}_btn_text`] || 'VIEW DETAILS',
+    image: bgImage,
+    isDefaultActive: i === 2 // 默认第2项保持展开
+  };
+});
 // Section 5: Testimonials (客户评价)
 const section5BackgroundVideo = heroData.section5_background_video || 'https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4';
 const section5Title = heroData.section5_title || 'Customer Satisfaction Is<br>Our Greatest Achievement';
@@ -226,7 +258,7 @@ const section5Testimonials = heroData.section5_testimonials || [
 console.log('ACF data loaded successfully');
 ---
 
-<MainLayout title="LUMENLAB - One Page Demo">
+<MainLayout title="LUMENLAB - One Page Demo" hideFooter={true}>
   <!-- 顶部导航栏 -->
   <header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 py-5 backdrop-blur-md bg-[#06080d]/70 border-b border-white/10">
     <a href="/" class="flex items-center gap-2 text-xl tracking-wider" style="font-weight: 700;">
@@ -257,13 +289,13 @@ console.log('ACF data loaded successfully');
   </header>
 
   <!-- 右上角页码指示器 -->
-  <div class="fixed top-7 right-8 z-40 text-xs font-mono text-gray-400 flex items-center gap-1">
+  <div class="fixed top-7 right-8 z-40 text-xs font-mono text-gray-400 flex items-center gap-1 transition-opacity duration-500">
     <span id="current-page" class="text-white font-bold text-sm">01</span>
     <span class="text-gray-600">/ 08</span>
   </div>
 
   <!-- 侧边指示点 -->
-  <div class="fixed right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3">
+  <div class="fixed right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-3 transition-opacity duration-500">
     <button onclick="scrollToSection(1)" class="dot-indicator w-2.5 h-2.5 rounded-full bg-blue-500 transition-all duration-300 shadow-[0_0_8px_#3b82f6]" data-index="1" title="Section 1"></button>
     <button onclick="scrollToSection(2)" class="dot-indicator w-2 h-2 rounded-full bg-white/30 hover:bg-white/60 transition-all duration-300" data-index="2" title="Section 2"></button>
     <button onclick="scrollToSection(3)" class="dot-indicator w-2 h-2 rounded-full bg-white/30 hover:bg-white/60 transition-all duration-300" data-index="3" title="Section 3"></button>
@@ -273,7 +305,7 @@ console.log('ACF data loaded successfully');
   </div>
 
   <!-- 下一页引导悬浮按钮 -->
-  <button onclick="scrollNext()" class="fixed bottom-8 right-8 z-40 w-10 h-10 rounded-full border border-white/15 flex items-center justify-center bg-black/40 backdrop-blur hover:border-white/40 transition-all">
+  <button onclick="scrollNext()" class="fixed bottom-8 right-8 z-40 w-10 h-10 rounded-full border border-white/15 flex items-center justify-center bg-black/40 backdrop-blur hover:border-white/40 transition-all duration-500">
     <i data-lucide="chevron-down" class="w-4 h-4 text-gray-300"></i>
   </button>
 
@@ -292,7 +324,7 @@ console.log('ACF data loaded successfully');
       <!-- 轻微的暗色遮罩，保证文字可读性 -->
       <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent pointer-events-none"></div>
 
-      <div class="relative z-10 max-w-3xl">
+      <div class="relative z-10 max-w-3xl pl-0 lg:pl-[200px]">
         <div class="flex items-center gap-3 mb-6 text-xs font-mono tracking-widest text-blue-400 uppercase">
           <span class="text-blue-500 font-bold">§ 01</span>
           <span class="text-gray-600">|</span>
@@ -320,7 +352,7 @@ console.log('ACF data loaded successfully');
         </button>
       </div>
 
-      <div class="relative z-10 w-full max-w-xl flex flex-col gap-5 self-center pb-4 ml-8">
+      <div class="relative z-10 w-full max-w-xl flex flex-col gap-5 self-center pb-4 ml-8 pr-0 lg:pr-[200px]">
         <div class="flex items-center justify-between text-[11px] font-mono tracking-wider text-gray-400 border-b border-white/10 pb-2">
           <div class="flex items-center gap-2">
             <span class="inline-block w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
@@ -334,49 +366,61 @@ console.log('ACF data loaded successfully');
         </div>
 
         <div class="flex flex-col gap-3">
-          <div class="glass-card group flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-all hover:ring-2 hover:ring-blue-500/50"
+          <!-- 卡片 1 -->
+          <div class="glass-card group relative flex items-center justify-between p-5 md:px-6 md:py-5 rounded-2xl cursor-pointer overflow-hidden transition-all hover:ring-2 hover:ring-blue-500/50"
                data-hero-bg="0"
                onmouseenter="switchHeroBg(0)">
-            <div class="flex items-center gap-4">
-              <div class="w-20 h-16 rounded-xl overflow-hidden bg-neutral-900 flex-shrink-0">
-                <img src={thumbBg1} alt={productCard1Title} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-              </div>
-              <div>
-                <span class="text-[11px] font-mono text-blue-400 uppercase tracking-wider block">{productCard1Category}</span>
-                <h4 class="text-base font-semibold text-white group-hover:text-blue-300 transition-colors">{productCard1Title}</h4>
-              </div>
+            <!-- 全局背景图 -->
+            <img src={thumbBg1} alt={productCard1Title} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <!-- 深色/蓝色渐变蒙层，确保文字清晰度 -->
+            <div class="absolute inset-0 bg-gradient-to-r from-[#060a12]/90 via-[#060a12]/75 to-[#060a12]/40 group-hover:via-[#060a12]/60 transition-colors pointer-events-none"></div>
+
+            <!-- 左侧文字信息 -->
+            <div class="relative z-10 flex flex-col gap-1">
+              <span class="text-[12px] font-mono text-blue-400 font-semibold uppercase tracking-wider block">{productCard1Category}</span>
+              <h4 class="text-lg md:text-xl font-bold text-white tracking-wide group-hover:text-blue-200 transition-colors">{productCard1Title}</h4>
             </div>
-            <i data-lucide="arrow-right" class="w-5 h-5 text-gray-400 group-hover:translate-x-1 group-hover:text-white transition-all"></i>
+
+            <!-- 右侧箭头图标 -->
+            <i data-lucide="arrow-right" class="relative z-10 w-5 h-5 text-gray-300 group-hover:translate-x-1 group-hover:text-white transition-all"></i>
           </div>
 
-          <div class="glass-card group flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-all hover:ring-2 hover:ring-blue-500/50"
+          <!-- 卡片 2 -->
+          <div class="glass-card group relative flex items-center justify-between p-5 md:px-6 md:py-5 rounded-2xl cursor-pointer overflow-hidden transition-all hover:ring-2 hover:ring-blue-500/50"
                data-hero-bg="1"
                onmouseenter="switchHeroBg(1)">
-            <div class="flex items-center gap-4">
-              <div class="w-20 h-16 rounded-xl overflow-hidden bg-neutral-900 flex-shrink-0">
-                <img src={thumbBg2} alt={productCard2Title} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-              </div>
-              <div>
-                <span class="text-[11px] font-mono text-blue-400 uppercase tracking-wider block">{productCard2Category}</span>
-                <h4 class="text-base font-semibold text-white group-hover:text-blue-300 transition-colors">{productCard2Title}</h4>
-              </div>
+            <!-- 全局背景图 -->
+            <img src={thumbBg2} alt={productCard2Title} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <!-- 深色/蓝色渐变蒙层 -->
+            <div class="absolute inset-0 bg-gradient-to-r from-[#060a12]/90 via-[#060a12]/75 to-[#060a12]/40 group-hover:via-[#060a12]/60 transition-colors pointer-events-none"></div>
+
+            <!-- 左侧文字信息 -->
+            <div class="relative z-10 flex flex-col gap-1">
+              <span class="text-[12px] font-mono text-blue-400 font-semibold uppercase tracking-wider block">{productCard2Category}</span>
+              <h4 class="text-lg md:text-xl font-bold text-white tracking-wide group-hover:text-blue-200 transition-colors">{productCard2Title}</h4>
             </div>
-            <i data-lucide="arrow-right" class="w-5 h-5 text-gray-400 group-hover:translate-x-1 group-hover:text-white transition-all"></i>
+
+            <!-- 右侧箭头图标 -->
+            <i data-lucide="arrow-right" class="relative z-10 w-5 h-5 text-gray-300 group-hover:translate-x-1 group-hover:text-white transition-all"></i>
           </div>
 
-          <div class="glass-card-active group flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-all hover:ring-2 hover:ring-blue-500/50"
+          <!-- 卡片 3 (默认激活态高亮) -->
+          <div class="glass-card-active group relative flex items-center justify-between p-5 md:px-6 md:py-5 rounded-2xl cursor-pointer overflow-hidden ring-1 ring-blue-500/60 shadow-lg shadow-blue-500/10 transition-all hover:ring-2 hover:ring-blue-500"
                data-hero-bg="2"
                onmouseenter="switchHeroBg(2)">
-            <div class="flex items-center gap-4">
-              <div class="w-20 h-16 rounded-xl overflow-hidden bg-neutral-900 flex-shrink-0 ring-1 ring-blue-500/50">
-                <img src={thumbBg3} alt={productCard3Title} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-              </div>
-              <div>
-                <span class="text-[11px] font-mono text-blue-400 uppercase tracking-wider block font-medium">{productCard3Category}</span>
-                <h4 class="text-base font-semibold text-white">{productCard3Title}</h4>
-              </div>
+            <!-- 全局背景图 -->
+            <img src={thumbBg3} alt={productCard3Title} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <!-- 深色/蓝色渐变蒙层 -->
+            <div class="absolute inset-0 bg-gradient-to-r from-[#060a12]/90 via-[#060a12]/75 to-[#060a12]/40 group-hover:via-[#060a12]/60 transition-colors pointer-events-none"></div>
+
+            <!-- 左侧文字信息 -->
+            <div class="relative z-10 flex flex-col gap-1">
+              <span class="text-[12px] font-mono text-blue-400 font-semibold uppercase tracking-wider block">{productCard3Category}</span>
+              <h4 class="text-lg md:text-xl font-bold text-white tracking-wide">{productCard3Title}</h4>
             </div>
-            <i data-lucide="arrow-right" class="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-all"></i>
+
+            <!-- 右侧箭头图标 -->
+            <i data-lucide="arrow-right" class="relative z-10 w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-all"></i>
           </div>
         </div>
       </div>
@@ -577,7 +621,7 @@ console.log('ACF data loaded successfully');
         </div>
 
         <!-- Showcase Viewport -->
-        <div class="hero-showcase-viewport relative w-full rounded-2xl bg-gradient-to-br from-white/5 to-white/2 shadow-2xl overflow-hidden border border-white/10" style="height: 500px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+        <div class="hero-showcase-viewport relative w-[1300px] max-w-[95vw] self-center rounded-2xl bg-gradient-to-br from-white/5 to-white/2 shadow-2xl overflow-hidden border border-white/10" style="height: 500px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
 
           <!-- Panel 0: Company Information -->
           <div id="hero-panel-0" class="hero-panel active absolute inset-0 grid grid-cols-1 lg:grid-cols-2 gap-0">
@@ -827,37 +871,6 @@ console.log('ACF data loaded successfully');
           </div>
         </div>
 
-        <!-- 3D Coverflow 图片轮播 -->
-        <div class="relative w-full mt-2 mb-4">
-          <div
-            id="coverflow-frame"
-            class="cursor-grab py-12 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 active:cursor-grabbing"
-            style="perspective: 800px; touch-action: pan-y;"
-            tabindex="0"
-          >
-            <div
-              id="coverflow-track"
-              class="relative select-none"
-              style="height: 160px; transform-style: preserve-3d;"
-            >
-              <!-- 动态图片卡片 -->
-              {galleryImages.map((imgUrl, index) => (
-                <div class="coverflow-card absolute left-1/2 top-0 aspect-square overflow-hidden rounded-xl bg-neutral-900 shadow-2xl will-change-transform" style="width: 160px; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;">
-                  <img src={imgUrl} alt={`Gallery ${index + 1}`} draggable="false" class="h-full w-full select-none object-cover" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <!-- 左右切换按钮 -->
-          <button type="button" onclick="coverflowPrev()" class="absolute left-4 top-1/2 -translate-y-1/2 z-[50] w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 hover:scale-110 transition-all">
-            <i data-lucide="chevron-left" class="w-6 h-6"></i>
-          </button>
-          <button type="button" onclick="coverflowNext()" class="absolute right-4 top-1/2 -translate-y-1/2 z-[50] w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 hover:scale-110 transition-all">
-            <i data-lucide="chevron-right" class="w-6 h-6"></i>
-          </button>
-        </div>
-
         <div class="flex items-center justify-between text-[11px] font-mono text-gray-500 pt-2 border-t border-white/5">
           <div class="flex items-center gap-2">
             <span>4 PILLARS</span><span>—</span><span>1 PROMISE</span><span>—</span><span class="text-gray-400">0 COMPROMISE</span>
@@ -866,22 +879,112 @@ console.log('ACF data loaded successfully');
         </div>
       </div>
     </section>
+<!-- ================= Section 5: Hero Pieces (Accordion) ================= -->
+    <section id="section-5" class="snap-section relative flex flex-col justify-center px-8 md:px-14 pt-20 overflow-hidden bg-[#06060a]">
+      <div class="absolute -left-32 top-1/3 w-[500px] h-[500px] bg-blue-600/10 rounded-full filter blur-[150px] pointer-events-none"></div>
+      <div class="absolute -right-32 bottom-10 w-[500px] h-[500px] bg-indigo-600/15 rounded-full filter blur-[150px] pointer-events-none"></div>
 
-    <!-- Section 5: Testimonials -->
-    <section id="section-5" class="snap-section relative flex flex-col justify-center items-center px-6 md:px-16 overflow-hidden bg-black">
+      <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col justify-between h-[82vh]">
+        <!-- 头部只保留标题与查看全部按钮 -->
+        <div class="flex items-end justify-between mb-4">
+          <div>
+            <h2 class="font-syne text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
+              {accordionTitle}
+            </h2>
+          </div>
+
+          <a href={accordionViewAllLink} class="flex items-center gap-2 text-xs font-mono text-blue-400 hover:text-blue-300 transition-colors uppercase tracking-wider px-4 py-2 rounded-full border border-blue-500/30 hover:border-blue-500/60 group">
+            <span>{accordionViewAllText}</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+          </a>
+        </div>
+
+        <!-- 动态渲染 6 个手风琴卡片 -->
+        <div class="accordion-group flex items-stretch gap-2.5 h-[62vh] my-auto py-2">
+          {accordionCards.map((card) => (
+            <div
+              class={`accordion-item relative rounded-2xl overflow-hidden cursor-pointer border transition-all bg-neutral-900 group ${
+                card.isDefaultActive ? 'active border-blue-500/40' : 'border-white/10'
+              }`}
+            >
+              <!-- 动态背景图 -->
+              <div
+                class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                style={`background-image: url('${card.image}');`}
+              ></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
+
+              <!-- 类别胶囊 Tag -->
+              {card.badge && (
+                <div class="absolute top-3.5 left-3.5 z-20">
+                  <span class="px-2.5 py-0.5 rounded-full bg-blue-600/90 text-white text-[9px] font-mono font-bold tracking-wider uppercase backdrop-blur-sm shadow">
+                    {card.badge}
+                  </span>
+                </div>
+              )}
+
+              <!-- 折叠状态下的垂直标题 -->
+              <div class="collapsed-title absolute inset-0 flex items-center justify-start pb-6 pl-5 z-10">
+                <span class="font-semibold text-xs tracking-wider text-gray-200 uppercase whitespace-nowrap">
+                  {card.title}
+                </span>
+              </div>
+
+              <!-- 展开状态下的详细内容与 ACF 链接 -->
+              <div class="expanded-content absolute inset-0 p-6 flex flex-col justify-end z-20">
+                <div>
+                  <span class="text-[10px] font-mono text-blue-400 tracking-wider uppercase block mb-1">
+                    {card.sku}
+                  </span>
+                  <h3 class="font-syne text-2xl md:text-3xl font-bold text-white mb-2">
+                    {card.title}
+                  </h3>
+                  <p class="text-xs text-gray-300 mb-3 max-w-sm leading-relaxed font-normal">
+                    {card.desc}
+                  </p>
+                  
+                  <div class="flex items-center gap-3 text-[10px] font-mono text-gray-400 mb-4">
+                    <span>{card.moq}</span>
+                    <span>·</span>
+                    <span>{card.leadTime}</span>
+                  </div>
+
+                  <a
+                    href={card.link}
+                    class="inline-flex items-center gap-2 text-xs font-mono uppercase text-blue-400 hover:text-blue-300 font-semibold group/btn"
+                  >
+                    <span>{card.linkText}</span>
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="flex items-center justify-between text-[11px] font-mono text-gray-500 pt-2 border-t border-white/5">
+          <div class="text-gray-400">PRECISION SELECTION</div>
+          <div class="text-blue-400/90">HOVER ANY PANEL TO EXPAND</div>
+        </div>
+      </div>
+    </section>
+    <!-- Section 6: Testimonials -->
+    <!-- Testimonials Section -->
+    <section id="section-6" class="snap-section relative flex flex-col justify-center items-center px-6 md:px-16 overflow-hidden bg-black">
       <div class="absolute inset-0 z-0 overflow-hidden">
-        <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-50">
+        <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-70 filter brightness-125 contrast-110">
           <source src={section5BackgroundVideo} type="video/mp4">
         </video>
-        <div class="absolute inset-0 bg-gradient-to-b from-black/85 via-transparent to-black/95 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50 pointer-events-none"></div>
+        <div class="absolute bottom-[-150px] left-1/2 -translate-x-1/2 w-[900px] h-[350px] bg-blue-500/15 rounded-full blur-[140px] pointer-events-none"></div>
       </div>
 
-      <div class="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center text-center">
+      <div class="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center text-center">
         <h2 class="font-syne text-3xl md:text-5xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-12 max-w-2xl" set:html={section5Title}>
         </h2>
 
-        <div class="w-full relative min-h-[290px] mb-8">
-          {/* 每 2 个评价为一组，动态生成 slide */}
+        <!-- 滑块视口容器 -->
+        <div class="testimonial-viewport w-full relative min-h-[320px] mb-8">
           {section5Testimonials.reduce((slides, testimonial, index) => {
             const slideIndex = Math.floor(index / 2);
             if (!slides[slideIndex]) {
@@ -895,22 +998,29 @@ console.log('ACF data loaded successfully');
               class={`testimonial-slide grid grid-cols-1 md:grid-cols-2 gap-6 w-full ${slideIndex === 0 ? 'active' : ''}`}
             >
               {slideTestimonials.map((testimonial) => (
-                <div class="bg-white rounded-3xl p-8 text-left shadow-2xl flex flex-col justify-between border border-white/20 transition-all">
-                  <div>
-                    <i data-lucide="quote" class="w-7 h-7 text-neutral-900 fill-neutral-900 mb-5"></i>
-                    <p class="text-neutral-600 text-xs md:text-[13px] leading-relaxed font-normal mb-8">
-                      {testimonial.quote}
+                <div class="dark-glass-card group relative p-8 md:p-9 text-left rounded-3xl border border-white/10 overflow-hidden flex flex-col justify-between">
+                  <div class="absolute inset-0 bg-gradient-to-br from-white/[0.07] via-white/[0.02] to-transparent pointer-events-none"></div>
+                  <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-500/20 transition-all duration-700"></div>
+
+                  <div class="relative z-10">
+                    <div class="w-10 h-10 rounded-2xl bg-blue-500/15 border border-blue-400/25 flex items-center justify-center text-blue-400 mb-6 shadow-[0_0_20px_rgba(59,130,246,0.15)] group-hover:scale-105 transition-transform duration-300">
+                      <i data-lucide="quote" class="w-4 h-4 fill-blue-400 text-blue-400"></i>
+                    </div>
+
+                    <p class="text-gray-300 text-sm md:text-[14px] leading-relaxed font-normal mb-8 line-clamp-4 group-hover:text-white transition-colors">
+                      "{testimonial.quote}"
                     </p>
                   </div>
-                  <div class="flex items-center gap-3 pt-2">
+
+                  <div class="relative z-10 flex items-center gap-3.5 pt-4 border-t border-white/[0.08]">
                     <img
                       src={testimonial.avatar}
                       alt={testimonial.name}
-                      class={`w-10 h-10 rounded-full object-cover ${testimonial.grayscale ? 'grayscale' : ''}`}
+                      class={`w-11 h-11 rounded-full object-cover ring-2 ring-white/15 ${testimonial.grayscale ? 'grayscale contrast-125' : ''}`}
                     />
                     <div>
-                      <h5 class="text-xs font-bold text-neutral-900 leading-tight">{testimonial.name}</h5>
-                      <span class="text-[11px] text-neutral-400 leading-none">{testimonial.title}</span>
+                      <h5 class="text-sm font-bold text-white tracking-wide leading-snug">{testimonial.name}</h5>
+                      <span class="text-xs text-gray-400 font-mono leading-none block mt-1">{testimonial.title}</span>
                     </div>
                   </div>
                 </div>
@@ -919,93 +1029,30 @@ console.log('ACF data loaded successfully');
           ))}
         </div>
 
-        <div class="flex items-center gap-3">
-          <button onclick="prevTestimonial()" class="w-11 h-11 rounded-full bg-white flex items-center justify-center text-neutral-900 hover:bg-blue-50 hover:text-blue-600 hover:scale-105 active:scale-95 shadow-lg transition-all duration-200">
+        <div class="flex items-center gap-4">
+          <button onclick="prevTestimonial()" class="w-11 h-11 rounded-full bg-white/90 hover:bg-white text-black flex items-center justify-center hover:scale-110 active:scale-95 shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all duration-200">
             <i data-lucide="chevron-left" class="w-5 h-5"></i>
           </button>
-          <button onclick="nextTestimonial()" class="w-11 h-11 rounded-full bg-white flex items-center justify-center text-neutral-900 hover:bg-blue-50 hover:text-blue-600 hover:scale-105 active:scale-95 shadow-lg transition-all duration-200">
+          <button onclick="nextTestimonial()" class="w-11 h-11 rounded-full bg-white/90 hover:bg-white text-black flex items-center justify-center hover:scale-110 active:scale-95 shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all duration-200">
             <i data-lucide="chevron-right" class="w-5 h-5"></i>
           </button>
         </div>
       </div>
     </section>
 
-    <!-- Section 6: Footer -->
-    <section id="section-6" class="snap-section relative flex flex-col justify-center px-10 md:px-24 lg:px-32 bg-[#0a0d14] text-gray-300 border-t border-white/5">
-      <div class="w-full max-w-7xl mx-auto py-12">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
-
-          <!-- PRODUCTS 列 -->
-          <div class="md:col-span-4 flex flex-col gap-3">
-            <h3 class="text-white font-bold text-sm tracking-widest uppercase mb-2">PRODUCTS</h3>
-            <ul class="flex flex-col gap-2.5 text-xs text-gray-400">
-              <li><a href="#" class="hover:text-blue-400 transition-colors">Turning Tools</a></li>
-              <li><a href="#" class="hover:text-blue-400 transition-colors">Milling Tools</a></li>
-              <li><a href="#" class="hover:text-blue-400 transition-colors">Drilling &amp; Boring Tools</a></li>
-              <li><a href="#" class="hover:text-blue-400 transition-colors">Fasteners &amp; tool accessories</a></li>
-              <li><a href="#" class="hover:text-blue-400 transition-colors">Threading &amp; Tapping Tools</a></li>
-              <li><a href="#" class="hover:text-blue-400 transition-colors">Measuring tools</a></li>
-              <li><a href="#" class="hover:text-blue-400 transition-colors">Machine Accessories &amp; Hardware</a></li>
-            </ul>
-          </div>
-
-          <!-- OUR COMPANY 列 -->
-          <div class="md:col-span-3 flex flex-col gap-3">
-            <h3 class="text-white font-bold text-sm tracking-widest uppercase mb-2">OUR COMPANY</h3>
-            <ul class="flex flex-col gap-2.5 text-xs text-gray-400">
-              <li><a href="#section-1" class="hover:text-blue-400 transition-colors">Home</a></li>
-              <li><a href="#" class="hover:text-blue-400 transition-colors">About Us</a></li>
-              <li><a href="#section-2" class="hover:text-blue-400 transition-colors">Products</a></li>
-              <li><a href="#" class="hover:text-blue-400 transition-colors">News</a></li>
-              <li><a href="#" class="hover:text-blue-400 transition-colors">FAQ</a></li>
-              <li><a href="#section-8" class="hover:text-blue-400 transition-colors">Contact</a></li>
-            </ul>
-          </div>
-
-          <!-- ADDRESS & CONTACT 列 -->
-          <div class="md:col-span-5 flex flex-col gap-6">
-            <div>
-              <h3 class="text-white font-bold text-sm tracking-widest uppercase mb-3">ADDRESS</h3>
-              <p class="text-xs text-gray-400 leading-relaxed max-w-md">
-                6th Floor, Building 1, Zhejiang Rongchang Tools Co., Ltd.,<br>
-                Qianyangxia Village, Wenqiao Town, Taizhou,<br>
-                Zhejiang Province, China
-              </p>
-            </div>
-
-            <div>
-              <h3 class="text-white font-bold text-sm tracking-widest uppercase mb-2">EMAIL</h3>
-              <a href="mailto:3430473065@qq.com" class="text-xs text-gray-400 hover:text-blue-400 transition-colors">3430473065@qq.com</a>
-            </div>
-
-            <div>
-              <h3 class="text-white font-bold text-sm tracking-widest uppercase mb-2">PHONE</h3>
-              <div class="flex flex-col gap-1 text-xs text-gray-400">
-                <a href="tel:+8618858079359" class="hover:text-blue-400 transition-colors">+86 18858079359</a>
-                <a href="tel:+8617681630603" class="hover:text-blue-400 transition-colors">+86 17681630603</a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="mt-14 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-gray-500 gap-4">
-          <div>© 2026 Zhejiang Rongchang Tools Co., Ltd. All rights reserved.</div>
-          <div class="flex items-center gap-6">
-            <a href="#" class="hover:text-gray-300 transition-colors">Privacy Policy</a>
-            <a href="#" class="hover:text-gray-300 transition-colors">Terms of Service</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </main>
+
+  <!-- Footer 独立在 snap-container 之外 -->
+  <Footer />
 
   <script is:inline>
     const container = document.getElementById('main-scroll');
     const sections = document.querySelectorAll('.snap-section');
     const dots = document.querySelectorAll('.dot-indicator');
     const pageNumber = document.getElementById('current-page');
+    const pageNumberContainer = document.querySelector('.fixed.top-7.right-8');
+    const dotsContainer = document.querySelector('.fixed.right-6.top-1\\/2');
+    const nextButton = document.querySelector('.fixed.bottom-8.right-8');
 
     function scrollToSection(index) {
       const target = document.getElementById(`section-${index}`);
@@ -1045,6 +1092,26 @@ console.log('ACF data loaded successfully');
     });
 
     sections.forEach(sec => observer.observe(sec));
+
+    // 监听滚动到底部时隐藏导航元素（监听 container 内的滚动）
+    container.addEventListener('scroll', () => {
+      const scrollTop = container.scrollTop;
+      const scrollHeight = container.scrollHeight;
+      const clientHeight = container.clientHeight;
+
+      // 当滚动到接近底部时（距离底部小于 100px）
+      if (scrollHeight - scrollTop - clientHeight < 100) {
+        // 隐藏导航元素
+        if (pageNumberContainer) pageNumberContainer.style.opacity = '0';
+        if (dotsContainer) dotsContainer.style.opacity = '0';
+        if (nextButton) nextButton.style.opacity = '0';
+      } else {
+        // 显示导航元素
+        if (pageNumberContainer) pageNumberContainer.style.opacity = '1';
+        if (dotsContainer) dotsContainer.style.opacity = '1';
+        if (nextButton) nextButton.style.opacity = '1';
+      }
+    });
 
     // Section 3: Hero Tab 切换逻辑
     const heroTabs = [
@@ -1169,24 +1236,42 @@ console.log('ACF data loaded successfully');
       document.getElementById('testi-slide-1')
     ];
 
-    function showTestimonialSlide(index) {
+    function showTestimonialSlide(index, direction = 'next') {
       testiSlides.forEach((slide, i) => {
         if (i === index) {
+          // 新进入的 slide
+          slide.style.transform = direction === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
+          slide.style.opacity = '0';
           slide.classList.add('active');
-        } else {
-          slide.classList.remove('active');
+
+          // 使用 requestAnimationFrame 确保动画流畅
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              slide.style.transform = 'translateX(0)';
+              slide.style.opacity = '1';
+            });
+          });
+        } else if (slide.classList.contains('active')) {
+          // 正在退出的 slide
+          slide.style.transform = direction === 'next' ? 'translateX(-100%)' : 'translateX(100%)';
+          slide.style.opacity = '0';
+
+          // 动画结束后移除 active
+          setTimeout(() => {
+            slide.classList.remove('active');
+          }, 600); // 与 CSS transition 时间一致
         }
       });
     }
 
     function prevTestimonial() {
       currentTestiSlide = (currentTestiSlide - 1 + testiSlides.length) % testiSlides.length;
-      showTestimonialSlide(currentTestiSlide);
+      showTestimonialSlide(currentTestiSlide, 'prev');
     }
 
     function nextTestimonial() {
       currentTestiSlide = (currentTestiSlide + 1) % testiSlides.length;
-      showTestimonialSlide(currentTestiSlide);
+      showTestimonialSlide(currentTestiSlide, 'next');
     }
 
     window.scrollToSection = scrollToSection;
@@ -1552,5 +1637,44 @@ console.log('ACF data loaded successfully');
 
       console.log('GSAP animations setup complete');
     });
+    const accordionGroup = document.querySelector('.accordion-group');
+const defaultActiveItem = document.querySelector('.accordion-item.active');
+
+if (accordionGroup) {
+  accordionGroup.addEventListener('mouseleave', () => {
+    const items = document.querySelectorAll('.accordion-item');
+    items.forEach(i => i.classList.remove('active'));
+    if (defaultActiveItem) {
+      defaultActiveItem.classList.add('active');
+    }
+  });
+
+  const items = document.querySelectorAll('.accordion-item');
+  items.forEach(item => {
+    item.addEventListener('mouseenter', () => {
+      items.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+}
   </script>
+
+  <style>
+    /* 首页专用：恢复 snap 滚动体验 */
+    #main-scroll {
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      height: 100vh;
+      scrollbar-width: none;
+    }
+
+    #main-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Footer 独立在外，在 snap-container 滚动到底部后才显示 */
+    footer {
+      scroll-snap-align: none;
+    }
+  </style>
 </MainLayout>

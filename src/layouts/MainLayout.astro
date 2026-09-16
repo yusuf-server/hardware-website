@@ -6,9 +6,10 @@ import FloatingContact from '@/components/FloatingContact.astro';
 interface Props {
   title: string;
   description?: string;
+  hideFooter?: boolean; // 新增：允许隐藏 Footer
 }
 
-const { title, description = '五金工具专业制造商' } = Astro.props;
+const { title, description = '五金工具专业制造商', hideFooter = false } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -23,7 +24,7 @@ const { title, description = '五金工具专业制造商' } = Astro.props;
 <body class="overflow-x-hidden bg-[#06080d] text-white select-none">
   <Header />
   <slot />
-  <!-- <Footer /> -->
+  {!hideFooter && <Footer />}
   <FloatingContact />
   <script is:inline>
     document.addEventListener('DOMContentLoaded', () => {
@@ -455,9 +456,9 @@ const { title, description = '五金工具专业制造商' } = Astro.props;
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    color: #ffffff;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    color: #1f2937;
     font-weight: 600;
     font-size: 15px;
     text-decoration: none;
@@ -466,14 +467,14 @@ const { title, description = '五金工具专业制造商' } = Astro.props;
 
   .subnav .erji > a:hover,
   .subnav .erji > a.cur {
-    background: rgba(59, 130, 246, 0.15);
-    color: #60a5fa;
+    background: #dbeafe;
+    color: #2563eb;
     border-left: 3px solid #3b82f6;
   }
 
   .subnav .erji > ul {
     display: none;
-    background: rgba(0, 0, 0, 0.2);
+    background: #ffffff;
   }
 
   .subnav .sanji > a {
@@ -481,48 +482,48 @@ const { title, description = '五金工具专业制造商' } = Astro.props;
     align-items: center;
     justify-content: space-between;
     padding: 12px 20px 12px 35px;
-    color: rgba(255, 255, 255, 0.7);
+    color: #6b7280;
     font-weight: 500;
     font-size: 14px;
     text-decoration: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid #f3f4f6;
     transition: all 0.3s ease;
   }
 
   .subnav .sanji > a:hover,
   .subnav .sanji > a.cur {
-    background: rgba(59, 130, 246, 0.1);
-    color: #60a5fa;
+    background: #eff6ff;
+    color: #2563eb;
     padding-left: 40px;
   }
 
   .subnav .sanji > ul {
     display: none;
-    background: rgba(0, 0, 0, 0.3);
+    background: #fafafa;
   }
 
   .subnav .siji > a {
     display: block;
     padding: 10px 20px 10px 50px;
-    color: rgba(255, 255, 255, 0.6);
+    color: #9ca3af;
     font-weight: 400;
     font-size: 13px;
     text-decoration: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid #f9fafb;
     transition: all 0.3s ease;
   }
 
   .subnav .siji > a:hover,
   .subnav .siji > a.cur {
-    background: rgba(59, 130, 246, 0.08);
-    color: #60a5fa;
+    background: #f0f9ff;
+    color: #2563eb;
     padding-left: 55px;
   }
 
   .subnav .siji > a::before {
     content: "•";
     margin-right: 8px;
-    color: rgba(59, 130, 246, 0.5);
+    color: #93c5fd;
   }
 
   /* Product Detail Page - Title Styles */
@@ -546,5 +547,95 @@ const { title, description = '五金工具专业制造商' } = Astro.props;
     margin-right: 12px;
     vertical-align: middle;
     border-radius: 2px;
+  }
+  .accordion-item {
+  flex: 1;
+  min-width: 60px;
+  transition: flex 0.65s cubic-bezier(0.25, 1, 0.2, 1), transform 0.4s ease, border-color 0.4s ease;
+  will-change: flex;
+}
+.accordion-item.active,
+.accordion-item:hover {
+  flex: 5.5;
+}
+.accordion-group:hover .accordion-item:not(:hover) {
+  flex: 1;
+}
+.accordion-item .expanded-content {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.accordion-item.active .expanded-content,
+.accordion-item:hover .expanded-content {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition-delay: 0.15s;
+}
+.accordion-item .collapsed-title {
+  opacity: 1;
+  transition: opacity 0.25s ease;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.accordion-item.active .collapsed-title,
+.accordion-item:hover .collapsed-title {
+  opacity: 0;
+  pointer-events: none;
+}
+/* 容器采用 grid 叠层，所有幻灯片天然重合，避免绝对定位脱标高度坍塌 */
+  .testimonial-viewport {
+    display: grid;
+    grid-template-areas: "slide";
+    align-items: center;
+    overflow: hidden; /* 防止滑动时内容溢出 */
+  }
+
+  /* 默认隐藏态：完全透明，初始位置由 JS 控制 */
+  .testimonial-slide {
+    grid-area: slide;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(0);
+    transition:
+      opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+      visibility 0s 0.6s;
+    pointer-events: none;
+  }
+
+  /* 激活态：平滑滑入、淡入 */
+  .testimonial-slide.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    pointer-events: auto;
+    transition:
+      opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+      visibility 0s 0s;
+  }
+
+  /* 深色微透磨砂玻璃卡片 */
+  .dark-glass-card {
+    background: rgba(18, 22, 31, 0.45);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    box-shadow: 
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.12),
+      0 20px 40px -15px rgba(0, 0, 0, 0.7);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dark-glass-card:hover {
+    border-color: rgba(96, 165, 250, 0.35);
+    background: rgba(22, 28, 40, 0.65);
+    box-shadow: 
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
+      0 25px 50px -12px rgba(0, 0, 0, 0.85),
+      0 0 30px rgba(59, 130, 246, 0.12);
+    transform: translateY(-4px);
   }
 </style>
