@@ -1,16 +1,48 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
+import { getPageById } from '@/lib/wordpress';
+
+// 直接通过 ID 获取 About 页面的 ACF 数据
+let pageData = null;
+try {
+  pageData = await getPageById(45697);
+} catch (e) {
+  console.error('Error fetching about page:', e);
+}
+
+const acf = pageData?.acf || {};
+
+// 处理图片 - 如果是 ID，获取 URL
+let heroImage = 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=2000&q=80';
+if (acf.hero_image) {
+  if (typeof acf.hero_image === 'string') {
+    heroImage = acf.hero_image;
+  } else if (typeof acf.hero_image === 'number') {
+    // 如果是 ID，需要从 WordPress 获取图片 URL
+    try {
+      const mediaResponse = await fetch(`https://darkgrey-woodcock-712173.hostingersite.com/wp-json/wp/v2/media/${acf.hero_image}`);
+      if (mediaResponse.ok) {
+        const mediaData = await mediaResponse.json();
+        heroImage = mediaData.source_url || heroImage;
+      }
+    } catch (e) {
+      console.error('Error fetching hero image:', e);
+    }
+  } else if (acf.hero_image.url) {
+    heroImage = acf.hero_image.url;
+  }
+}
 ---
 
 <MainLayout title="About Us - LUMENLAB">
 
   <!-- Hero Banner -->
   <div class="nybanner relative h-[400px] md:h-[500px] overflow-hidden">
-    <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=2000&q=80" class="absolute inset-0 w-full h-full object-cover" alt="About Us">
+    <img src={heroImage} class="absolute inset-0 w-full h-full object-cover" alt="About Us">
     <div class="absolute inset-0 bg-black/50"></div>
     <div class="container max-w-7xl mx-auto px-8 md:px-16 relative z-10 h-full flex items-center">
       <div class="title">
-        <h3 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white" style="font-weight: 900;">About Us</h3>
+        <h3 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white" style="font-weight: 900;">{acf.hero_title || "About Us"}</h3>
       </div>
     </div>
   </div>
@@ -52,16 +84,22 @@ import MainLayout from '@/layouts/MainLayout.astro';
         <!-- Left: Content -->
         <div class="left flex-1 max-w-3xl">
           <div class="title mb-10">
-            <h3 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-3" style="font-weight: 900;">Company Profile</h3>
+            <h3 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-3" style="font-weight: 900;">{acf.intro_title || "Company Profile"}</h3>
             <span class="text-sm text-blue-400 uppercase tracking-widest" style="font-weight: 600;">Company Introduction</span>
           </div>
 
           <div class="con space-y-6 text-gray-700 text-base md:text-lg leading-relaxed" style="font-weight: 400;">
-            <p>Founded in 1996, our company is a high-tech enterprise specializing in the research, development, production and sales of carbide products and CNC cutting tools. We successfully listed on the Science and Technology Innovation Board of the Shanghai Stock Exchange on December 10, 2020, becoming the first listed company focused on carbide cutting tools.</p>
+            {acf.intro_content ? (
+              <div class="prose prose-lg max-w-none" set:html={acf.intro_content} />
+            ) : (
+              <>
+                <p>Founded in 1996, our company is a high-tech enterprise specializing in the research, development, production and sales of carbide products and CNC cutting tools. We successfully listed on the Science and Technology Innovation Board of the Shanghai Stock Exchange on December 10, 2020, becoming the first listed company focused on carbide cutting tools.</p>
 
-            <p>Our carbide saw blade products rank among the top in China and have been awarded the title of "National Manufacturing Champion Product". Our CNC inserts production scale ranks in the top three in China. Through years of technical exploration, we have mastered the complete industrial chain technology from carbide manufacturing to CNC tool production.</p>
+                <p>Our carbide saw blade products rank among the top in China and have been awarded the title of "National Manufacturing Champion Product". Our CNC inserts production scale ranks in the top three in China. Through years of technical exploration, we have mastered the complete industrial chain technology from carbide manufacturing to CNC tool production.</p>
 
-            <p>The company has established a complete R&D system with independent intellectual property rights, possessing multiple patents and proprietary technologies. We are committed to providing global customers with high-quality cutting tool solutions and continuously driving innovation in precision manufacturing.</p>
+                <p>The company has established a complete R&D system with independent intellectual property rights, possessing multiple patents and proprietary technologies. We are committed to providing global customers with high-quality cutting tool solutions and continuously driving innovation in precision manufacturing.</p>
+              </>
+            )}
           </div>
         </div>
 
@@ -75,7 +113,7 @@ import MainLayout from '@/layouts/MainLayout.astro';
               <div class="item">
                 <div class="indc text-gray-600 text-sm mb-2 uppercase tracking-wider" style="font-weight: 500;">Employees</div>
                 <div class="numU flex items-baseline gap-1">
-                  <span class="numCX text-4xl font-bold text-gray-900" style="font-weight: 900;">1300</span>
+                  <span class="numCX text-4xl font-bold text-gray-900" style="font-weight: 900;">{acf.stats?.employees || 1300}</span>
                   <span class="numC text-xl text-blue-400" style="font-weight: 600;">+</span>
                 </div>
               </div>
@@ -88,7 +126,7 @@ import MainLayout from '@/layouts/MainLayout.astro';
               <div class="item">
                 <div class="indc text-gray-600 text-sm mb-2 uppercase tracking-wider" style="font-weight: 500;">Registered Capital</div>
                 <div class="numU flex items-baseline gap-1">
-                  <span class="numCX text-4xl font-bold text-gray-900" style="font-weight: 900;">158</span>
+                  <span class="numCX text-4xl font-bold text-gray-900" style="font-weight: 900;">{acf.stats?.capital || 158}</span>
                   <span class="numC text-lg text-gray-600" style="font-weight: 500;">Million</span>
                 </div>
               </div>
@@ -101,7 +139,7 @@ import MainLayout from '@/layouts/MainLayout.astro';
               <div class="item">
                 <div class="indc text-gray-600 text-sm mb-2 uppercase tracking-wider" style="font-weight: 500;">Authorized Patents</div>
                 <div class="numU flex items-baseline gap-1">
-                  <span class="numCX text-4xl font-bold text-gray-900" style="font-weight: 900;">243</span>
+                  <span class="numCX text-4xl font-bold text-gray-900" style="font-weight: 900;">{acf.stats?.patents || 243}</span>
                   <span class="numC text-lg text-gray-600" style="font-weight: 500;">Items</span>
                 </div>
               </div>
@@ -120,72 +158,92 @@ import MainLayout from '@/layouts/MainLayout.astro';
 
     <div class="container max-w-7xl mx-auto relative z-10 px-8 md:px-16">
       <div class="title text-center mb-16">
-        <h3 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-3" style="font-weight: 900;">Corporate Culture</h3>
+        <h3 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-3" style="font-weight: 900;">{acf.culture_title || "Corporate Culture"}</h3>
         <span class="text-sm text-blue-400 uppercase tracking-widest" style="font-weight: 600;">corporate culture</span>
       </div>
 
       <div class="content">
         <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-          <li class="group">
-            <div class="h-full p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-50 border border-gray-200 hover:border-blue-400 hover:from-blue-50 hover:to-blue-50 transition-all duration-300 text-center backdrop-blur-sm">
-              <div class="icon w-20 h-20 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition-all">
-                <i data-lucide="eye" class="w-10 h-10 text-blue-400"></i>
-              </div>
-              <div class="text">
-                <h4 class="text-xl font-bold text-gray-900 mb-4" style="font-weight: 700;">Corporate Vision</h4>
-                <p class="text-gray-600 text-sm leading-relaxed" style="font-weight: 400;">
-                  Build a world-class brand with innovative tools<br>
-                  Provide cutting solutions for global manufacturing
-                </p>
-              </div>
-            </div>
-          </li>
+          {acf.culture_cards && acf.culture_cards.length > 0 ? (
+            acf.culture_cards.map((card: any) => (
+              <li class="group">
+                <div class="h-full p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-50 border border-gray-200 hover:border-blue-400 hover:from-blue-50 hover:to-blue-50 transition-all duration-300 text-center backdrop-blur-sm">
+                  <div class="icon w-20 h-20 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition-all">
+                    <i data-lucide={card.icon || "check-circle"} class="w-10 h-10 text-blue-400"></i>
+                  </div>
+                  <div class="text">
+                    <h4 class="text-xl font-bold text-gray-900 mb-4" style="font-weight: 700;">{card.title}</h4>
+                    <p class="text-gray-600 text-sm leading-relaxed whitespace-pre-line" style="font-weight: 400;">
+                      {card.description}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            ))
+          ) : (
+            <>
+              <li class="group">
+                <div class="h-full p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-50 border border-gray-200 hover:border-blue-400 hover:from-blue-50 hover:to-blue-50 transition-all duration-300 text-center backdrop-blur-sm">
+                  <div class="icon w-20 h-20 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition-all">
+                    <i data-lucide="eye" class="w-10 h-10 text-blue-400"></i>
+                  </div>
+                  <div class="text">
+                    <h4 class="text-xl font-bold text-gray-900 mb-4" style="font-weight: 700;">Corporate Vision</h4>
+                    <p class="text-gray-600 text-sm leading-relaxed" style="font-weight: 400;">
+                      Build a world-class brand with innovative tools<br>
+                      Provide cutting solutions for global manufacturing
+                    </p>
+                  </div>
+                </div>
+              </li>
 
-          <li class="group">
-            <div class="h-full p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-50 border border-gray-200 hover:border-blue-400 hover:from-blue-50 hover:to-blue-50 transition-all duration-300 text-center backdrop-blur-sm">
-              <div class="icon w-20 h-20 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition-all">
-                <i data-lucide="target" class="w-10 h-10 text-blue-400"></i>
-              </div>
-              <div class="text">
-                <h4 class="text-xl font-bold text-gray-900 mb-4" style="font-weight: 700;">Corporate Mission</h4>
-                <p class="text-gray-600 text-sm leading-relaxed" style="font-weight: 400;">
-                  Innovate cutting tool technology for value creation<br>
-                  Serve customers with excellence and professionalism
-                </p>
-              </div>
-            </div>
-          </li>
+              <li class="group">
+                <div class="h-full p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-50 border border-gray-200 hover:border-blue-400 hover:from-blue-50 hover:to-blue-50 transition-all duration-300 text-center backdrop-blur-sm">
+                  <div class="icon w-20 h-20 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition-all">
+                    <i data-lucide="target" class="w-10 h-10 text-blue-400"></i>
+                  </div>
+                  <div class="text">
+                    <h4 class="text-xl font-bold text-gray-900 mb-4" style="font-weight: 700;">Corporate Mission</h4>
+                    <p class="text-gray-600 text-sm leading-relaxed" style="font-weight: 400;">
+                      Innovate cutting tool technology for value creation<br>
+                      Serve customers with excellence and professionalism
+                    </p>
+                  </div>
+                </div>
+              </li>
 
-          <li class="group">
-            <div class="h-full p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-50 border border-gray-200 hover:border-blue-400 hover:from-blue-50 hover:to-blue-50 transition-all duration-300 text-center backdrop-blur-sm">
-              <div class="icon w-20 h-20 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition-all">
-                <i data-lucide="compass" class="w-10 h-10 text-blue-400"></i>
-              </div>
-              <div class="text">
-                <h4 class="text-xl font-bold text-gray-900 mb-4" style="font-weight: 700;">Core Values</h4>
-                <p class="text-gray-600 text-sm leading-relaxed" style="font-weight: 400;">
-                  Innovation-driven, Quality-focused<br>
-                  Customer-centric, Integrity-based
-                </p>
-              </div>
-            </div>
-          </li>
+              <li class="group">
+                <div class="h-full p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-50 border border-gray-200 hover:border-blue-400 hover:from-blue-50 hover:to-blue-50 transition-all duration-300 text-center backdrop-blur-sm">
+                  <div class="icon w-20 h-20 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition-all">
+                    <i data-lucide="compass" class="w-10 h-10 text-blue-400"></i>
+                  </div>
+                  <div class="text">
+                    <h4 class="text-xl font-bold text-gray-900 mb-4" style="font-weight: 700;">Core Values</h4>
+                    <p class="text-gray-600 text-sm leading-relaxed" style="font-weight: 400;">
+                      Innovation-driven, Quality-focused<br>
+                      Customer-centric, Integrity-based
+                    </p>
+                  </div>
+                </div>
+              </li>
 
-          <li class="group">
-            <div class="h-full p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-50 border border-gray-200 hover:border-blue-400 hover:from-blue-50 hover:to-blue-50 transition-all duration-300 text-center backdrop-blur-sm">
-              <div class="icon w-20 h-20 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition-all">
-                <i data-lucide="users" class="w-10 h-10 text-blue-400"></i>
-              </div>
-              <div class="text">
-                <h4 class="text-xl font-bold text-gray-900 mb-4" style="font-weight: 700;">Talent Philosophy</h4>
-                <p class="text-gray-600 text-sm leading-relaxed" style="font-weight: 400;">
-                  Respect talent, Cultivate expertise<br>
-                  Create opportunities for growth and success
-                </p>
-              </div>
-            </div>
-          </li>
+              <li class="group">
+                <div class="h-full p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-50 border border-gray-200 hover:border-blue-400 hover:from-blue-50 hover:to-blue-50 transition-all duration-300 text-center backdrop-blur-sm">
+                  <div class="icon w-20 h-20 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition-all">
+                    <i data-lucide="users" class="w-10 h-10 text-blue-400"></i>
+                  </div>
+                  <div class="text">
+                    <h4 class="text-xl font-bold text-gray-900 mb-4" style="font-weight: 700;">Talent Philosophy</h4>
+                    <p class="text-gray-600 text-sm leading-relaxed" style="font-weight: 400;">
+                      Respect talent, Cultivate expertise<br>
+                      Create opportunities for growth and success
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </>
+          )}
 
         </ul>
       </div>
@@ -199,7 +257,7 @@ import MainLayout from '@/layouts/MainLayout.astro';
 
     <div class="container max-w-7xl mx-auto relative z-10 px-8 md:px-16">
       <div class="title text-center mb-20">
-        <h3 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-3" style="font-weight: 900;">Development History</h3>
+        <h3 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-3" style="font-weight: 900;">{acf.timeline_title || "Development History"}</h3>
         <span class="text-sm text-blue-400 uppercase tracking-widest" style="font-weight: 600;">development history</span>
       </div>
 

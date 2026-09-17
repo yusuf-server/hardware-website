@@ -22,11 +22,8 @@ try {
 
 <!-- Header -->
 <header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 py-5 backdrop-blur-md bg-[#06080d]/70 border-b border-white/10">
-  <a href="/" class="flex items-center gap-2 text-xl tracking-wider" style="font-weight: 700;">
-    <div class="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
-      <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
-    </div>
-    <span class="tracking-widest font-syne text-lg text-white" style="font-weight: 700;">LUMENLAB</span>
+  <a href="/" class="flex items-center">
+    <img src="https://darkgrey-woodcock-712173.hostingersite.com/wp-content/uploads/2026/09/1-1.png" alt="Logo" class="h-12 w-auto" />
   </a>
 
   <nav class="hidden md:flex items-center gap-8 text-sm text-gray-400" style="font-weight: 400;">
@@ -41,21 +38,21 @@ try {
       </a>
 
       {productCategories.length > 0 && (
-        <div class="absolute top-full left-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+        <div class="absolute top-full left-0 mt-2 w-56 backdrop-blur-md bg-[#06080d]/90 rounded-lg shadow-xl border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
           <div class="py-2">
             {productCategories.map((category) => (
               <a
                 href={`/products#category-${category.id}`}
-                class="block px-4 py-2.5 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors text-sm"
+                class="block px-4 py-2.5 text-gray-300 hover:bg-white/5 hover:text-white transition-colors text-sm"
                 style="font-weight: 400;"
               >
                 {category.name}
               </a>
             ))}
-            <div class="border-t border-gray-200 mt-2 pt-2">
+            <div class="border-t border-white/10 mt-2 pt-2">
               <a
                 href="/products"
-                class="block px-4 py-2.5 text-blue-600 hover:bg-blue-50 transition-colors text-sm font-medium"
+                class="block px-4 py-2.5 text-blue-400 hover:bg-white/5 hover:text-blue-300 transition-colors text-sm font-medium"
                 style="font-weight: 500;"
               >
                 View All Products →
@@ -74,21 +71,21 @@ try {
       </a>
 
       {applicationCategories.length > 0 && (
-        <div class="absolute top-full left-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+        <div class="absolute top-full left-0 mt-2 w-56 backdrop-blur-md bg-[#06080d]/90 rounded-lg shadow-xl border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
           <div class="py-2">
             {applicationCategories.map((category) => (
               <a
                 href={`/applications#category-${category.id}`}
-                class="block px-4 py-2.5 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors text-sm"
+                class="block px-4 py-2.5 text-gray-300 hover:bg-white/5 hover:text-white transition-colors text-sm"
                 style="font-weight: 400;"
               >
                 {category.name}
               </a>
             ))}
-            <div class="border-t border-gray-200 mt-2 pt-2">
+            <div class="border-t border-white/10 mt-2 pt-2">
               <a
                 href="/applications"
-                class="block px-4 py-2.5 text-blue-600 hover:bg-blue-50 transition-colors text-sm font-medium"
+                class="block px-4 py-2.5 text-blue-400 hover:bg-white/5 hover:text-blue-300 transition-colors text-sm font-medium"
                 style="font-weight: 500;"
               >
                 View All Applications →

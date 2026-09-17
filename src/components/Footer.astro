@@ -1,4 +1,23 @@
 ---
+import { getProductCategories, getApplicationCategories } from '@/lib/wordpress';
+
+// 获取产品分类（只获取一级分类）
+let productCategories = [];
+try {
+  const allCategories = await getProductCategories();
+  productCategories = allCategories.filter(cat => cat.parent === 0).slice(0, 6);
+} catch (e) {
+  console.error('Error fetching product categories for footer:', e);
+}
+
+// 获取应用领域分类（只获取一级分类）
+let applicationCategories = [];
+try {
+  const allCategories = await getApplicationCategories();
+  applicationCategories = allCategories.filter(cat => cat.parent === 0).slice(0, 6);
+} catch (e) {
+  console.error('Error fetching application categories for footer:', e);
+}
 ---
 
 <!-- Footer -->
@@ -10,25 +29,39 @@
       <div class="md:col-span-4 flex flex-col gap-3">
         <h3 class="text-white font-bold text-sm tracking-widest uppercase mb-2">PRODUCTS</h3>
         <ul class="flex flex-col gap-2.5 text-xs text-gray-400">
-          <li><a href="/products/turning-inserts" class="hover:text-blue-400 transition-colors">ISO Turning Inserts</a></li>
-          <li><a href="/products/milling-inserts" class="hover:text-blue-400 transition-colors">Milling Inserts</a></li>
-          <li><a href="/products/drilling-inserts" class="hover:text-blue-400 transition-colors">Drilling Inserts</a></li>
-          <li><a href="/products/milling-cutters" class="hover:text-blue-400 transition-colors">Milling Cutters</a></li>
-          <li><a href="/products/end-mills" class="hover:text-blue-400 transition-colors">Solid Carbide End Mills</a></li>
-          <li><a href="/products/turning-holders" class="hover:text-blue-400 transition-colors">Tool Holders</a></li>
+          {productCategories.length > 0 ? (
+            productCategories.map((category) => (
+              <li>
+                <a href={`/products#category-${category.id}`} class="hover:text-blue-400 transition-colors">
+                  {category.name}
+                </a>
+              </li>
+            ))
+          ) : (
+            <>
+              <li><a href="/products" class="hover:text-blue-400 transition-colors">View All Products</a></li>
+            </>
+          )}
         </ul>
       </div>
 
-      <!-- OUR COMPANY 列 -->
+      <!-- APPLICATIONS 列 -->
       <div class="md:col-span-3 flex flex-col gap-3">
-        <h3 class="text-white font-bold text-sm tracking-widest uppercase mb-2">OUR COMPANY</h3>
+        <h3 class="text-white font-bold text-sm tracking-widest uppercase mb-2">APPLICATIONS</h3>
         <ul class="flex flex-col gap-2.5 text-xs text-gray-400">
-          <li><a href="/" class="hover:text-blue-400 transition-colors">Home</a></li>
-          <li><a href="/about" class="hover:text-blue-400 transition-colors">About Us</a></li>
-          <li><a href="/products" class="hover:text-blue-400 transition-colors">Products</a></li>
-          <li><a href="/applications" class="hover:text-blue-400 transition-colors">Applications</a></li>
-          <li><a href="/news" class="hover:text-blue-400 transition-colors">News</a></li>
-          <li><a href="/contact" class="hover:text-blue-400 transition-colors">Contact</a></li>
+          {applicationCategories.length > 0 ? (
+            applicationCategories.map((category) => (
+              <li>
+                <a href={`/applications#category-${category.id}`} class="hover:text-blue-400 transition-colors">
+                  {category.name}
+                </a>
+              </li>
+            ))
+          ) : (
+            <>
+              <li><a href="/applications" class="hover:text-blue-400 transition-colors">View All Applications</a></li>
+            </>
+          )}
         </ul>
       </div>
 

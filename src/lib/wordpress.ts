@@ -226,11 +226,6 @@ export async function getPages(): Promise<WPPage[]> {
   return fetchAPI('/pages');
 }
 
-export async function getPageBySlug(slug: string): Promise<WPPage> {
-  const pages = await fetchAPI('/pages', { slug });
-  return pages[0];
-}
-
 export async function getHomePage(): Promise<WordPressPageWithACF | null> {
   try {
     console.log('Fetching homepage from WordPress API...');
@@ -539,6 +534,56 @@ export async function getApplicationCategoryById(id: number): Promise<WPApplicat
     return category || null;
   } catch (error) {
     console.error('Error fetching application category by id:', error);
+    return null;
+  }
+}
+
+// ==================== 页面接口 ====================
+
+// 根据 slug 获取页面（通用方法）
+export async function getPageBySlug(slug: string): Promise<WordPressPageWithACF | null> {
+  try {
+    console.log(`Fetching page by slug: ${slug}`);
+    const pages = await fetchAPI('/pages', {
+      slug,
+    });
+
+    if (!pages || pages.length === 0) {
+      console.warn(`Page with slug "${slug}" not found`);
+      return null;
+    }
+
+    const page = pages[0];
+
+    if (!page.acf) {
+      console.warn(`Warning: No ACF data found for page "${slug}"`);
+    }
+
+    return page;
+  } catch (error) {
+    console.error(`Error fetching page by slug "${slug}":`, error);
+    return null;
+  }
+}
+
+// 根据 ID 获取页面
+export async function getPageById(id: number): Promise<WordPressPageWithACF | null> {
+  try {
+    console.log(`Fetching page by ID: ${id}`);
+    const page = await fetchAPI(`/pages/${id}`);
+
+    if (!page) {
+      console.warn(`Page with ID "${id}" not found`);
+      return null;
+    }
+
+    if (!page.acf) {
+      console.warn(`Warning: No ACF data found for page ID "${id}"`);
+    }
+
+    return page;
+  } catch (error) {
+    console.error(`Error fetching page by ID "${id}":`, error);
     return null;
   }
 }

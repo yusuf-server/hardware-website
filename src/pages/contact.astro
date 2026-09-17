@@ -1,5 +1,36 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
+import { getPageById } from '@/lib/wordpress';
+
+// 直接通过 ID 获取 Contact 页面的 ACF 数据
+let pageData = null;
+try {
+  pageData = await getPageById(45699);
+} catch (e) {
+  console.error('Error fetching contact page:', e);
+}
+
+const acf = pageData?.acf || {};
+
+// 处理图片 - 如果是 ID，获取 URL
+let heroImage = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80';
+if (acf.hero_image) {
+  if (typeof acf.hero_image === 'string') {
+    heroImage = acf.hero_image;
+  } else if (typeof acf.hero_image === 'number') {
+    try {
+      const mediaResponse = await fetch(`https://darkgrey-woodcock-712173.hostingersite.com/wp-json/wp/v2/media/${acf.hero_image}`);
+      if (mediaResponse.ok) {
+        const mediaData = await mediaResponse.json();
+        heroImage = mediaData.source_url || heroImage;
+      }
+    } catch (e) {
+      console.error('Error fetching hero image:', e);
+    }
+  } else if (acf.hero_image.url) {
+    heroImage = acf.hero_image.url;
+  }
+}
 ---
 
 <MainLayout title="Contact Us - LUMENLAB">
@@ -7,12 +38,12 @@ import MainLayout from '@/layouts/MainLayout.astro';
   <!-- Hero Banner -->
   <div class="nyBanner relative h-[250px] md:h-[300px] overflow-hidden">
     <div class="img">
-      <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Contact">
+      <img src={heroImage} class="absolute inset-0 w-full h-full object-cover" alt="Contact">
     </div>
     <div class="desc absolute inset-0 bg-black/40">
       <div class="w1520 container max-w-7xl mx-auto px-8 md:px-16 h-full flex flex-col justify-center">
-        <div class="atit text-4xl md:text-5xl font-extrabold text-white mb-2" style="font-weight: 900;">Contact Us</div>
-        <div class="btit text-xl md:text-2xl text-blue-400 font-medium" style="font-weight: 600;">Contact</div>
+        <div class="atit text-4xl md:text-5xl font-extrabold text-white mb-2" style="font-weight: 900;">{acf.hero_title || "Contact Us"}</div>
+        <div class="btit text-xl md:text-2xl text-blue-400 font-medium" style="font-weight: 600;">{acf.hero_subtitle || "Contact"}</div>
       </div>
     </div>
   </div>
@@ -36,63 +67,116 @@ import MainLayout from '@/layouts/MainLayout.astro';
   <!-- Contact Info Section -->
   <div class="py-8 lg:py-14 bg-white" id="contact1">
     <div class="w1520 container max-w-7xl mx-auto px-8 md:px-16">
-      <strong class="block text-2xl lg:text-4xl font-normal text-gray-900 mb-1" style="font-weight: 700;">We Look Forward To Hearing From You</strong>
-      <p class="text-gray-600 mb-8" style="font-weight: 400;">We will provide you with professional solutions. You can contact us by phone, chat, email, etc.</p>
+      <strong class="block text-2xl lg:text-4xl font-normal text-gray-900 mb-1" style="font-weight: 700;">{acf.intro_title || "We Look Forward To Hearing From You"}</strong>
+      <p class="text-gray-600 mb-8" style="font-weight: 400;">{acf.intro_text || "We will provide you with professional solutions. You can contact us by phone, chat, email, etc."}</p>
 
       <div class="grid lg:grid-cols-12 gap-4 lg:gap-6 mb-6">
         <!-- Left: Contact Info -->
         <div class="lg:col-span-4">
           <div class="bg-gradient-to-br from-white/5 to-white/2 border border-gray-200 rounded-2xl p-8 lg:p-12 backdrop-blur-sm">
-            <strong class="block text-3xl font-normal text-gray-900 mb-6" style="font-weight: 700;">LUMENLAB Inc.</strong>
+            <strong class="block text-3xl font-normal text-gray-900 mb-6" style="font-weight: 700;">{acf.company_name || "LUMENLAB Inc."}</strong>
 
             <div class="contact-info space-y-6">
-              <dl class="flex gap-4">
-                <dt class="flex-shrink-0">
-                  <div class="icon w-10 h-10 flex items-center justify-center">
-                    <i data-lucide="smartphone" class="w-6 h-6 text-blue-400"></i>
-                  </div>
-                </dt>
-                <dd>
-                  <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">Contact Hotline</p>
-                  <h5 class="text-gray-900 text-lg font-bold" style="font-weight: 700;">+1 (555) 123-4567</h5>
-                </dd>
-              </dl>
 
-              <dl class="flex gap-4">
-                <dt class="flex-shrink-0">
-                  <div class="icon w-10 h-10 flex items-center justify-center">
-                    <i data-lucide="phone" class="w-6 h-6 text-blue-400"></i>
-                  </div>
-                </dt>
-                <dd>
-                  <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">Service Hotline</p>
-                  <h5 class="text-gray-900 text-lg font-bold" style="font-weight: 700;">+1 (800) 999-8888</h5>
-                </dd>
-              </dl>
+              {acf.phone_numbers && acf.phone_numbers.length > 0 ? (
+                acf.phone_numbers.map((phone: any) => (
+                  <dl class="flex gap-4">
+                    <dt class="flex-shrink-0">
+                      <div class="icon w-10 h-10 flex items-center justify-center">
+                        <i data-lucide="phone" class="w-6 h-6 text-blue-400"></i>
+                      </div>
+                    </dt>
+                    <dd>
+                      <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">{phone.label || "Phone"}</p>
+                      <h5 class="text-gray-900 text-lg font-bold" style="font-weight: 700;">
+                        <a href={`tel:${phone.number}`} class="hover:text-blue-600">{phone.number}</a>
+                      </h5>
+                    </dd>
+                  </dl>
+                ))
+              ) : (
+                <>
+                  <dl class="flex gap-4">
+                    <dt class="flex-shrink-0">
+                      <div class="icon w-10 h-10 flex items-center justify-center">
+                        <i data-lucide="smartphone" class="w-6 h-6 text-blue-400"></i>
+                      </div>
+                    </dt>
+                    <dd>
+                      <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">Contact Hotline</p>
+                      <h5 class="text-gray-900 text-lg font-bold" style="font-weight: 700;">+1 (555) 123-4567</h5>
+                    </dd>
+                  </dl>
 
-              <dl class="flex gap-4">
-                <dt class="flex-shrink-0">
-                  <div class="icon w-10 h-10 flex items-center justify-center">
-                    <i data-lucide="mail" class="w-6 h-6 text-blue-400"></i>
-                  </div>
-                </dt>
-                <dd>
-                  <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">Company Email</p>
-                  <h5 class="text-gray-900 text-lg font-bold" style="font-weight: 700;">info@lumenlab.com</h5>
-                </dd>
-              </dl>
+                  <dl class="flex gap-4">
+                    <dt class="flex-shrink-0">
+                      <div class="icon w-10 h-10 flex items-center justify-center">
+                        <i data-lucide="phone" class="w-6 h-6 text-blue-400"></i>
+                      </div>
+                    </dt>
+                    <dd>
+                      <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">Service Hotline</p>
+                      <h5 class="text-gray-900 text-lg font-bold" style="font-weight: 700;">+1 (800) 999-8888</h5>
+                    </dd>
+                  </dl>
+                </>
+              )}
 
-              <dl class="flex gap-4">
-                <dt class="flex-shrink-0">
-                  <div class="icon w-10 h-10 flex items-center justify-center">
-                    <i data-lucide="map-pin" class="w-6 h-6 text-blue-400"></i>
-                  </div>
-                </dt>
-                <dd>
-                  <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">Headquarters Address</p>
-                  <h5 class="text-gray-900 text-base font-bold leading-relaxed" style="font-weight: 700;">123 Business Street, Tech City Center, TC 12345</h5>
-                </dd>
-              </dl>
+              {acf.emails && acf.emails.length > 0 ? (
+                acf.emails.map((email: any) => (
+                  <dl class="flex gap-4">
+                    <dt class="flex-shrink-0">
+                      <div class="icon w-10 h-10 flex items-center justify-center">
+                        <i data-lucide="mail" class="w-6 h-6 text-blue-400"></i>
+                      </div>
+                    </dt>
+                    <dd>
+                      <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">{email.label || "Email"}</p>
+                      <h5 class="text-gray-900 text-lg font-bold" style="font-weight: 700;">
+                        <a href={`mailto:${email.address}`} class="hover:text-blue-600">{email.address}</a>
+                      </h5>
+                    </dd>
+                  </dl>
+                ))
+              ) : (
+                <dl class="flex gap-4">
+                  <dt class="flex-shrink-0">
+                    <div class="icon w-10 h-10 flex items-center justify-center">
+                      <i data-lucide="mail" class="w-6 h-6 text-blue-400"></i>
+                    </div>
+                  </dt>
+                  <dd>
+                    <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">Company Email</p>
+                    <h5 class="text-gray-900 text-lg font-bold" style="font-weight: 700;">info@lumenlab.com</h5>
+                  </dd>
+                </dl>
+              )}
+
+              {acf.address && (
+                <dl class="flex gap-4">
+                  <dt class="flex-shrink-0">
+                    <div class="icon w-10 h-10 flex items-center justify-center">
+                      <i data-lucide="map-pin" class="w-6 h-6 text-blue-400"></i>
+                    </div>
+                  </dt>
+                  <dd>
+                    <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">Headquarters Address</p>
+                    <h5 class="text-gray-900 text-base font-bold leading-relaxed whitespace-pre-line" style="font-weight: 700;">{acf.address}</h5>
+                  </dd>
+                </dl>
+              ) || (
+                <dl class="flex gap-4">
+                  <dt class="flex-shrink-0">
+                    <div class="icon w-10 h-10 flex items-center justify-center">
+                      <i data-lucide="map-pin" class="w-6 h-6 text-blue-400"></i>
+                    </div>
+                  </dt>
+                  <dd>
+                    <p class="text-gray-600 text-sm mb-1" style="font-weight: 400;">Headquarters Address</p>
+                    <h5 class="text-gray-900 text-base font-bold leading-relaxed" style="font-weight: 700;">123 Business Street, Tech City Center, TC 12345</h5>
+                  </dd>
+                </dl>
+              )}
             </div>
           </div>
         </div>
@@ -102,7 +186,7 @@ import MainLayout from '@/layouts/MainLayout.astro';
           <div id="wrap" class="my-map bg-gradient-to-br from-white/5 to-white/2 border border-gray-200 rounded-2xl overflow-hidden backdrop-blur-sm">
             <div id="mapContainer" class="w-full h-[500px]">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0861326729437!2d-122.41941492346468!3d37.77492977186469!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sTwitter%20HQ!5e0!3m2!1sen!2sus!4v1701234567890!5m2!1sen!2sus"
+                src={acf.map_embed || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0861326729437!2d-122.41941492346468!3d37.77492977186469!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sTwitter%20HQ!5e0!3m2!1sen!2sus!4v1701234567890!5m2!1sen!2sus"}
                 width="100%"
                 height="500"
                 style="border:0;"
@@ -121,8 +205,8 @@ import MainLayout from '@/layouts/MainLayout.astro';
   <!-- Online Consultation Section -->
   <div class="py-6 lg:py-14 bg-gradient-to-b from-gray-50 to-white" id="contact2">
     <div class="w1520 container max-w-7xl mx-auto px-8 md:px-16">
-      <strong class="block text-xl font-normal lg:text-4xl text-gray-900 mb-2" style="font-weight: 700;">Online Consultation</strong>
-      <p class="mb-5 lg:mb-10 text-gray-600" style="font-weight: 400;">Fill in your phone and email information, which will help us contact you in time and solve your questions as soon as possible.</p>
+      <strong class="block text-xl font-normal lg:text-4xl text-gray-900 mb-2" style="font-weight: 700;">{acf.form_title || "Online Consultation"}</strong>
+      <p class="mb-5 lg:mb-10 text-gray-600" style="font-weight: 400;">{acf.form_description || "Fill in your phone and email information, which will help us contact you in time and solve your questions as soon as possible."}</p>
 
       <div class="list message">
         <form id="form_message" autocomplete="off">
