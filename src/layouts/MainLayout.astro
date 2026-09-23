@@ -638,4 +638,22 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
       0 0 30px rgba(59, 130, 246, 0.12);
     transform: translateY(-4px);
   }
+  /* Section 4: 支柱柱状卡片 Hover */
+    .pillar-card {
+      position: relative;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 1.25rem;
+      padding: 1.75rem 1.5rem;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .pillar-card:hover {
+      background: rgba(30, 58, 138, 0.15);
+      border-color: rgba(96, 165, 250, 0.35);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      transform: translateY(-4px);
+    }
 </style>

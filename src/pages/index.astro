@@ -68,8 +68,7 @@ function getImageUrl(field: any, defaultUrl: string): string {
   if (!field) return defaultUrl;
   if (typeof field === 'object' && field.url) return field.url;
   if (typeof field === 'number') {
-    // 如果是图片 ID，构建 WordPress 媒体 URL（这是临时方案，理想情况应该用 _embed 参数）
-    return defaultUrl; // 暂时使用默认图片
+    return defaultUrl;
   }
   if (typeof field === 'string' && field.startsWith('http')) return field;
   return defaultUrl;
@@ -85,18 +84,7 @@ const thumbBg1 = getImageUrl(heroData.hero_background_image_1, 'https://images.u
 const thumbBg2 = getImageUrl(heroData.hero_background_image_2, 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=200&q=80');
 const thumbBg3 = getImageUrl(heroData.hero_background_image_3, 'https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&w=200&q=80');
 
-// 调试：在服务器端打印完整的 ACF 数据
-console.log('=== ACF Data Debug ===');
-console.log('Full ACF Data:', JSON.stringify(heroData, null, 2));
-console.log('hero_subtitle:', heroData.hero_subtitle);
-console.log('hero_title_line_1:', heroData.hero_title_line_1);
-console.log('hero_title_line1:', heroData.hero_title_line1);
-console.log('hero_title_line2:', heroData.hero_title_line2);
-console.log('hero_title_line3:', heroData.hero_title_line3);
-console.log('hero_title_line4:', heroData.hero_title_line4);
-console.log('=====================');
-
-// 文字内容（提供默认值）- 支持两种字段名格式
+// 文字内容（提供默认值）
 const heroSubtitle = heroData.hero_subtitle || 'LUMENLAB — SS28 DROP 01';
 const heroTitle1 = heroData.hero_title_line_1 || heroData.hero_title_line1 || '20 YEARS';
 const heroTitle2 = heroData.hero_title_line2 || 'EXPERIENCE';
@@ -176,37 +164,88 @@ const section3Panel1Description = heroData.section3_panel_1_content ||
 const section3Panel1ButtonText = heroData.section3_panel_1_button_text || 'Read More';
 const section3Panel1ButtonLink = heroData.section3_panel_1_button_link || '/about';
 
-// Section 4: Background Image and Gallery
+// ================= Section 4: Manifesto (Four Pillars - 1:1 截图样式) =================
 const section4BackgroundImage = getImageUrl(
   heroData.section4_background_image,
   'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1800&q=80'
 );
 
-// Section 4: Gallery Images (图片集)
-const section4GalleryImages = heroData.section4_gallery_images || [];
+const section4SubtitleLeft = heroData.section4_subtitle_left || 'WHY LUMENLAB — FOUR PILLARS';
+const section4BadgeRight = heroData.section4_badge_right || 'MANIFESTO';
+const section4Title = heroData.section4_title || 'Why brands ship<br>with LUMENLAB.';
+const section4Description = heroData.section4_description || "We don't sell eyewear. We sell your next best-seller.";
+const section4FooterLeft = heroData.section4_footer_left || '4 PILLARS — 1 PROMISE — 0 COMPROMISE';
+const section4FooterRight = heroData.section4_footer_right || '"PRECISION ENGINE OF MODERN HARDWARE"';
 
-// 默认图片（如果 ACF 没有数据）
-const defaultGalleryImages = [
-  'https://images.unsplash.com/photo-1581092918484-8313e1f7e8d6?auto=format&fit=crop&w=600&q=80',
-  'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80',
-  'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=600&q=80',
-  'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=600&q=80',
-  'https://images.unsplash.com/photo-1572635196243-4dd75fbdbd7f?auto=format&fit=crop&w=600&q=80',
-  'https://images.unsplash.com/photo-1581092918484-8313e1f7e8d6?auto=format&fit=crop&w=600&q=80',
-  'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'
+// 4个支柱柱体动态数据映射（支持后台 ACF 单独字段自定义，默认值与渐变色彩精准对应截图）
+const defaultSection4Pillars = [
+  {
+    num: '01',
+    numColor: 'text-orange-400',
+    stat: '12',
+    statGradient: 'from-orange-400 via-amber-300 to-yellow-200',
+    statLabel: 'IN-HOUSE DESIGNERS',
+    iconBg: 'bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-orange-500/20',
+    icon: 'sparkles',
+    title: 'In-House Design Studio',
+    desc: '12 designers tracking Milan, NYC, TikTok and Coachella. 60+ new molds released every season. ODM-friendly: bring a moodboard, leave with a sample.'
+  },
+  {
+    num: '02',
+    numColor: 'text-fuchsia-400',
+    stat: '60+',
+    statGradient: 'from-fuchsia-400 via-pink-400 to-rose-300',
+    statLabel: 'PANTONE COLORS',
+    iconBg: 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-pink-500/20',
+    icon: 'palette',
+    title: 'Custom Color Lab',
+    desc: 'Pantone-matched acetate sheets pressed in-house. Marbled, transparent, gradient, glitter, textured — your color, your exclusive.'
+  },
+  {
+    num: '03',
+    numColor: 'text-amber-400',
+    stat: '7d',
+    statGradient: 'from-amber-400 via-yellow-300 to-orange-300',
+    statLabel: 'SAMPLE LEAD TIME',
+    iconBg: 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-amber-500/20',
+    icon: 'zap',
+    title: '25-day Sample Turnaround',
+    desc: 'Rapid prototyping with 3D printing for frame fronts. First samples in 7 days, refined samples in 25 days.'
+  },
+  {
+    num: '04',
+    numColor: 'text-cyan-400',
+    stat: '100%',
+    statGradient: 'from-emerald-400 via-teal-300 to-cyan-400',
+    statLabel: 'QC PASS RATE',
+    iconBg: 'bg-gradient-to-br from-teal-400 to-blue-500 text-white shadow-cyan-500/20',
+    icon: 'shield-check',
+    title: 'Compliance-Ready Out of the Box',
+    desc: 'CE, FDA, ANSI Z80.3, EN ISO 12312-1, RoHS, REACH, Prop-65. We file the docs, you sell with confidence.'
+  }
 ];
 
-// 处理图片集：如果 ACF 有数据则使用，否则使用默认图片
-// 因为 return_format 是 "url"，所以直接是 URL 字符串数组
-const galleryImages = section4GalleryImages && section4GalleryImages.length > 0
-  ? section4GalleryImages
-  : defaultGalleryImages;
+const section4Pillars = [1, 2, 3, 4].map((i) => {
+  const d = defaultSection4Pillars[i - 1];
+  return {
+    num: heroData[`section4_pillar_${i}_num`] || d.num,
+    numColor: d.numColor,
+    stat: heroData[`section4_pillar_${i}_stat`] || d.stat,
+    statGradient: d.statGradient,
+    statLabel: heroData[`section4_pillar_${i}_stat_label`] || d.statLabel,
+    iconBg: d.iconBg,
+    icon: heroData[`section4_pillar_${i}_icon`] || d.icon,
+    title: heroData[`section4_pillar_${i}_title`] || d.title,
+    desc: heroData[`section4_pillar_${i}_desc`] || d.desc
+  };
+});
+
 // Section: Hero Pieces (手风琴卡片动态字段定义)
 const accordionTitle = heroData.accordion_title || "This season's heroes.";
 const accordionViewAllText = heroData.accordion_view_all_text || 'VIEW ALL';
 const accordionViewAllLink = heroData.accordion_view_all_link || '/products';
 
-// 6个产品卡片数据映射（支持后台 ACF 重复字段 repeater 或独立命名模式）
+// 6个产品卡片数据映射
 const accordionCards = [1, 2, 3, 4, 5, 6].map((i) => {
   const bgImage = getImageUrl(
     heroData[`accordion_item_${i}_bg`] || heroData[`hero_piece_${i}_image`],
@@ -230,9 +269,10 @@ const accordionCards = [1, 2, 3, 4, 5, 6].map((i) => {
     link: heroData[`accordion_item_${i}_link`] || '/products',
     linkText: heroData[`accordion_item_${i}_btn_text`] || 'VIEW DETAILS',
     image: bgImage,
-    isDefaultActive: i === 2 // 默认第2项保持展开
+    isDefaultActive: i === 2
   };
 });
+
 // Section 5: Testimonials (客户评价)
 const section5BackgroundVideo = heroData.section5_background_video || 'https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4';
 const section5Title = heroData.section5_title || 'Customer Satisfaction Is<br>Our Greatest Achievement';
@@ -267,7 +307,6 @@ const section5Testimonials = heroData.section5_testimonials || [
   }
 ];
 
-// 打印最终使用的值（可选，生产环境可删除）
 console.log('ACF data loaded successfully');
 ---
 
@@ -388,7 +427,6 @@ console.log('ACF data loaded successfully');
 
     <!-- Section 1: Hero -->
     <section id="section-1" class="snap-section relative flex items-center justify-between px-8 md:px-16 pt-20 overflow-hidden bg-[#06080d]">
-      <!-- 多个背景层，通过 class 控制显示 - 动态背景图片 -->
       <div id="hero-bg-0" class="hero-bg-layer active absolute inset-0 bg-cover bg-center transition-opacity duration-700"
            style={`background-image: url('${heroBg1}'); opacity: 0.5;`}></div>
       <div id="hero-bg-1" class="hero-bg-layer absolute inset-0 bg-cover bg-center transition-opacity duration-700"
@@ -396,18 +434,15 @@ console.log('ACF data loaded successfully');
       <div id="hero-bg-2" class="hero-bg-layer absolute inset-0 bg-cover bg-center transition-opacity duration-700"
            style={`background-image: url('${heroBg3}'); opacity: 0;`}></div>
 
-      <!-- 轻微的暗色遮罩，保证文字可读性 -->
       <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent pointer-events-none"></div>
 
       <div class="relative z-10 max-w-3xl pl-0 lg:pl-[200px]">
         <div class="flex items-center gap-3 mb-6 text-xs font-mono tracking-widest text-blue-400 uppercase">
           <span class="text-blue-500 font-bold">§ 01</span>
           <span class="text-gray-600">|</span>
-          <!-- 动态副标题 -->
           <span class="text-gray-400 tracking-wider">{heroSubtitle}</span>
         </div>
 
-        <!-- 动态标题 -->
         <h1 class="text-[3rem] md:text-[4.5rem] lg:text-[5.5rem] leading-[0.95] tracking-tighter mb-10" style="font-family: Impact, 'Arial Black', sans-serif; font-weight: 900;">
           <span class="block text-white" style="font-weight: 900;">{heroTitle1}</span>
           <span class="block text-white" style="font-weight: 900;">{heroTitle2}</span>
@@ -415,7 +450,6 @@ console.log('ACF data loaded successfully');
           <span class="block text-gray-400" style="font-weight: 400;">{heroTitle4}</span>
         </h1>
 
-        <!-- 动态按钮文字 -->
         <button class="motion-hero-button group relative h-14 w-52 cursor-pointer rounded-full border-none p-1 outline-none bg-white overflow-visible">
           <span class="motion-circle absolute top-1 left-1 bg-blue-600 block h-12 w-12 rounded-full transition-all duration-500 ease-in-out group-hover:w-[calc(100%-0.5rem)]"></span>
           <div class="motion-icon absolute top-1/2 left-5 -translate-y-1/2 transition-transform duration-500 ease-in-out group-hover:translate-x-2 z-10">
@@ -445,18 +479,14 @@ console.log('ACF data loaded successfully');
           <div class="glass-card group relative flex items-center justify-between p-5 md:px-6 md:py-5 rounded-2xl cursor-pointer overflow-hidden transition-all hover:ring-2 hover:ring-blue-500/50"
                data-hero-bg="0"
                onmouseenter="switchHeroBg(0)">
-            <!-- 全局背景图 -->
             <img src={thumbBg1} alt={productCard1Title} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-            <!-- 深色/蓝色渐变蒙层，确保文字清晰度 -->
             <div class="absolute inset-0 bg-gradient-to-r from-[#060a12]/90 via-[#060a12]/75 to-[#060a12]/40 group-hover:via-[#060a12]/60 transition-colors pointer-events-none"></div>
 
-            <!-- 左侧文字信息 -->
             <div class="relative z-10 flex flex-col gap-1">
               <span class="text-[12px] font-mono text-blue-400 font-semibold uppercase tracking-wider block">{productCard1Category}</span>
               <h4 class="text-lg md:text-xl font-bold text-white tracking-wide group-hover:text-blue-200 transition-colors">{productCard1Title}</h4>
             </div>
 
-            <!-- 右侧箭头图标 -->
             <i data-lucide="arrow-right" class="relative z-10 w-5 h-5 text-gray-300 group-hover:translate-x-1 group-hover:text-white transition-all"></i>
           </div>
 
@@ -464,18 +494,14 @@ console.log('ACF data loaded successfully');
           <div class="glass-card group relative flex items-center justify-between p-5 md:px-6 md:py-5 rounded-2xl cursor-pointer overflow-hidden transition-all hover:ring-2 hover:ring-blue-500/50"
                data-hero-bg="1"
                onmouseenter="switchHeroBg(1)">
-            <!-- 全局背景图 -->
             <img src={thumbBg2} alt={productCard2Title} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-            <!-- 深色/蓝色渐变蒙层 -->
             <div class="absolute inset-0 bg-gradient-to-r from-[#060a12]/90 via-[#060a12]/75 to-[#060a12]/40 group-hover:via-[#060a12]/60 transition-colors pointer-events-none"></div>
 
-            <!-- 左侧文字信息 -->
             <div class="relative z-10 flex flex-col gap-1">
               <span class="text-[12px] font-mono text-blue-400 font-semibold uppercase tracking-wider block">{productCard2Category}</span>
               <h4 class="text-lg md:text-xl font-bold text-white tracking-wide group-hover:text-blue-200 transition-colors">{productCard2Title}</h4>
             </div>
 
-            <!-- 右侧箭头图标 -->
             <i data-lucide="arrow-right" class="relative z-10 w-5 h-5 text-gray-300 group-hover:translate-x-1 group-hover:text-white transition-all"></i>
           </div>
 
@@ -483,18 +509,14 @@ console.log('ACF data loaded successfully');
           <div class="glass-card-active group relative flex items-center justify-between p-5 md:px-6 md:py-5 rounded-2xl cursor-pointer overflow-hidden ring-1 ring-blue-500/60 shadow-lg shadow-blue-500/10 transition-all hover:ring-2 hover:ring-blue-500"
                data-hero-bg="2"
                onmouseenter="switchHeroBg(2)">
-            <!-- 全局背景图 -->
             <img src={thumbBg3} alt={productCard3Title} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-            <!-- 深色/蓝色渐变蒙层 -->
             <div class="absolute inset-0 bg-gradient-to-r from-[#060a12]/90 via-[#060a12]/75 to-[#060a12]/40 group-hover:via-[#060a12]/60 transition-colors pointer-events-none"></div>
 
-            <!-- 左侧文字信息 -->
             <div class="relative z-10 flex flex-col gap-1">
               <span class="text-[12px] font-mono text-blue-400 font-semibold uppercase tracking-wider block">{productCard3Category}</span>
               <h4 class="text-lg md:text-xl font-bold text-white tracking-wide">{productCard3Title}</h4>
             </div>
 
-            <!-- 右侧箭头图标 -->
             <i data-lucide="arrow-right" class="relative z-10 w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-all"></i>
           </div>
         </div>
@@ -657,15 +679,12 @@ console.log('ACF data loaded successfully');
       </div>
     </section>
 
-
     <!-- Section 3: Company Information -->
     <section id="section-3" class="snap-section relative flex flex-col justify-center items-center px-6 md:px-12 lg:px-16 pt-32 pb-32 overflow-hidden bg-[#07090e]">
       <div class="absolute -left-32 top-1/3 w-[500px] h-[500px] bg-blue-800/10 rounded-full filter blur-[150px] pointer-events-none"></div>
       <div class="absolute -right-32 bottom-10 w-[500px] h-[500px] bg-blue-600/10 rounded-full filter blur-[150px] pointer-events-none"></div>
 
       <div class="w-full max-w-6xl mx-auto flex flex-col gap-8 relative z-10">
-
-        <!-- Tab 导航栏 -->
         <div class="hero-nav-bar-container relative w-full">
           <div class="flex items-stretch gap-2">
             <div id="hero-tab-0" class="hero-tab-item active flex-1 h-12 flex items-center justify-center cursor-pointer text-sm relative transition-all duration-300" onclick="switchHeroTab(0)" style="font-weight: 500;">
@@ -695,12 +714,9 @@ console.log('ACF data loaded successfully');
           </div>
         </div>
 
-        <!-- Showcase Viewport -->
         <div class="hero-showcase-viewport relative w-[1300px] max-w-[95vw] self-center rounded-2xl bg-gradient-to-br from-white/5 to-white/2 shadow-2xl overflow-hidden border border-white/10" style="height: 500px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
-
           <!-- Panel 0: Company Information -->
           <div id="hero-panel-0" class="hero-panel active absolute inset-0 grid grid-cols-1 lg:grid-cols-2 gap-0">
-            <!-- Left: Video -->
             <div class="relative bg-black overflow-hidden">
               <video
                 class="w-full h-full object-cover"
@@ -710,10 +726,8 @@ console.log('ACF data loaded successfully');
                 playsinline
                 poster={section3Panel1VideoPoster}>
                 <source src={section3Panel1VideoUrl} type="video/mp4">
-                <!-- 如果视频加载失败，显示占位图 -->
                 Your browser does not support the video tag.
               </video>
-              <!-- 可选：视频播放控制按钮 -->
               <div class="absolute bottom-4 right-4 z-10">
                 <button class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-all">
                   <i data-lucide="volume-2" class="w-5 h-5 text-white"></i>
@@ -721,16 +735,13 @@ console.log('ACF data loaded successfully');
               </div>
             </div>
 
-            <!-- Right: Content -->
             <div class="flex flex-col justify-center space-y-6 p-8 md:p-12 bg-gradient-to-br from-gray-900/50 to-black/50">
               <h3 class="text-3xl md:text-4xl font-extrabold text-white leading-tight" style="font-weight: 900;">
                 {section3Panel1Title}
               </h3>
-
               <p class="text-gray-300 text-sm md:text-base leading-relaxed" style="font-weight: 400;">
                 {section3Panel1Description}
               </p>
-
               <a href={section3Panel1ButtonLink} class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all shadow-lg w-fit" style="font-weight: 700;">
                 <span>{section3Panel1ButtonText}</span>
                 <i data-lucide="arrow-right" class="w-5 h-5"></i>
@@ -745,15 +756,12 @@ console.log('ACF data loaded successfully');
                 <i data-lucide="layout-grid" class="w-4 h-4 text-purple-400"></i>
                 <span class="text-xs font-mono text-purple-300 uppercase tracking-wider" style="font-weight: 600;">Flexible Architecture</span>
               </div>
-
               <h3 class="text-3xl md:text-4xl font-extrabold text-white leading-tight" style="font-weight: 900;">
                 Modular Design<br>System
               </h3>
-
               <p class="text-gray-300 text-sm md:text-base leading-relaxed" style="font-weight: 400;">
                 Build with confidence using our component-based architecture. Mix and match without bloat.
               </p>
-
               <div class="grid grid-cols-2 gap-4 pt-2">
                 <div class="bg-white/5 border border-white/10 rounded-xl p-4">
                   <div class="text-2xl md:text-3xl font-bold text-purple-400 mb-1" style="font-weight: 900;">150+</div>
@@ -765,7 +773,6 @@ console.log('ACF data loaded successfully');
                 </div>
               </div>
             </div>
-
             <div class="relative rounded-xl overflow-hidden bg-gradient-to-br from-purple-900/20 to-pink-900/20">
               <img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=800&q=80" alt="Modular" class="w-full h-full object-cover opacity-70">
             </div>
@@ -778,15 +785,12 @@ console.log('ACF data loaded successfully');
                 <i data-lucide="users" class="w-4 h-4 text-green-400"></i>
                 <span class="text-xs font-mono text-green-300 uppercase tracking-wider" style="font-weight: 600;">Collaboration</span>
               </div>
-
               <h3 class="text-3xl md:text-4xl font-extrabold text-white leading-tight" style="font-weight: 900;">
                 Built for<br>Team Success
               </h3>
-
               <p class="text-gray-300 text-sm md:text-base leading-relaxed" style="font-weight: 400;">
                 Empower your team with collaborative features for modern workflows and seamless handoffs.
               </p>
-
               <div class="grid grid-cols-2 gap-4 pt-2">
                 <div class="bg-white/5 border border-white/10 rounded-xl p-4">
                   <div class="text-2xl md:text-3xl font-bold text-green-400 mb-1" style="font-weight: 900;">24/7</div>
@@ -798,7 +802,6 @@ console.log('ACF data loaded successfully');
                 </div>
               </div>
             </div>
-
             <div class="relative rounded-xl overflow-hidden bg-gradient-to-br from-green-900/20 to-teal-900/20">
               <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Teams" class="w-full h-full object-cover opacity-70">
             </div>
@@ -811,15 +814,12 @@ console.log('ACF data loaded successfully');
                 <i data-lucide="shield-check" class="w-4 h-4 text-orange-400"></i>
                 <span class="text-xs font-mono text-orange-300 uppercase tracking-wider" style="font-weight: 600;">Enterprise Grade</span>
               </div>
-
               <h3 class="text-3xl md:text-4xl font-extrabold text-white leading-tight" style="font-weight: 900;">
                 Enterprise-Ready<br>Security
               </h3>
-
               <p class="text-gray-300 text-sm md:text-base leading-relaxed" style="font-weight: 400;">
                 Bank-level security with SOC 2 compliance, SSO integration, and advanced access controls.
               </p>
-
               <div class="grid grid-cols-2 gap-4 pt-2">
                 <div class="bg-white/5 border border-white/10 rounded-xl p-4">
                   <div class="text-2xl md:text-3xl font-bold text-orange-400 mb-1" style="font-weight: 900;">99.9%</div>
@@ -831,136 +831,105 @@ console.log('ACF data loaded successfully');
                 </div>
               </div>
             </div>
-
             <div class="relative rounded-xl overflow-hidden bg-gradient-to-br from-orange-900/20 to-red-900/20">
               <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80" alt="Security" class="w-full h-full object-cover opacity-70">
             </div>
           </div>
-
         </div>
-
       </div>
     </section>
 
-    <!-- Section 4: Manifesto -->
-    <section id="section-4" class="snap-section relative flex flex-col justify-center px-8 md:px-14 pt-16 pb-6 overflow-hidden bg-[#06080e]">
-      <div class="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-luminosity filter brightness-75 contrast-125" style={`background-image: url('${section4BackgroundImage}');`}></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-[#06080e] via-[#06080e]/80 to-[#06080e]/50"></div>
+    <!-- ================= Section 4: Manifesto (1:1 还原截图无卡片透底 + 彩色柱体分割样式) ================= -->
+    <section id="section-4" class="snap-section relative flex flex-col justify-center px-8 md:px-16 pt-20 overflow-hidden bg-[#06080e]">
+      <!-- 动态背景图与暗角遮罩 -->
+      <div class="absolute inset-0 bg-cover bg-center opacity-25 mix-blend-luminosity filter brightness-75 contrast-125 pointer-events-none" style={`background-image: url('${section4BackgroundImage}');`}></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#06080e] via-[#06080e]/80 to-[#06080e]/60 pointer-events-none"></div>
       <div class="absolute -left-20 top-1/4 w-[500px] h-[500px] bg-blue-700/10 rounded-full filter blur-[150px] pointer-events-none"></div>
       <div class="absolute -right-20 bottom-1/4 w-[500px] h-[500px] bg-blue-900/15 rounded-full filter blur-[150px] pointer-events-none"></div>
 
-      <div class="relative z-10 w-full max-w-6xl mx-auto flex flex-col gap-3">
+      <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col justify-between h-[82vh]">
+        <!-- 头部标题区 -->
         <div>
-          <div class="flex items-center justify-between mb-1">
+          <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-3 text-xs font-mono tracking-widest text-blue-400 uppercase">
               <span class="text-blue-500 font-bold">§ 04</span>
               <span class="text-gray-600">——</span>
-              <span class="text-gray-300">WHY LUMENLAB — FOUR PILLARS</span>
+              <span class="text-gray-300">{section4SubtitleLeft}</span>
             </div>
             <div class="flex items-center gap-2 text-xs font-mono text-gray-400">
               <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-              <span class="tracking-widest uppercase">MANIFESTO</span>
+              <span class="tracking-widest uppercase">{section4BadgeRight}</span>
             </div>
           </div>
 
-          <h2 class="font-syne text-2xl md:text-3xl font-extrabold tracking-tight text-white mb-1">
-            Why brands ship<br>
-            with LUMENLAB.
+          <h2 class="font-syne text-4xl md:text-6xl lg:text-[4.25rem] font-extrabold tracking-tight text-white leading-[1.05] mb-3" set:html={section4Title}>
           </h2>
-          <p class="text-gray-400 text-[11px] font-normal mb-2">
-            Precision engineering, full compliance, and zero-compromise manufacturing.
+          <p class="text-gray-300 text-sm md:text-base font-normal tracking-wide">
+            {section4Description}
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-          <div class="pillar-card group flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-[10px] font-mono mb-1">
-                <span class="text-blue-400 font-bold">01</span>
-                <span class="text-gray-500 text-[9px] tracking-widest uppercase">PILLAR</span>
-              </div>
-              <div class="font-syne text-2xl md:text-3xl font-bold text-blue-400 mb-0.5">12</div>
-              <div class="text-[8px] font-mono tracking-wider text-gray-400 uppercase mb-3">IN-HOUSE DESIGNERS</div>
-            </div>
-            <div>
-              <div class="w-8 h-8 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-lg mb-2 group-hover:scale-110 transition-transform duration-300">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-              </div>
-              <h3 class="text-xs font-bold text-white mb-1.5 group-hover:text-blue-300 transition-colors">In-House Design Studio</h3>
-              <p class="text-[10px] text-gray-400 leading-relaxed font-normal">12 designers tracking Milan, NYC, and industrial trends. 60+ new molds released every season. ODM-friendly sample development.</p>
-            </div>
-          </div>
+        <!-- 截图核心部分：4 个无底色直列立柱与半透明纵向分割线 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch my-auto py-4">
+          {section4Pillars.map((pillar, idx) => (
+            <div
+              class={`flex flex-col justify-between px-6 lg:px-8 py-2 relative group transition-all duration-300 ${
+                idx !== section4Pillars.length - 1 ? 'lg:border-r lg:border-white/10' : ''
+              } ${idx % 2 === 0 ? 'md:border-r md:border-white/10 lg:border-r-0' : ''}`}
+            >
+              <!-- 上半部分：序号、大数字高光与小标签 -->
+              <div>
+                <div class="flex items-center justify-between text-xs font-mono mb-2">
+                  <span class={`font-bold text-sm ${pillar.numColor}`}>{pillar.num}</span>
+                  <span class="text-gray-400 text-[10px] tracking-widest uppercase font-mono">PILLAR</span>
+                </div>
 
-          <div class="pillar-card group flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-xs font-mono mb-2">
-                <span class="text-blue-400 font-bold">02</span>
-                <span class="text-gray-500 text-[10px] tracking-widest uppercase">PILLAR</span>
-              </div>
-              <div class="font-syne text-2xl md:text-3xl font-bold text-blue-400 mb-0.5">60+</div>
-              <div class="text-[8px] font-mono tracking-wider text-gray-400 uppercase mb-3">PANTONE COLORS</div>
-            </div>
-            <div>
-              <div class="w-8 h-8 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-lg mb-2 group-hover:scale-110 transition-transform duration-300">
-                <i data-lucide="palette" class="w-3.5 h-3.5"></i>
-              </div>
-              <h3 class="text-xs font-bold text-white mb-1.5 group-hover:text-blue-300 transition-colors">Custom Color Lab</h3>
-              <p class="text-[10px] text-gray-400 leading-relaxed font-normal">Pantone-matched acetate sheets pressed in-house. Gradient, transparent, metallic, and high-density finish options.</p>
-            </div>
-          </div>
+                <!-- 大号数字专属渐变色 -->
+                <div class={`font-syne text-5xl md:text-6xl lg:text-[4.25rem] font-extrabold tracking-tight leading-none bg-gradient-to-r ${pillar.statGradient} bg-clip-text text-transparent mb-1 select-none`}>
+                  {pillar.stat}
+                </div>
 
-          <div class="pillar-card group flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-xs font-mono mb-3">
-                <span class="text-blue-400 font-bold">03</span>
-                <span class="text-gray-500 text-[10px] tracking-widest uppercase">PILLAR</span>
+                <div class="text-[11px] font-mono tracking-wider text-gray-300 uppercase mb-8">
+                  {pillar.statLabel}
+                </div>
               </div>
-              <div class="font-syne text-2xl md:text-3xl font-bold text-blue-400 mb-0.5">7d</div>
-              <div class="text-[8px] font-mono tracking-wider text-gray-400 uppercase mb-3">SAMPLE LEAD TIME</div>
-            </div>
-            <div>
-              <div class="w-8 h-8 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-lg mb-2 group-hover:scale-110 transition-transform duration-300">
-                <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-              </div>
-              <h3 class="text-xs font-bold text-white mb-1.5 group-hover:text-blue-300 transition-colors">25-day Sample Turnaround</h3>
-              <p class="text-[10px] text-gray-400 leading-relaxed font-normal">Rapid prototyping with 3D industrial printing for frame fronts. First physical samples ready in 7 days.</p>
-            </div>
-          </div>
 
-          <div class="pillar-card group flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-xs font-mono mb-3">
-                <span class="text-blue-400 font-bold">04</span>
-                <span class="text-gray-500 text-[10px] tracking-widest uppercase">PILLAR</span>
+              <!-- 下半部分：高对比度实色图标、白标题与描述说明 -->
+              <div>
+                <!-- 实色高亮背景微圆角方框图标 -->
+                <div class={`w-11 h-11 rounded-xl flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 transition-transform duration-300 ${pillar.iconBg}`}>
+                  <i data-lucide={pillar.icon} class="w-5 h-5"></i>
+                </div>
+
+                <h3 class="text-base md:text-lg font-bold text-white mb-2 tracking-wide group-hover:text-blue-200 transition-colors">
+                  {pillar.title}
+                </h3>
+                <p class="text-xs text-gray-300/90 leading-relaxed font-normal">
+                  {pillar.desc}
+                </p>
               </div>
-              <div class="font-syne text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-white mb-1">100%</div>
-              <div class="text-[8px] font-mono tracking-wider text-gray-400 uppercase mb-3">QC PASS RATE</div>
             </div>
-            <div>
-              <div class="w-8 h-8 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-lg mb-2 group-hover:scale-110 transition-transform duration-300">
-                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-              </div>
-              <h3 class="text-xs font-bold text-white mb-1.5 group-hover:text-blue-300 transition-colors">Compliance-Ready Out of Box</h3>
-              <p class="text-[10px] text-gray-400 leading-relaxed font-normal">CE, FDA, ANSI Z80.3, EN ISO 12312-1, RoHS, REACH, Prop-65. Fully documented for international customs clearance.</p>
-            </div>
-          </div>
+          ))}
         </div>
 
-        <div class="flex items-center justify-between text-[11px] font-mono text-gray-500 pt-2 border-t border-white/5">
+        <!-- 底部栏目 -->
+        <div class="flex items-center justify-between text-[11px] font-mono text-gray-400 pt-3 border-t border-white/10">
           <div class="flex items-center gap-2">
-            <span>4 PILLARS</span><span>—</span><span>1 PROMISE</span><span>—</span><span class="text-gray-400">0 COMPROMISE</span>
+            <span>{section4FooterLeft}</span>
           </div>
-          <div class="text-blue-400/90 font-mono tracking-widest">"PRECISION ENGINE OF MODERN HARDWARE"</div>
+          <div class="text-blue-400/90 font-mono tracking-widest">
+            {section4FooterRight}
+          </div>
         </div>
       </div>
     </section>
-<!-- ================= Section 5: Hero Pieces (Accordion) ================= -->
+
+    <!-- ================= Section 5: Hero Pieces (Accordion) ================= -->
     <section id="section-5" class="snap-section relative flex flex-col justify-center px-8 md:px-14 pt-20 overflow-hidden bg-[#06060a]">
       <div class="absolute -left-32 top-1/3 w-[500px] h-[500px] bg-blue-600/10 rounded-full filter blur-[150px] pointer-events-none"></div>
       <div class="absolute -right-32 bottom-10 w-[500px] h-[500px] bg-indigo-600/15 rounded-full filter blur-[150px] pointer-events-none"></div>
 
       <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col justify-between h-[82vh]">
-        <!-- 头部只保留标题与查看全部按钮 -->
         <div class="flex items-end justify-between mb-4">
           <div>
             <h2 class="font-syne text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
@@ -982,14 +951,12 @@ console.log('ACF data loaded successfully');
                 card.isDefaultActive ? 'active border-blue-500/40' : 'border-white/10'
               }`}
             >
-              <!-- 动态背景图 -->
               <div
                 class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                 style={`background-image: url('${card.image}');`}
               ></div>
               <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
 
-              <!-- 类别胶囊 Tag -->
               {card.badge && (
                 <div class="absolute top-3.5 left-3.5 z-20">
                   <span class="px-2.5 py-0.5 rounded-full bg-blue-600/90 text-white text-[9px] font-mono font-bold tracking-wider uppercase backdrop-blur-sm shadow">
@@ -998,14 +965,12 @@ console.log('ACF data loaded successfully');
                 </div>
               )}
 
-              <!-- 折叠状态下的垂直标题 -->
               <div class="collapsed-title absolute inset-0 flex items-center justify-start pb-6 pl-5 z-10">
                 <span class="font-semibold text-xs tracking-wider text-gray-200 uppercase whitespace-nowrap">
                   {card.title}
                 </span>
               </div>
 
-              <!-- 展开状态下的详细内容与 ACF 链接 -->
               <div class="expanded-content absolute inset-0 p-6 flex flex-col justify-end z-20">
                 <div>
                   <span class="text-[10px] font-mono text-blue-400 tracking-wider uppercase block mb-1">
@@ -1043,8 +1008,8 @@ console.log('ACF data loaded successfully');
         </div>
       </div>
     </section>
+
     <!-- Section 6: Testimonials -->
-    <!-- Testimonials Section -->
     <section id="section-6" class="snap-section relative flex flex-col justify-center items-center px-6 md:px-16 overflow-hidden bg-black">
       <div class="absolute inset-0 z-0 overflow-hidden">
         <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-70 filter brightness-125 contrast-110">
@@ -1058,7 +1023,6 @@ console.log('ACF data loaded successfully');
         <h2 class="font-syne text-3xl md:text-5xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-12 max-w-2xl" set:html={section5Title}>
         </h2>
 
-        <!-- 滑块视口容器 -->
         <div class="testimonial-viewport w-full relative min-h-[320px] mb-8">
           {section5Testimonials.reduce((slides, testimonial, index) => {
             const slideIndex = Math.floor(index / 2);
@@ -1117,7 +1081,6 @@ console.log('ACF data loaded successfully');
 
   </main>
 
-  <!-- Footer 独立在 snap-container 之外 -->
   <Footer />
 
   <script is:inline>
@@ -1168,20 +1131,17 @@ console.log('ACF data loaded successfully');
 
     sections.forEach(sec => observer.observe(sec));
 
-    // 监听滚动到底部时隐藏导航元素（监听 container 内的滚动）
+    // 监听滚动到底部时隐藏导航元素
     container.addEventListener('scroll', () => {
       const scrollTop = container.scrollTop;
       const scrollHeight = container.scrollHeight;
       const clientHeight = container.clientHeight;
 
-      // 当滚动到接近底部时（距离底部小于 100px）
       if (scrollHeight - scrollTop - clientHeight < 100) {
-        // 隐藏导航元素
         if (pageNumberContainer) pageNumberContainer.style.opacity = '0';
         if (dotsContainer) dotsContainer.style.opacity = '0';
         if (nextButton) nextButton.style.opacity = '0';
       } else {
-        // 显示导航元素
         if (pageNumberContainer) pageNumberContainer.style.opacity = '1';
         if (dotsContainer) dotsContainer.style.opacity = '1';
         if (nextButton) nextButton.style.opacity = '1';
@@ -1222,7 +1182,6 @@ console.log('ACF data loaded successfully');
         }
       });
 
-      // 更新指示器位置
       if (heroTabs[index] && indicatorBar) {
         const tabWidth = heroTabs[index].offsetWidth;
         const tabLeft = heroTabs[index].offsetLeft;
@@ -1231,49 +1190,10 @@ console.log('ACF data loaded successfully');
       }
     }
 
-    // 初始化指示器位置
     if (heroTabs[0] && indicatorBar) {
       indicatorBar.style.width = heroTabs[0].offsetWidth + 'px';
       indicatorBar.style.left = heroTabs[0].offsetLeft + 'px';
     }
-
-    // Section 5: CNC Tab 鼠标 Hover 切换逻辑
-    const tabButtons = document.querySelectorAll('.cnc-tab-btn');
-    const contentPanels = document.querySelectorAll('.tab-content-panel');
-    const imagePanels = document.querySelectorAll('.tab-image-panel');
-
-    function switchCncTab(index) {
-      tabButtons.forEach(btn => {
-        if (btn.getAttribute('data-tab') === String(index)) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
-        }
-      });
-
-      contentPanels.forEach((panel, i) => {
-        if (i === index) {
-          panel.classList.add('active');
-        } else {
-          panel.classList.remove('active');
-        }
-      });
-
-      imagePanels.forEach((panel, i) => {
-        if (i === index) {
-          panel.classList.add('active');
-        } else {
-          panel.classList.remove('active');
-        }
-      });
-    }
-
-    tabButtons.forEach(btn => {
-      btn.addEventListener('mouseenter', () => {
-        const tabIndex = parseInt(btn.getAttribute('data-tab'));
-        switchCncTab(tabIndex);
-      });
-    });
 
     // Section 6: 应用领域交互逻辑
     const appCols = document.querySelectorAll('.app-col');
@@ -1304,7 +1224,7 @@ console.log('ACF data loaded successfully');
       });
     });
 
-    // Section 7: Testimonials 左右切换逻辑
+    // Testimonials 左右切换逻辑
     let currentTestiSlide = 0;
     const testiSlides = [
       document.getElementById('testi-slide-0'),
@@ -1313,13 +1233,12 @@ console.log('ACF data loaded successfully');
 
     function showTestimonialSlide(index, direction = 'next') {
       testiSlides.forEach((slide, i) => {
+        if (!slide) return;
         if (i === index) {
-          // 新进入的 slide
           slide.style.transform = direction === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
           slide.style.opacity = '0';
           slide.classList.add('active');
 
-          // 使用 requestAnimationFrame 确保动画流畅
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               slide.style.transform = 'translateX(0)';
@@ -1327,14 +1246,12 @@ console.log('ACF data loaded successfully');
             });
           });
         } else if (slide.classList.contains('active')) {
-          // 正在退出的 slide
           slide.style.transform = direction === 'next' ? 'translateX(-100%)' : 'translateX(100%)';
           slide.style.opacity = '0';
 
-          // 动画结束后移除 active
           setTimeout(() => {
             slide.classList.remove('active');
-          }, 600); // 与 CSS transition 时间一致
+          }, 600);
         }
       });
     }
@@ -1355,10 +1272,8 @@ console.log('ACF data loaded successfully');
     window.nextTestimonial = nextTestimonial;
     window.switchHeroTab = switchHeroTab;
 
-    // Hero background switching function
     function switchHeroBg(index) {
       const bgLayers = document.querySelectorAll('.hero-bg-layer');
-
       bgLayers.forEach((layer, i) => {
         if (i === index) {
           layer.style.opacity = '0.5';
@@ -1369,243 +1284,16 @@ console.log('ACF data loaded successfully');
     }
 
     window.switchHeroBg = switchHeroBg;
-
-    // Coverflow carousel functionality - 真正的无限循环
-    const coverflowTrack = document.getElementById('coverflow-track');
-    const originalCards = document.querySelectorAll('.coverflow-card');
-    const originalCount = originalCards.length;
-
-    // 克隆卡片以实现无限循环（前后各克隆2组）
-    const cloneCount = 2;
-    const allCards = [];
-
-    // 添加前置克隆
-    for (let i = 0; i < cloneCount; i++) {
-      for (let j = 0; j < originalCount; j++) {
-        const clone = originalCards[j].cloneNode(true);
-        clone.classList.add('clone');
-        coverflowTrack.insertBefore(clone, coverflowTrack.firstChild);
-        allCards.unshift(clone);
-      }
-    }
-
-    // 添加原始卡片到数组
-    originalCards.forEach(card => allCards.push(card));
-
-    // 添加后置克隆
-    for (let i = 0; i < cloneCount; i++) {
-      for (let j = 0; j < originalCount; j++) {
-        const clone = originalCards[j].cloneNode(true);
-        clone.classList.add('clone');
-        coverflowTrack.appendChild(clone);
-        allCards.push(clone);
-      }
-    }
-
-    const totalCards = allCards.length;
-    let coverflowSelected = cloneCount * originalCount; // 从第一组原始卡片开始
-    let isTransitioning = false;
-
-    // 配置参数
-    const CARD_WIDTH = 160;
-    const ROTATE = 60;
-    const DEPTH = 1.5;
-    const PERSPECTIVE = 2.9;
-    const FALLOFF = 1.0;
-    const FADE = 0.2;
-
-    function updateCoverflowCards() {
-      allCards.forEach((card, i) => {
-        const offset = i - coverflowSelected;
-        const absOffset = Math.abs(offset);
-
-        const sign = offset === 0 ? 0 : offset / absOffset;
-        const distanceFactor = Math.pow(absOffset, FALLOFF);
-
-        const rotateY = sign * ROTATE * distanceFactor;
-        const translateX = sign * DEPTH * CARD_WIDTH * distanceFactor;
-        const translateZ = -absOffset * 80;
-        const opacity = Math.max(0, 1 - absOffset * FADE);
-        const zIndex = 100 - absOffset;
-
-        card.style.transform = `
-          translateX(calc(-50% + ${translateX}px))
-          translateZ(${translateZ}px)
-          rotateY(${rotateY}deg)
-        `;
-        card.style.opacity = opacity;
-        card.style.zIndex = zIndex;
-      });
-    }
-
-    function coverflowNext() {
-      if (isTransitioning) return;
-      isTransitioning = true;
-
-      coverflowSelected++;
-      updateCoverflowCards();
-
-      // 如果到达后置克隆区域，无缝跳回对应的原始位置
-      setTimeout(() => {
-        if (coverflowSelected >= (cloneCount + 1) * originalCount) {
-          // 禁用过渡效果
-          allCards.forEach(card => {
-            card.style.transition = 'none';
-          });
-
-          coverflowSelected = cloneCount * originalCount;
-          updateCoverflowCards();
-
-          // 重新启用过渡效果
-          setTimeout(() => {
-            allCards.forEach(card => {
-              card.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease';
-            });
-            isTransitioning = false;
-          }, 50);
-        } else {
-          isTransitioning = false;
-        }
-      }, 600);
-    }
-
-    function coverflowPrev() {
-      if (isTransitioning) return;
-      isTransitioning = true;
-
-      coverflowSelected--;
-      updateCoverflowCards();
-
-      // 如果到达前置克隆区域，无缝跳回对应的原始位置
-      setTimeout(() => {
-        if (coverflowSelected < cloneCount * originalCount) {
-          // 禁用过渡效果
-          allCards.forEach(card => {
-            card.style.transition = 'none';
-          });
-
-          coverflowSelected = (cloneCount + 1) * originalCount - 1;
-          updateCoverflowCards();
-
-          // 重新启用过渡效果
-          setTimeout(() => {
-            allCards.forEach(card => {
-              card.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease';
-            });
-            isTransitioning = false;
-          }, 50);
-        } else {
-          isTransitioning = false;
-        }
-      }, 600);
-    }
-
-    function coverflowGoTo(index) {
-      if (isTransitioning) return;
-      coverflowSelected = cloneCount * originalCount + index;
-      updateCoverflowCards();
-    }
-
-    // 初始化
-    updateCoverflowCards();
-
-    // 键盘导航
-    const coverflowFrame = document.getElementById('coverflow-frame');
-    if (coverflowFrame) {
-      coverflowFrame.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-          coverflowPrev();
-        } else if (e.key === 'ArrowRight') {
-          coverflowNext();
-        }
-      });
-
-      // 拖拽支持
-      let isDragging = false;
-      let startX = 0;
-      let hasSwitched = false; // 防止一次拖拽切换多次
-
-      coverflowFrame.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startX = e.clientX;
-        hasSwitched = false;
-        coverflowFrame.style.cursor = 'grabbing';
-      });
-
-      document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const currentX = e.clientX;
-        const diff = currentX - startX;
-
-        // 拖动超过 80px 且还没切换过，才切换一次
-        if (Math.abs(diff) > 80 && !hasSwitched) {
-          if (diff > 0) {
-            coverflowPrev();
-          } else {
-            coverflowNext();
-          }
-          hasSwitched = true; // 标记已切换，防止连续切换
-        }
-      });
-
-      document.addEventListener('mouseup', () => {
-        isDragging = false;
-        hasSwitched = false;
-        if (coverflowFrame) {
-          coverflowFrame.style.cursor = 'grab';
-        }
-      });
-
-      // 触摸支持
-      let touchStartX = 0;
-      let touchSwitched = false;
-
-      coverflowFrame.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-        touchSwitched = false;
-      });
-
-      coverflowFrame.addEventListener('touchmove', (e) => {
-        if (!touchStartX) return;
-        const touchX = e.touches[0].clientX;
-        const diff = touchX - touchStartX;
-
-        // 触摸滑动超过 80px 且还没切换过，才切换一次
-        if (Math.abs(diff) > 80 && !touchSwitched) {
-          if (diff > 0) {
-            coverflowPrev();
-          } else {
-            coverflowNext();
-          }
-          touchSwitched = true;
-        }
-      });
-
-      coverflowFrame.addEventListener('touchend', () => {
-        touchStartX = 0;
-        touchSwitched = false;
-      });
-    }
-
-    window.coverflowNext = coverflowNext;
-    window.coverflowPrev = coverflowPrev;
-    window.coverflowGoTo = coverflowGoTo;
-
-    // Gallery slider functionality (已移除旧的轮播代码)
   </script>
 
-  <!-- GSAP Animation Scripts -->
+  <!-- GSAP 动画与手风琴交互 -->
   <script>
     import gsap from 'gsap';
     import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
     window.addEventListener('load', () => {
-      // Initialize GSAP and ScrollTrigger
       gsap.registerPlugin(ScrollTrigger);
 
-      console.log('GSAP animations initialized');
-
-      // Page load animations - Header
       gsap.from('header', {
         y: -50,
         opacity: 0,
@@ -1613,7 +1301,6 @@ console.log('ACF data loaded successfully');
         ease: 'power3.out'
       });
 
-      // Right side indicators
       gsap.set('.dot-indicator', { x: 0, opacity: 1 });
       gsap.from('.dot-indicator', {
         x: 30,
@@ -1624,51 +1311,6 @@ console.log('ACF data loaded successfully');
         delay: 0.3
       });
 
-      gsap.set('#page-numbers', { x: 0, opacity: 1 });
-      gsap.from('#page-numbers', {
-        x: 30,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-        delay: 0.2
-      });
-
-      // Section 1: Hero entrance animation - only specific elements
-      const heroTitle = document.querySelector('#section-1 h1');
-      const heroDesc = document.querySelector('#section-1 p');
-      const heroBtn = document.querySelector('#section-1 a');
-
-      if (heroTitle) {
-        gsap.from(heroTitle, {
-          y: 60,
-          opacity: 0,
-          duration: 1,
-          ease: 'power3.out',
-          delay: 0.2
-        });
-      }
-
-      if (heroDesc) {
-        gsap.from(heroDesc, {
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          delay: 0.4
-        });
-      }
-
-      if (heroBtn) {
-        gsap.from(heroBtn, {
-          scale: 0.9,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'back.out(1.5)',
-          delay: 0.6
-        });
-      }
-
-      // Animate catalog cards on scroll - lighter effect
       const cards = document.querySelectorAll('.glass-card, .glass-card-active');
       if (cards.length > 0) {
         cards.forEach((card) => {
@@ -1687,55 +1329,41 @@ console.log('ACF data loaded successfully');
         });
       }
 
-      // Section animations disabled - causing visibility issues
-      // If you want to add animations, use CSS animations instead of GSAP for these sections
-
-      // Hover effects for interactive elements
       const appCols = document.querySelectorAll('.app-col');
       appCols.forEach(col => {
         col.addEventListener('mouseenter', () => {
-          gsap.to(col, {
-            scale: 1.02,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
+          gsap.to(col, { scale: 1.02, duration: 0.3, ease: 'power2.out' });
         });
-
         col.addEventListener('mouseleave', () => {
-          gsap.to(col, {
-            scale: 1,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
+          gsap.to(col, { scale: 1, duration: 0.3, ease: 'power2.out' });
         });
       });
-
-      console.log('GSAP animations setup complete');
     });
+
     const accordionGroup = document.querySelector('.accordion-group');
-const defaultActiveItem = document.querySelector('.accordion-item.active');
+    const defaultActiveItem = document.querySelector('.accordion-item.active');
 
-if (accordionGroup) {
-  accordionGroup.addEventListener('mouseleave', () => {
-    const items = document.querySelectorAll('.accordion-item');
-    items.forEach(i => i.classList.remove('active'));
-    if (defaultActiveItem) {
-      defaultActiveItem.classList.add('active');
+    if (accordionGroup) {
+      accordionGroup.addEventListener('mouseleave', () => {
+        const items = document.querySelectorAll('.accordion-item');
+        items.forEach(i => i.classList.remove('active'));
+        if (defaultActiveItem) {
+          defaultActiveItem.classList.add('active');
+        }
+      });
+
+      const items = document.querySelectorAll('.accordion-item');
+      items.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+          items.forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+        });
+      });
     }
-  });
-
-  const items = document.querySelectorAll('.accordion-item');
-  items.forEach(item => {
-    item.addEventListener('mouseenter', () => {
-      items.forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-    });
-  });
-}
   </script>
 
   <style>
-    /* 首页专用：恢复 snap 滚动体验 */
+    /* 首页专用 snap 滚动容器 */
     #main-scroll {
       scroll-snap-type: y mandatory;
       overflow-y: scroll;
@@ -1747,9 +1375,53 @@ if (accordionGroup) {
       display: none;
     }
 
-    /* Footer 独立在外，在 snap-container 滚动到底部后才显示 */
     footer {
       scroll-snap-align: none;
+    }
+
+    /* 手风琴卡片过渡动效 */
+    .accordion-item {
+      flex: 1;
+      min-width: 72px;
+      transition: flex 0.6s cubic-bezier(0.25, 1, 0.2, 1), border-color 0.4s ease;
+      will-change: flex;
+    }
+
+    .accordion-item.active,
+    .accordion-item:hover {
+      flex: 5.2;
+    }
+
+    .accordion-group:hover .accordion-item:not(:hover) {
+      flex: 1;
+    }
+
+    .accordion-item .expanded-content {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity 0.35s ease, transform 0.4s ease;
+    }
+
+    .accordion-item.active .expanded-content,
+    .accordion-item:hover .expanded-content {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+      transition-delay: 0.12s;
+    }
+
+    .accordion-item .collapsed-title {
+      opacity: 1;
+      transition: opacity 0.25s ease;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+
+    .accordion-item.active .collapsed-title,
+    .accordion-item:hover .collapsed-title {
+      opacity: 0;
+      pointer-events: none;
     }
   </style>
 </MainLayout>
