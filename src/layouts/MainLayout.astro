@@ -20,6 +20,22 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
   <meta name="description" content={description}>
   <title>{title}</title>
   <script src="https://unpkg.com/lucide@latest" defer></script>
+
+  <!-- 预加载首屏高频使用的 Inter 字重 (Regular 400 & Bold 700) -->
+  <link
+    rel="preload"
+    href="/fonts/Inter-Regular.otf"
+    as="font"
+    type="font/otf"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="/fonts/Inter-Bold.otf"
+    as="font"
+    type="font/otf"
+    crossorigin
+  />
 </head>
 <body class="overflow-x-hidden bg-[#06080d] text-white select-none">
   <Header />
@@ -37,24 +53,117 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
 </html>
 
 <style is:global>
+  /* ===================================================
+     1. 独立名称声明（绕过浏览器字重算法，直连指定文件）
+     =================================================== */
+  @font-face {
+    font-family: 'Inter-Light';
+    src: url('/fonts/Inter-Light.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter-Regular';
+    src: url('/fonts/Inter-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter-Medium';
+    src: url('/fonts/Inter-Medium.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter-Bold';
+    src: url('/fonts/Inter-Bold.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter-Black';
+    src: url('/fonts/Inter-Black.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* ===================================================
+     2. 标准 Inter 家族映射（通过 font-weight 区分）
+     =================================================== */
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* ===================================================
+     3. 全局基底规则
+     =================================================== */
   body {
-    font-family: Impact, 'Arial Black', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-weight: 400;
     background-color: #06080d;
     color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   .font-syne {
-    font-family: Impact, 'Arial Black', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     font-weight: 400;
   }
 
-  /* 字体粗细变体 */
+  /* 字体粗细变体映射 */
   h1, h2, h3, .font-black {
+    font-family: 'Inter-Black', 'Inter', sans-serif;
     font-weight: 900;
   }
 
   h4, h5, .font-bold {
+    font-family: 'Inter-Bold', 'Inter', sans-serif;
     font-weight: 700;
   }
 
@@ -63,6 +172,7 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
   }
 
   .font-medium {
+    font-family: 'Inter-Medium', 'Inter', sans-serif;
     font-weight: 500;
   }
 
@@ -71,6 +181,7 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
   }
 
   .font-light {
+    font-family: 'Inter-Light', 'Inter', sans-serif;
     font-weight: 300;
   }
 
@@ -148,7 +259,7 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
   /* 手风琴卡片动效 */
   .accordion-item {
     flex: 1;
-    min-width: 76px;
+    min-width: 60px;
     transition: flex 0.65s cubic-bezier(0.25, 1, 0.2, 1), transform 0.4s ease, border-color 0.4s ease;
     will-change: flex;
   }
@@ -352,22 +463,6 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
     transition-delay: 0.08s;
   }
 
-  /* Testimonials */
-  .testimonial-slide {
-    opacity: 0;
-    transform: translateY(12px) scale(0.98);
-    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    pointer-events: none;
-    position: absolute;
-    inset: 0;
-  }
-  .testimonial-slide.active {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
-    position: relative;
-  }
-
   /* Section 3: Hero Tab 样式 */
   .hero-nav-bar-container {
     position: relative;
@@ -380,7 +475,6 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
     transition: all 0.3s ease;
   }
 
-  /* Hover 微光效果 - 顶部和菜单标签下方 */
   .hero-tab-item::before {
     content: '';
     position: absolute;
@@ -411,7 +505,6 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
     opacity: 1;
   }
 
-  /* Active pill 背景 */
   .hero-tab-item.active .hero-tab-span {
     background: rgba(255, 255, 255, 0.12);
     color: #ffffff;
@@ -548,52 +641,15 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
     vertical-align: middle;
     border-radius: 2px;
   }
-  .accordion-item {
-  flex: 1;
-  min-width: 60px;
-  transition: flex 0.65s cubic-bezier(0.25, 1, 0.2, 1), transform 0.4s ease, border-color 0.4s ease;
-  will-change: flex;
-}
-.accordion-item.active,
-.accordion-item:hover {
-  flex: 5.5;
-}
-.accordion-group:hover .accordion-item:not(:hover) {
-  flex: 1;
-}
-.accordion-item .expanded-content {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(12px);
-  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
-}
-.accordion-item.active .expanded-content,
-.accordion-item:hover .expanded-content {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-  transition-delay: 0.15s;
-}
-.accordion-item .collapsed-title {
-  opacity: 1;
-  transition: opacity 0.25s ease;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-}
-.accordion-item.active .collapsed-title,
-.accordion-item:hover .collapsed-title {
-  opacity: 0;
-  pointer-events: none;
-}
-/* 容器采用 grid 叠层，所有幻灯片天然重合，避免绝对定位脱标高度坍塌 */
+
+  /* 评价幻灯片容器 */
   .testimonial-viewport {
     display: grid;
     grid-template-areas: "slide";
     align-items: center;
-    overflow: hidden; /* 防止滑动时内容溢出 */
+    overflow: hidden;
   }
 
-  /* 默认隐藏态：完全透明，初始位置由 JS 控制 */
   .testimonial-slide {
     grid-area: slide;
     opacity: 0;
@@ -606,7 +662,6 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
     pointer-events: none;
   }
 
-  /* 激活态：平滑滑入、淡入 */
   .testimonial-slide.active {
     opacity: 1;
     visibility: visible;
@@ -638,22 +693,4 @@ const { title, description = '五金工具专业制造商', hideFooter = false }
       0 0 30px rgba(59, 130, 246, 0.12);
     transform: translateY(-4px);
   }
-  /* Section 4: 支柱柱状卡片 Hover */
-    .pillar-card {
-      position: relative;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 1.25rem;
-      padding: 1.75rem 1.5rem;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      cursor: pointer;
-    }
-    .pillar-card:hover {
-      background: rgba(30, 58, 138, 0.15);
-      border-color: rgba(96, 165, 250, 0.35);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-      transform: translateY(-4px);
-    }
 </style>

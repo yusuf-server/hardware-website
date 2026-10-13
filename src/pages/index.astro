@@ -1,5 +1,6 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
+import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import { getFeaturedProducts, getCategories } from '@/lib/woocommerce';
 import { getHomePage, getProductCategories, getApplicationCategories } from '@/lib/wordpress';
@@ -24,7 +25,6 @@ try {
 try {
   console.log('🔴 Starting data fetch...');
 
-  // 分别获取数据，方便调试
   const productsPromise = getFeaturedProducts(6).catch(err => {
     console.error('❌ getFeaturedProducts failed:', err);
     return [];
@@ -47,23 +47,14 @@ try {
   ]);
 
   console.log('🟢 Data fetch completed');
-  console.log('index.astro - homePageData received:', homePageData ? 'YES' : 'NO');
-  console.log('index.astro - homePageData ID:', homePageData?.id);
-  console.log('index.astro - homePageData type:', typeof homePageData);
-  console.log('index.astro - homePageData:', homePageData);
-  console.log('index.astro - homePageData.acf exists:', homePageData?.acf ? 'YES' : 'NO');
-  if (homePageData?.acf) {
-    console.log('index.astro - homePageData.acf keys:', Object.keys(homePageData.acf));
-  }
 } catch (e) {
   console.error('❌ Error fetching data:', e);
 }
 
 // 提取 ACF 数据，提供默认值
 const heroData = homePageData?.acf || {};
-console.log('index.astro - heroData:', heroData);
 
-// 辅助函数：处理图片字段（可能是对象、ID 或空字符串）
+// 辅助函数：处理图片字段
 function getImageUrl(field: any, defaultUrl: string): string {
   if (!field) return defaultUrl;
   if (typeof field === 'object' && field.url) return field.url;
@@ -74,33 +65,34 @@ function getImageUrl(field: any, defaultUrl: string): string {
   return defaultUrl;
 }
 
-// 背景图片（提供默认值）
+// 背景图片
 const heroBg1 = getImageUrl(heroData.hero_background_image_1, 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=1800&q=80');
 const heroBg2 = getImageUrl(heroData.hero_background_image_2, 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=1800&q=80');
 const heroBg3 = getImageUrl(heroData.hero_background_image_3, 'https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&w=1800&q=80');
 
-// 缩略图（使用相同的图片）
+// 缩略图
 const thumbBg1 = getImageUrl(heroData.hero_background_image_1, 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=200&q=80');
 const thumbBg2 = getImageUrl(heroData.hero_background_image_2, 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=200&q=80');
 const thumbBg3 = getImageUrl(heroData.hero_background_image_3, 'https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&w=200&q=80');
 
-// 文字内容（提供默认值）
-const heroSubtitle = heroData.hero_subtitle || 'LUMENLAB — SS28 DROP 01';
-const heroTitle1 = heroData.hero_title_line_1 || heroData.hero_title_line1 || '20 YEARS';
-const heroTitle2 = heroData.hero_title_line2 || 'EXPERIENCE';
-const heroTitle3 = heroData.hero_title_line3 || 'IN TOOLS';
-const heroTitle4 = heroData.hero_title_line4 || 'MANUFACTURING';
+// 文字内容（保持原 ACF 字段键名）
+const heroSubtitle = heroData.hero_subtitle || '20 YEARS OF PRODUCTION EXPERIENCE';
+const heroTitle1 = heroData.hero_title_line_1 || heroData.hero_title_line1 || 'PRECISION CNC';
+const heroTitle2 = heroData.hero_title_line2 || 'TOOLS';
+const heroTitle3 = heroData.hero_title_line3 || 'ONE-STOP';
+const heroTitle4 = heroData.hero_title_line4 || 'MACHINING SOLUTION';
+const heroDescription = heroData.hero_description || 'Offering a full range of standard and custom-made cutting tools, competitive factory prices, consistent quality, and on-time worldwide delivery.';
 const heroButtonText = heroData.hero_button_text || 'Get Started';
 
-// 产品卡片内容（提供默认值）
-const productCard1Category = heroData.product_card_1_category || '01 — Sunglasses';
-const productCard1Title = heroData.product_card_1_title || 'Solar Flare Aviator';
+// 产品卡片内容
+const productCard1Category = heroData.product_card_1_category || 'TEST1111 01-TEST';
+const productCard1Title = heroData.product_card_1_title || 'Solar Flare';
 
-const productCard2Category = heroData.product_card_2_category || '02 — Sunglasses';
-const productCard2Title = heroData.product_card_2_title || 'Neon Cat-Eye';
+const productCard2Category = heroData.product_card_2_category || 'TEST2222';
+const productCard2Title = heroData.product_card_2_title || 'dsadsa';
 
-const productCard3Category = heroData.product_card_3_category || '03 — Sunglasses';
-const productCard3Title = heroData.product_card_3_title || 'Shield Runway';
+const productCard3Category = heroData.product_card_3_category || 'TEST333';
+const productCard3Title = heroData.product_card_3_title || 'dsadsa';
 
 // Section 2 - 应用领域内容
 const section2TitleCn = heroData.section2_title_cn || '应用领域';
@@ -145,26 +137,43 @@ const section2App6Link = heroData.section2_application_6_link || '#';
 const section2FooterLeft = heroData.section2_footer_left || 'GLOBAL INDUSTRY PRECISION SOLUTIONS';
 const section2FooterRight = heroData.section2_footer_right || 'HOVER EACH VERTICAL TO EXPLORE';
 
-// Section 3: Company Information (Part 1)
+// ================= Section 3: 自定义背景图片 URL（可直接在此替换） =================
+const section3CustomBgImage = heroData.section3_background_image || 'https://darkgrey-woodcock-712173.hostingersite.com/wp-content/uploads/2026/10/3-背景.jpg';
+
+// Section 3: Tab 标题
 const section3Tab1Icon = heroData.section3_tab_1_icon || 'building';
 const section3Tab1Title = heroData.section3_tab_1_title || 'Company Information';
 const section3Tab2Icon = heroData.section3_tab_2_icon || 'star';
-const section3Tab2Title = heroData.section3_tab_2_title || 'Modular System';
-const section3Tab3Icon = heroData.section3_tab_3_icon || 'factory';
-const section3Tab3Title = heroData.section3_tab_3_title || 'Production Process';
+const section3Tab2Title = heroData.section3_tab_2_title || 'Key Figures';
+const section3Tab3Icon = heroData.section3_tab_3_icon || 'shield-check';
+const section3Tab3Title = heroData.section3_tab_3_title || 'Quality Inspection';
+const section3Tab4Icon = heroData.section3_tab_4_icon || 'package';
+const section3Tab4Title = heroData.section3_tab_4_title || 'Warehouse delivery';
 
+// Panel 1 数据
 const section3Panel1VideoUrl = heroData.section3_panel_1_video || '/videos/33-1.mp4';
 const section3Panel1VideoPoster = getImageUrl(
   heroData.section3_panel_1_poster,
   'https://images.unsplash.com/photo-1581092918484-8313e1f7e8d6?auto=format&fit=crop&w=800&q=80'
 );
-const section3Panel1Title = heroData.section3_panel_1_title || 'Who We Are';
+const section3Panel1Subtitle = heroData.section3_panel_1_subtitle || 'ABOUT OUR COMPANY';
+const section3Panel1Title = heroData.section3_panel_1_title || 'WENLING SHANWEI\nE-COMMERCE CO., LTD.';
 const section3Panel1Description = heroData.section3_panel_1_content ||
-  'We are a professional manufacturer specializing in the production of hardware products including labor, quantity and cutting tools in Zhejiang province, China, and have operated offline physical stores for more than 20 years. Factory direct sales, massive inventory, integrity management, quality assurance.';
+  'We are locatde in the largest trading center of labor,quantity and cutting tools in Zhejiang prov-ince,China,and have operated offline physical stores for more than 20 years. Factory direct sales,massive inventory, integrity manage-ment,quality assurance.';
 const section3Panel1ButtonText = heroData.section3_panel_1_button_text || 'Read More';
 const section3Panel1ButtonLink = heroData.section3_panel_1_button_link || '/about';
 
-// ================= Section 4: Manifesto (Four Pillars - 1:1 截图样式) =================
+// Panel 2 数据 (Key Figures 指标列表)
+const panel2Metrics = [
+  { num: '20+', text: 'Years of OEM & ODM production experience', color: 'from-orange-400 to-rose-400' },
+  { num: '200+', text: 'Talented Employees', color: 'from-indigo-500 to-purple-500' },
+  { num: '100+', text: 'High-precision Equipment', color: 'from-teal-400 to-emerald-400' },
+  { num: '20+', text: 'QC checkpoints', color: 'from-amber-300 to-yellow-400' },
+  { num: '500+', text: 'Product Categories', color: 'from-orange-400 to-amber-500' },
+  { num: '30+', text: 'Countries shipped', color: 'from-purple-400 to-indigo-400' },
+];
+
+// ================= Section 4: Manifesto =================
 const section4BackgroundImage = getImageUrl(
   heroData.section4_background_image,
   'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1800&q=80'
@@ -177,51 +186,52 @@ const section4Description = heroData.section4_description || "We don't sell eyew
 const section4FooterLeft = heroData.section4_footer_left || '4 PILLARS — 1 PROMISE — 0 COMPROMISE';
 const section4FooterRight = heroData.section4_footer_right || '"PRECISION ENGINE OF MODERN HARDWARE"';
 
-// 4个支柱柱体动态数据映射（支持后台 ACF 单独字段自定义，默认值与渐变色彩精准对应截图）
+// Section 4: 4 个立柱数据映射（颜色与图标 1:1 对齐截图 4_2.jpg）
 const defaultSection4Pillars = [
   {
     num: '01',
-    numColor: 'text-orange-400',
-    stat: '12',
-    statGradient: 'from-orange-400 via-amber-300 to-yellow-200',
-    statLabel: 'IN-HOUSE DESIGNERS',
-    iconBg: 'bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-orange-500/20',
-    icon: 'sparkles',
-    title: 'In-House Design Studio',
-    desc: '12 designers tracking Milan, NYC, TikTok and Coachella. 60+ new molds released every season. ODM-friendly: bring a moodboard, leave with a sample.'
+    numColor: 'text-[#0088ff]',
+    stat: '20+',
+    statColor: 'text-[#0099ff]',
+    statLabel: 'YEARS EXPERIENCE',
+    iconBg: 'bg-[#0077ff]',
+    icon: 'gem',
+    title: 'Professional Source Factory',
+    desc: 'With more than 20 years of OEM & ODM manufacturing experience, we can customize products based on your drawings and technical specifications to satisfy diverse machining requirements.'
   },
   {
     num: '02',
-    numColor: 'text-fuchsia-400',
-    stat: '60+',
-    statGradient: 'from-fuchsia-400 via-pink-400 to-rose-300',
-    statLabel: 'PANTONE COLORS',
-    iconBg: 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-pink-500/20',
-    icon: 'palette',
-    title: 'Custom Color Lab',
-    desc: 'Pantone-matched acetate sheets pressed in-house. Marbled, transparent, gradient, glitter, textured — your color, your exclusive.'
+    numColor: 'text-[#5566ff]',
+    stat: '22000+',
+    statColor: 'bg-gradient-to-r from-[#3b62ff] to-[#b372f8] bg-clip-text text-transparent',
+    statLabel: 'FACTORY FLOOR AREA',
+    iconBg: 'bg-[#7a5af8]',
+    icon: 'building-2',
+    title: 'Modern Manufacturing Base',
+    desc: 'Spacious factory premises & advanced production equipment enable efficient manufacturing and consistent quality.'
   },
   {
     num: '03',
-    numColor: 'text-amber-400',
-    stat: '7d',
-    statGradient: 'from-amber-400 via-yellow-300 to-orange-300',
-    statLabel: 'SAMPLE LEAD TIME',
-    iconBg: 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-amber-500/20',
-    icon: 'zap',
-    title: '25-day Sample Turnaround',
-    desc: 'Rapid prototyping with 3D printing for frame fronts. First samples in 7 days, refined samples in 25 days.'
+    numColor: 'text-[#0088ff]',
+    stat: '88+',
+    statColor: 'text-[#0099ff]',
+    statLabel: 'SERVED COUNTRIES',
+    iconBg: 'bg-[#0088ff]',
+    icon: 'map-pin',
+    title: 'Customer Trust',
+    desc: 'Exported to over 80 countries and regions, our CNC cutting tools have earned wide recognition and trust from global customers.'
   },
   {
     num: '04',
-    numColor: 'text-cyan-400',
-    stat: '100%',
-    statGradient: 'from-emerald-400 via-teal-300 to-cyan-400',
-    statLabel: 'QC PASS RATE',
-    iconBg: 'bg-gradient-to-br from-teal-400 to-blue-500 text-white shadow-cyan-500/20',
-    icon: 'shield-check',
-    title: 'Compliance-Ready Out of the Box',
-    desc: 'CE, FDA, ANSI Z80.3, EN ISO 12312-1, RoHS, REACH, Prop-65. We file the docs, you sell with confidence.'
+    numColor: 'text-[#00b4d8]',
+    stat: '15',
+    statSuffix: 'million',
+    statColor: 'text-[#00b4d8]',
+    statLabel: 'ANNUAL OUTPUTVALUE',
+    iconBg: 'bg-[#00b4d8]',
+    icon: 'trending-up',
+    title: 'High Market Recognition',
+    desc: 'With substantial annual output value, our precision CNC tools have won wide acceptance among global customers.'
   }
 ];
 
@@ -231,7 +241,8 @@ const section4Pillars = [1, 2, 3, 4].map((i) => {
     num: heroData[`section4_pillar_${i}_num`] || d.num,
     numColor: d.numColor,
     stat: heroData[`section4_pillar_${i}_stat`] || d.stat,
-    statGradient: d.statGradient,
+    statSuffix: d.statSuffix || '',
+    statColor: d.statColor,
     statLabel: heroData[`section4_pillar_${i}_stat_label`] || d.statLabel,
     iconBg: d.iconBg,
     icon: heroData[`section4_pillar_${i}_icon`] || d.icon,
@@ -240,12 +251,11 @@ const section4Pillars = [1, 2, 3, 4].map((i) => {
   };
 });
 
-// Section: Hero Pieces (手风琴卡片动态字段定义)
+// Section: Hero Pieces (Accordion)
 const accordionTitle = heroData.accordion_title || "This season's heroes.";
 const accordionViewAllText = heroData.accordion_view_all_text || 'VIEW ALL';
 const accordionViewAllLink = heroData.accordion_view_all_link || '/products';
 
-// 6个产品卡片数据映射
 const accordionCards = [1, 2, 3, 4, 5, 6].map((i) => {
   const bgImage = getImageUrl(
     heroData[`accordion_item_${i}_bg`] || heroData[`hero_piece_${i}_image`],
@@ -273,7 +283,7 @@ const accordionCards = [1, 2, 3, 4, 5, 6].map((i) => {
   };
 });
 
-// Section 5: Testimonials (客户评价)
+// Section 5: Testimonials
 const section5BackgroundVideo = heroData.section5_background_video || 'https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4';
 const section5Title = heroData.section5_title || 'Customer Satisfaction Is<br>Our Greatest Achievement';
 const section5Testimonials = heroData.section5_testimonials || [
@@ -306,106 +316,15 @@ const section5Testimonials = heroData.section5_testimonials || [
     grayscale: true
   }
 ];
-
-console.log('ACF data loaded successfully');
 ---
 
-<MainLayout title="LUMENLAB - One Page Demo" hideFooter={true}>
-  <!-- 顶部导航栏 -->
-  <header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 py-5 backdrop-blur-md bg-[#06080d]/70 border-b border-white/10">
-    <a href="/" class="flex items-center">
-      <img src="https://darkgrey-woodcock-712173.hostingersite.com/wp-content/uploads/2026/09/1-1.png" alt="Logo" class="h-12 w-auto" />
-    </a>
-
-    <nav class="hidden md:flex items-center gap-8 text-sm text-gray-400" style="font-weight: 400;">
-      <a href="/" class="hover:text-white transition-colors duration-200" style="font-weight: 300;">Home</a>
-      <a href="/about" class="hover:text-white transition-colors duration-200" style="font-weight: 300;">About</a>
-
-      <!-- Products with Dropdown -->
-      <div class="relative group">
-        <a href="/products" class="hover:text-white transition-colors duration-200 flex items-center gap-1" style="font-weight: 300;">
-          Products
-          <i data-lucide="chevron-down" class="w-3 h-3"></i>
-        </a>
-
-        {productCategories.length > 0 && (
-          <div class="absolute top-full left-0 mt-2 w-56 backdrop-blur-md bg-[#06080d]/90 rounded-lg shadow-xl border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
-            <div class="py-2">
-              {productCategories.map((category) => (
-                <a
-                  href={`/products#category-${category.id}`}
-                  class="block px-4 py-2.5 text-gray-300 hover:bg-white/5 hover:text-white transition-colors text-sm"
-                  style="font-weight: 400;"
-                >
-                  {category.name}
-                </a>
-              ))}
-              <div class="border-t border-white/10 mt-2 pt-2">
-                <a
-                  href="/products"
-                  class="block px-4 py-2.5 text-blue-400 hover:bg-white/5 hover:text-blue-300 transition-colors text-sm font-medium"
-                  style="font-weight: 500;"
-                >
-                  View All Products →
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <!-- Applications with Dropdown -->
-      <div class="relative group">
-        <a href="/applications" class="hover:text-white transition-colors duration-200 flex items-center gap-1" style="font-weight: 300;">
-          Applications
-          <i data-lucide="chevron-down" class="w-3 h-3"></i>
-        </a>
-
-        {applicationCategories.length > 0 && (
-          <div class="absolute top-full left-0 mt-2 w-56 backdrop-blur-md bg-[#06080d]/90 rounded-lg shadow-xl border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
-            <div class="py-2">
-              {applicationCategories.map((category) => (
-                <a
-                  href={`/applications#category-${category.id}`}
-                  class="block px-4 py-2.5 text-gray-300 hover:bg-white/5 hover:text-white transition-colors text-sm"
-                  style="font-weight: 400;"
-                >
-                  {category.name}
-                </a>
-              ))}
-              <div class="border-t border-white/10 mt-2 pt-2">
-                <a
-                  href="/applications"
-                  class="block px-4 py-2.5 text-blue-400 hover:bg-white/5 hover:text-blue-300 transition-colors text-sm font-medium"
-                  style="font-weight: 500;"
-                >
-                  View All Applications →
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <a href="/news" class="hover:text-white transition-colors duration-200" style="font-weight: 300;">News</a>
-      <a href="/contact" class="hover:text-white transition-colors duration-200" style="font-weight: 300;">Contact</a>
-    </nav>
-
-    <div class="flex items-center gap-4">
-      <button class="flex items-center gap-1.5 text-xs text-gray-300 hover:text-white px-3 py-1.5 rounded-full border border-white/10 hover:border-white/20 transition-all" style="font-weight: 400;">
-        <i data-lucide="globe" class="w-3.5 h-3.5"></i>
-        <span style="font-weight: 400;">EN</span>
-      </button>
-      <a href="/contact" class="text-xs px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/25 transition-all" style="font-weight: 600;">
-        Get Quote
-      </a>
-    </div>
-  </header>
+<MainLayout title="ARESTUN - Precision CNC Tools & Machining Solution" hideFooter={true}>
+  <Header />
 
   <!-- 右上角页码指示器 -->
   <div class="fixed top-7 right-8 z-40 text-xs font-mono text-gray-400 flex items-center gap-1 transition-opacity duration-500">
     <span id="current-page" class="text-white font-bold text-sm">01</span>
-    <span class="text-gray-600">/ 08</span>
+    <span class="text-gray-600">/ 06</span>
   </div>
 
   <!-- 侧边指示点 -->
@@ -434,28 +353,31 @@ console.log('ACF data loaded successfully');
       <div id="hero-bg-2" class="hero-bg-layer absolute inset-0 bg-cover bg-center transition-opacity duration-700"
            style={`background-image: url('${heroBg3}'); opacity: 0;`}></div>
 
-      <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent pointer-events-none"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent pointer-events-none"></div>
 
-      <div class="relative z-10 max-w-3xl pl-0 lg:pl-[200px]">
-        <div class="flex items-center gap-3 mb-6 text-xs font-mono tracking-widest text-blue-400 uppercase">
-          <span class="text-blue-500 font-bold">§ 01</span>
-          <span class="text-gray-600">|</span>
-          <span class="text-gray-400 tracking-wider">{heroSubtitle}</span>
+      <div class="relative z-10 max-w-3xl pl-0 lg:pl-[120px]">
+        <div class="flex items-center gap-2.5 mb-6 text-xs md:text-sm font-mono tracking-wider uppercase">
+          <span class="text-blue-500 font-bold text-base select-none">/</span>
+          <span class="text-gray-300 tracking-wider font-medium">{heroSubtitle}</span>
         </div>
 
-        <h1 class="text-[3rem] md:text-[4.5rem] lg:text-[5.5rem] leading-[0.95] tracking-tighter mb-10" style="font-family: Impact, 'Arial Black', sans-serif; font-weight: 900;">
-          <span class="block text-white" style="font-weight: 900;">{heroTitle1}</span>
-          <span class="block text-white" style="font-weight: 900;">{heroTitle2}</span>
-          <span class="block text-gray-400" style="font-weight: 400;">{heroTitle3}</span>
-          <span class="block text-gray-400" style="font-weight: 400;">{heroTitle4}</span>
+        <h1 class="hero-main-heading mb-6 tracking-tight leading-[0.98]">
+          <span class="block text-white font-black">{heroTitle1}</span>
+          <span class="block text-white font-black">{heroTitle2}</span>
+          <span class="block text-[#1d63ed] font-black">{heroTitle3}</span>
+          <span class="block text-[#1d63ed] font-black">{heroTitle4}</span>
         </h1>
+
+        <p class="text-gray-300/90 text-sm md:text-base leading-relaxed max-w-xl mb-10 font-normal">
+          {heroDescription}
+        </p>
 
         <button class="motion-hero-button group relative h-14 w-52 cursor-pointer rounded-full border-none p-1 outline-none bg-white overflow-visible">
           <span class="motion-circle absolute top-1 left-1 bg-blue-600 block h-12 w-12 rounded-full transition-all duration-500 ease-in-out group-hover:w-[calc(100%-0.5rem)]"></span>
           <div class="motion-icon absolute top-1/2 left-5 -translate-y-1/2 transition-transform duration-500 ease-in-out group-hover:translate-x-2 z-10">
             <i data-lucide="arrow-right" class="w-6 h-6 text-white"></i>
           </div>
-          <span class="motion-text absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ml-4 text-gray-900 text-lg font-medium tracking-tight whitespace-nowrap transition-colors duration-500 ease-in-out group-hover:text-white z-10" style="font-weight: 500;">
+          <span class="motion-text absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ml-4 text-gray-900 text-lg font-medium tracking-tight whitespace-nowrap transition-colors duration-500 ease-in-out group-hover:text-white z-10" style="font-weight: 900;">
             {heroButtonText}
           </span>
         </button>
@@ -467,15 +389,14 @@ console.log('ACF data loaded successfully');
             <span class="inline-block w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
             <span class="text-blue-400 font-medium">NOW SOURCING</span>
           </div>
-          <div class="text-gray-400">2026 · LINHAI · CN</div>
+          <div class="text-gray-400">2026 · ARESTUN TOOL</div>
         </div>
 
         <div class="text-[11px] font-mono text-gray-400 tracking-widest uppercase">
-          — FEATURED THIS DROP
+          — DISCOVER PERFORMANCE TOOLS
         </div>
 
         <div class="flex flex-col gap-3">
-          <!-- 卡片 1 -->
           <div class="glass-card group relative flex items-center justify-between p-5 md:px-6 md:py-5 rounded-2xl cursor-pointer overflow-hidden transition-all hover:ring-2 hover:ring-blue-500/50"
                data-hero-bg="0"
                onmouseenter="switchHeroBg(0)">
@@ -490,7 +411,6 @@ console.log('ACF data loaded successfully');
             <i data-lucide="arrow-right" class="relative z-10 w-5 h-5 text-gray-300 group-hover:translate-x-1 group-hover:text-white transition-all"></i>
           </div>
 
-          <!-- 卡片 2 -->
           <div class="glass-card group relative flex items-center justify-between p-5 md:px-6 md:py-5 rounded-2xl cursor-pointer overflow-hidden transition-all hover:ring-2 hover:ring-blue-500/50"
                data-hero-bg="1"
                onmouseenter="switchHeroBg(1)">
@@ -505,7 +425,6 @@ console.log('ACF data loaded successfully');
             <i data-lucide="arrow-right" class="relative z-10 w-5 h-5 text-gray-300 group-hover:translate-x-1 group-hover:text-white transition-all"></i>
           </div>
 
-          <!-- 卡片 3 (默认激活态高亮) -->
           <div class="glass-card-active group relative flex items-center justify-between p-5 md:px-6 md:py-5 rounded-2xl cursor-pointer overflow-hidden ring-1 ring-blue-500/60 shadow-lg shadow-blue-500/10 transition-all hover:ring-2 hover:ring-blue-500"
                data-hero-bg="2"
                onmouseenter="switchHeroBg(2)">
@@ -523,7 +442,7 @@ console.log('ACF data loaded successfully');
       </div>
     </section>
 
-    <!-- Section 2: Applications -->
+    <!-- ================= Section 2: Applications (修改项 1：英文标题全部设为 inter-medium) ================= -->
     <section id="section-2" class="snap-section relative flex flex-col justify-center px-8 md:px-16 pt-20 overflow-hidden bg-[#070b12]">
       <div id="app-bg-0" class="app-bg-layer active" style={`background-image: url('${section2App1BgImage}');`}></div>
       <div id="app-bg-1" class="app-bg-layer" style={`background-image: url('${section2App2BgImage}');`}></div>
@@ -534,14 +453,15 @@ console.log('ACF data loaded successfully');
 
       <div class="absolute inset-0 bg-gradient-to-t from-[#05080e] via-transparent to-[#05080e]/85 pointer-events-none"></div>
 
-      <div class="relative z-20 pt-28 px-8 md:px-16 pointer-events-none">
+      <div class="relative z-20 pt-28 px-8 md:px-16 pointer-events-none" style="padding-left:200px;">
         <div class="flex items-center gap-3">
-          <h2 class="font-syne text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+          <h2 class="font-syne text-3xl md:text-5xl font-extrabold text-white tracking-tight" style="font-weight:900;">
             {section2TitleCn}
           </h2>
           <span class="w-2.5 h-2.5 bg-blue-500 rounded-sm shadow-md shadow-blue-500/50 mt-1"></span>
         </div>
-        <p class="text-xs md:text-sm font-mono tracking-widest text-blue-400 mt-1 uppercase font-semibold">
+        <!-- 头部主英文副标改为 inter-medium -->
+        <p class="text-xs md:text-sm tracking-widest text-blue-400 mt-1 uppercase" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">
           {section2TitleEn}
         </p>
       </div>
@@ -559,7 +479,7 @@ console.log('ACF data loaded successfully');
               )}
             </div>
             <h4 class="font-bold text-lg text-white mb-0.5 group-hover:text-blue-300 transition-colors">{section2App1TitleCn}</h4>
-            <span class="text-xs font-mono text-gray-400 group-hover:text-gray-200">{section2App1TitleEn}</span>
+            <span class="text-xs text-gray-400 group-hover:text-gray-200" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">{section2App1TitleEn}</span>
             <div class="app-action-btn mt-5">
               <div class="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white group-hover:border-blue-400 group-hover:bg-blue-600/30 group-hover:shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all">
                 <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"></i>
@@ -580,7 +500,7 @@ console.log('ACF data loaded successfully');
               )}
             </div>
             <h4 class="font-bold text-lg text-white mb-0.5 group-hover:text-blue-300 transition-colors">{section2App2TitleCn}</h4>
-            <span class="text-xs font-mono text-gray-400 group-hover:text-gray-200">{section2App2TitleEn}</span>
+            <span class="text-xs text-gray-400 group-hover:text-gray-200" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">{section2App2TitleEn}</span>
             <div class="app-action-btn mt-5">
               <div class="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white group-hover:border-blue-400 group-hover:bg-blue-600/30 group-hover:shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all">
                 <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"></i>
@@ -601,7 +521,7 @@ console.log('ACF data loaded successfully');
               )}
             </div>
             <h4 class="font-bold text-lg text-white mb-0.5 group-hover:text-blue-300 transition-colors">{section2App3TitleCn}</h4>
-            <span class="text-xs font-mono text-gray-400 group-hover:text-gray-200">{section2App3TitleEn}</span>
+            <span class="text-xs text-gray-400 group-hover:text-gray-200" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">{section2App3TitleEn}</span>
             <div class="app-action-btn mt-5">
               <div class="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white group-hover:border-blue-400 group-hover:bg-blue-600/30 group-hover:shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all">
                 <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"></i>
@@ -622,7 +542,7 @@ console.log('ACF data loaded successfully');
               )}
             </div>
             <h4 class="font-bold text-lg text-white mb-0.5 group-hover:text-blue-300 transition-colors">{section2App4TitleCn}</h4>
-            <span class="text-xs font-mono text-gray-400 group-hover:text-gray-200">{section2App4TitleEn}</span>
+            <span class="text-xs text-gray-400 group-hover:text-gray-200" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">{section2App4TitleEn}</span>
             <div class="app-action-btn mt-5">
               <div class="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white group-hover:border-blue-400 group-hover:bg-blue-600/30 group-hover:shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all">
                 <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"></i>
@@ -643,7 +563,7 @@ console.log('ACF data loaded successfully');
               )}
             </div>
             <h4 class="font-bold text-lg text-white mb-0.5 group-hover:text-blue-300 transition-colors">{section2App5TitleCn}</h4>
-            <span class="text-xs font-mono text-gray-400 group-hover:text-gray-200">{section2App5TitleEn}</span>
+            <span class="text-xs text-gray-400 group-hover:text-gray-200" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">{section2App5TitleEn}</span>
             <div class="app-action-btn mt-5">
               <div class="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white group-hover:border-blue-400 group-hover:bg-blue-600/30 group-hover:shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all">
                 <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"></i>
@@ -663,7 +583,7 @@ console.log('ACF data loaded successfully');
               )}
             </div>
             <h4 class="font-bold text-lg text-white mb-0.5 group-hover:text-blue-300 transition-colors">{section2App6TitleCn}</h4>
-            <span class="text-xs font-mono text-gray-400 group-hover:text-gray-200">{section2App6TitleEn}</span>
+            <span class="text-xs text-gray-400 group-hover:text-gray-200" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">{section2App6TitleEn}</span>
             <div class="app-action-btn mt-5">
               <div class="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white group-hover:border-blue-400 group-hover:bg-blue-600/30 group-hover:shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-all">
                 <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"></i>
@@ -679,43 +599,49 @@ console.log('ACF data loaded successfully');
       </div>
     </section>
 
-    <!-- Section 3: Company Information -->
-    <section id="section-3" class="snap-section relative flex flex-col justify-center items-center px-6 md:px-12 lg:px-16 pt-32 pb-32 overflow-hidden bg-[#07090e]">
+    <!-- ================= Section 3: Company Information (修改项 2、3、4：背景图预留、Tab为Inter-Bold、4个模块还原截图) ================= -->
+    <section id="section-3" class="snap-section relative flex flex-col justify-center items-center px-6 md:px-12 lg:px-16 pt-32 pb-32 overflow-hidden ">
+      <!-- 预留的 Section 3 背景图片与磨砂暗调遮罩 -->
+      <div class="absolute inset-0  bg-center pointer-events-none    contrast-125" style={`background-image: url('${section3CustomBgImage}');`}></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#06080d] via-[#06080d]/85 to-[#06080d]/90 pointer-events-none"></div>
+
       <div class="absolute -left-32 top-1/3 w-[500px] h-[500px] bg-blue-800/10 rounded-full filter blur-[150px] pointer-events-none"></div>
       <div class="absolute -right-32 bottom-10 w-[500px] h-[500px] bg-blue-600/10 rounded-full filter blur-[150px] pointer-events-none"></div>
 
       <div class="w-full max-w-6xl mx-auto flex flex-col gap-8 relative z-10">
+        <!-- 顶部四个小标题 Tab：全部采用 Inter-Bold 字体 -->
         <div class="hero-nav-bar-container relative w-full">
           <div class="flex items-stretch gap-2">
-            <div id="hero-tab-0" class="hero-tab-item active flex-1 h-12 flex items-center justify-center cursor-pointer text-sm relative transition-all duration-300" onclick="switchHeroTab(0)" style="font-weight: 500;">
-              <span class="hero-tab-span flex items-center gap-2 px-5 py-1.5 rounded-full transition-all duration-300">
+            <div id="hero-tab-0" class="hero-tab-item active flex-1 h-12 flex items-center justify-center cursor-pointer text-sm relative transition-all duration-300" onclick="switchHeroTab(0)">
+              <span class="hero-tab-span flex items-center gap-2 px-5 py-1.5 rounded-full transition-all duration-300" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
                 <i data-lucide={section3Tab1Icon} class="w-4 h-4"></i>
                 <span>{section3Tab1Title}</span>
               </span>
             </div>
-            <div id="hero-tab-1" class="hero-tab-item flex-1 h-12 flex items-center justify-center cursor-pointer text-sm relative transition-all duration-300" onclick="switchHeroTab(1)" style="font-weight: 500;">
-              <span class="hero-tab-span flex items-center gap-2 px-5 py-1.5 rounded-full transition-all duration-300">
+            <div id="hero-tab-1" class="hero-tab-item flex-1 h-12 flex items-center justify-center cursor-pointer text-sm relative transition-all duration-300" onclick="switchHeroTab(1)">
+              <span class="hero-tab-span flex items-center gap-2 px-5 py-1.5 rounded-full transition-all duration-300" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
                 <i data-lucide={section3Tab2Icon} class="w-4 h-4"></i>
                 <span>{section3Tab2Title}</span>
               </span>
             </div>
-            <div id="hero-tab-2" class="hero-tab-item flex-1 h-12 flex items-center justify-center cursor-pointer text-sm relative transition-all duration-300" onclick="switchHeroTab(2)" style="font-weight: 500;">
-              <span class="hero-tab-span flex items-center gap-2 px-5 py-1.5 rounded-full transition-all duration-300">
-                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            <div id="hero-tab-2" class="hero-tab-item flex-1 h-12 flex items-center justify-center cursor-pointer text-sm relative transition-all duration-300" onclick="switchHeroTab(2)">
+              <span class="hero-tab-span flex items-center gap-2 px-5 py-1.5 rounded-full transition-all duration-300" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                <i data-lucide={section3Tab3Icon} class="w-4 h-4"></i>
                 <span>{section3Tab3Title}</span>
               </span>
             </div>
-            <div id="hero-tab-3" class="hero-tab-item flex-1 h-12 flex items-center justify-center cursor-pointer text-sm relative transition-all duration-300" onclick="switchHeroTab(3)" style="font-weight: 500;">
-              <span class="hero-tab-span flex items-center gap-2 px-5 py-1.5 rounded-full transition-all duration-300">
-                <i data-lucide="factory" class="w-4 h-4"></i>
-                <span>Production Process</span>
+            <div id="hero-tab-3" class="hero-tab-item flex-1 h-12 flex items-center justify-center cursor-pointer text-sm relative transition-all duration-300" onclick="switchHeroTab(3)">
+              <span class="hero-tab-span flex items-center gap-2 px-5 py-1.5 rounded-full transition-all duration-300" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                <i data-lucide={section3Tab4Icon} class="w-4 h-4"></i>
+                <span>{section3Tab4Title}</span>
               </span>
             </div>
           </div>
         </div>
 
-        <div class="hero-showcase-viewport relative w-[1300px] max-w-[95vw] self-center rounded-2xl bg-gradient-to-br from-white/5 to-white/2 shadow-2xl overflow-hidden border border-white/10" style="height: 500px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
-          <!-- Panel 0: Company Information -->
+        <div class="hero-showcase-viewport relative w-[1300px] max-w-[95vw] self-center rounded-2xl bg-[#090d16]/80 shadow-2xl overflow-hidden border border-white/10" style="height: 520px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+          
+          <!-- Panel 0: 按照截图 1 (3-1.jpg) 与字体图要求修改 -->
           <div id="hero-panel-0" class="hero-panel active absolute inset-0 grid grid-cols-1 lg:grid-cols-2 gap-0">
             <div class="relative bg-black overflow-hidden">
               <video
@@ -735,191 +661,263 @@ console.log('ACF data loaded successfully');
               </div>
             </div>
 
-            <div class="flex flex-col justify-center space-y-6 p-8 md:p-12 bg-gradient-to-br from-gray-900/50 to-black/50">
-              <h3 class="text-3xl md:text-4xl font-extrabold text-white leading-tight" style="font-weight: 900;">
+            <!-- 右侧文案区：1:1 匹配截图 1 -->
+            <div class="flex flex-col justify-center space-y-6 p-8 md:p-14 bg-[#0a0e17]/85">
+              <!-- / ABOUT OUR COMPANY -> inter-medium -->
+              <div class="flex items-center gap-2 text-xs md:text-sm tracking-wider uppercase text-blue-500 font-medium" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">
+                <span class="font-bold">/</span>
+                <span>{section3Panel1Subtitle}</span>
+              </div>
+
+              <!-- 主标题 -> inter-black -->
+              <h3 class="text-3xl md:text-4xl text-white tracking-tight leading-[1.15] whitespace-pre-line" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
                 {section3Panel1Title}
               </h3>
-              <p class="text-gray-300 text-sm md:text-base leading-relaxed" style="font-weight: 400;">
+
+              <!-- 描述文本 -> inter-medium -->
+              <p class="text-gray-300 text-sm md:text-[15px] leading-relaxed font-medium" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">
                 {section3Panel1Description}
               </p>
-              <a href={section3Panel1ButtonLink} class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all shadow-lg w-fit" style="font-weight: 700;">
+
+              <!-- Read More 按钮 -> Inter-Bold -->
+              <a href={section3Panel1ButtonLink} class="inline-flex items-center justify-center gap-2.5 px-7 py-3 rounded-xl bg-[#1d63ed] hover:bg-blue-600 text-white text-sm transition-all shadow-lg w-fit group" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
                 <span>{section3Panel1ButtonText}</span>
-                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
               </a>
             </div>
           </div>
 
-          <!-- Panel 1: Modular System -->
-          <div id="hero-panel-1" class="hero-panel absolute inset-0 grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 md:p-12">
-            <div class="flex flex-col justify-center space-y-6">
-              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-600/20 border border-purple-500/30 self-start">
-                <i data-lucide="layout-grid" class="w-4 h-4 text-purple-400"></i>
-                <span class="text-xs font-mono text-purple-300 uppercase tracking-wider" style="font-weight: 600;">Flexible Architecture</span>
+          <!-- Panel 1: Key Figures (1:1 按照截图 2、3-2、image_049535、image_049552 修改) -->
+          <div id="hero-panel-1" class="hero-panel absolute inset-0 grid grid-cols-1 lg:grid-cols-2 gap-10 p-10 md:p-14 bg-[#090d16]/90">
+            <!-- 左侧：8M 与产量统计区块 -->
+            <div class="flex flex-col justify-center">
+              <span class="text-xs uppercase tracking-widest text-gray-400 mb-2" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">
+                ANNUAL PRODUCTION OUTPUT
+              </span>
+
+              <!-- 巨型 8M 字样：Inter-Black 纯正电光蓝 -->
+              <div class="text-[7.5rem] md:text-[8.5rem] leading-none text-[#1d63ed] tracking-tighter select-none mb-3" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
+                8M
               </div>
-              <h3 class="text-3xl md:text-4xl font-extrabold text-white leading-tight" style="font-weight: 900;">
-                Modular Design<br>System
-              </h3>
-              <p class="text-gray-300 text-sm md:text-base leading-relaxed" style="font-weight: 400;">
-                Build with confidence using our component-based architecture. Mix and match without bloat.
+
+              <!-- 8,000,000 PCS/YEAR -> 数字为 black，后置单位为 medium -->
+              <div class="flex items-baseline gap-2 mb-2">
+                <span class="text-3xl md:text-4xl text-white tracking-tight" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
+                  8,000,000
+                </span>
+                <span class="text-xs tracking-widest text-gray-400 font-mono" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">
+                  PCS / YEAR
+                </span>
+              </div>
+
+              <!-- 说明副文 -> Inter-Bold -->
+              <p class="text-gray-300 text-sm md:text-base" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                The Key Numbers Buyers Care About
               </p>
-              <div class="grid grid-cols-2 gap-4 pt-2">
-                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div class="text-2xl md:text-3xl font-bold text-purple-400 mb-1" style="font-weight: 900;">150+</div>
-                  <div class="text-xs text-gray-400" style="font-weight: 400;">Components</div>
-                </div>
-                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div class="text-2xl md:text-3xl font-bold text-purple-400 mb-1" style="font-weight: 900;">100%</div>
-                  <div class="text-xs text-gray-400" style="font-weight: 400;">Customizable</div>
-                </div>
-              </div>
             </div>
-            <div class="relative rounded-xl overflow-hidden bg-gradient-to-br from-purple-900/20 to-pink-900/20">
-              <img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=800&q=80" alt="Modular" class="w-full h-full object-cover opacity-70">
+
+            <!-- 右侧：6 条指标清单（带彩色进度条） -->
+            <div class="flex flex-col justify-center space-y-4">
+              <div class="text-[11px] font-mono tracking-widest text-gray-400 uppercase mb-2 flex items-center gap-1.5" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                <span>— VERIFIED METRICS</span>
+              </div>
+
+              {panel2Metrics.map((item) => (
+                <div class="flex flex-col gap-1.5 group">
+                  <div class="flex items-baseline gap-2 text-sm md:text-[15px]">
+                    <!-- 数字为 Inter-Black -->
+                    <span class="text-white text-base md:text-lg" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
+                      {item.num}
+                    </span>
+                    <!-- 描述文字为 Inter-Bold -->
+                    <span class="text-gray-200" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                      {item.text}
+                    </span>
+                  </div>
+                  <!-- 彩色条纹 -->
+                  <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                    <div class={`h-full w-full bg-gradient-to-r ${item.color}`}></div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <!-- Panel 2: Built for Teams -->
-          <div id="hero-panel-2" class="hero-panel absolute inset-0 grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 md:p-12">
-            <div class="flex flex-col justify-center space-y-6">
-              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-600/20 border border-green-500/30 self-start">
-                <i data-lucide="users" class="w-4 h-4 text-green-400"></i>
-                <span class="text-xs font-mono text-green-300 uppercase tracking-wider" style="font-weight: 600;">Collaboration</span>
+          <!-- Panel 2: Quality Inspection (按照 3-3.jpg 截图精准还原) -->
+          <div id="hero-panel-2" class="hero-panel absolute inset-0 grid grid-cols-1 lg:grid-cols-2 gap-8 p-10 md:p-12 items-center bg-[#090d16]/90">
+            <!-- 左侧内容 -->
+            <div class="flex flex-col justify-center space-y-5">
+              <!-- 胶囊徽章 -->
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 self-start">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span class="text-xs font-mono font-bold tracking-wider uppercase">QUALITY</span>
               </div>
-              <h3 class="text-3xl md:text-4xl font-extrabold text-white leading-tight" style="font-weight: 900;">
-                Built for<br>Team Success
+
+              <!-- 主标题 -->
+              <h3 class="text-3xl md:text-4xl text-white tracking-tight leading-tight" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
+                Strict Quality<br />Assurance
               </h3>
-              <p class="text-gray-300 text-sm md:text-base leading-relaxed" style="font-weight: 400;">
-                Empower your team with collaborative features for modern workflows and seamless handoffs.
+
+              <!-- 描述段落 -->
+              <p class="text-gray-300 text-xs md:text-sm leading-relaxed max-w-md font-medium" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">
+                We carry out full-process quality inspection from incoming raw materials to finished-goods shipment. Equipped with professional testing instruments and an experienced QC team, we exercise strict quality control.
               </p>
-              <div class="grid grid-cols-2 gap-4 pt-2">
-                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div class="text-2xl md:text-3xl font-bold text-green-400 mb-1" style="font-weight: 900;">24/7</div>
-                  <div class="text-xs text-gray-400" style="font-weight: 400;">Support</div>
+
+              <!-- 两个指标 -->
+              <div class="grid grid-cols-2 gap-6 pt-4 border-t border-white/10">
+                <div>
+                  <div class="text-2xl md:text-3xl text-emerald-400 mb-1" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
+                    12+
+                  </div>
+                  <div class="text-xs text-gray-300" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                    Professional QC Inspectors
+                  </div>
                 </div>
-                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div class="text-2xl md:text-3xl font-bold text-green-400 mb-1" style="font-weight: 900;">10k+</div>
-                  <div class="text-xs text-gray-400" style="font-weight: 400;">Teams</div>
+                <div>
+                  <div class="text-2xl md:text-3xl text-emerald-400 mb-1" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
+                    99.8%
+                  </div>
+                  <div class="text-xs text-gray-300" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                    Finished-product Pass Rate
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="relative rounded-xl overflow-hidden bg-gradient-to-br from-green-900/20 to-teal-900/20">
-              <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Teams" class="w-full h-full object-cover opacity-70">
+
+            <!-- 右侧大圆角图片 -->
+            <div class="relative h-[380px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+              <img
+                src="https://images.unsplash.com/photo-1581092918484-8313e1f7e8d6?auto=format&fit=crop&w=1200&q=80"
+                alt="Quality Inspection"
+                class="w-full h-full object-cover"
+              />
             </div>
           </div>
 
-          <!-- Panel 3: Enterprise Ready -->
-          <div id="hero-panel-3" class="hero-panel absolute inset-0 grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 md:p-12">
-            <div class="flex flex-col justify-center space-y-6">
-              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-600/20 border border-orange-500/30 self-start">
-                <i data-lucide="shield-check" class="w-4 h-4 text-orange-400"></i>
-                <span class="text-xs font-mono text-orange-300 uppercase tracking-wider" style="font-weight: 600;">Enterprise Grade</span>
+          <!-- Panel 3: Warehouse delivery (按照 3-4.jpg 截图精准还原) -->
+          <div id="hero-panel-3" class="hero-panel absolute inset-0 grid grid-cols-1 lg:grid-cols-2 gap-8 p-10 md:p-12 items-center bg-[#090d16]/90">
+            <!-- 左侧内容 -->
+            <div class="flex flex-col justify-center space-y-5">
+              <!-- 胶囊徽章 -->
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-950/40 border border-amber-500/30 text-amber-400 self-start">
+                <i data-lucide="package" class="w-4 h-4"></i>
+                <span class="text-xs font-mono font-bold tracking-wider uppercase">PROMPT SHIPMENT</span>
               </div>
-              <h3 class="text-3xl md:text-4xl font-extrabold text-white leading-tight" style="font-weight: 900;">
-                Enterprise-Ready<br>Security
+
+              <!-- 主标题 -->
+              <h3 class="text-3xl md:text-4xl text-white tracking-tight leading-tight" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
+                Fast Delivery &<br />Sufficient Stock
               </h3>
-              <p class="text-gray-300 text-sm md:text-base leading-relaxed" style="font-weight: 400;">
-                Bank-level security with SOC 2 compliance, SSO integration, and advanced access controls.
+
+              <!-- 描述段落 -->
+              <p class="text-gray-300 text-xs md:text-sm leading-relaxed max-w-md font-medium" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">
+                We keep sufficient inventory for regular-specification products. By streamlining production scheduling, we shorten the overall production cycle. Whether for small urgent orders or bulk purchases, we are able to arrange prompt shipment to help customers avoid project delays.
               </p>
-              <div class="grid grid-cols-2 gap-4 pt-2">
-                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div class="text-2xl md:text-3xl font-bold text-orange-400 mb-1" style="font-weight: 900;">99.9%</div>
-                  <div class="text-xs text-gray-400" style="font-weight: 400;">Uptime SLA</div>
+
+              <!-- 两个指标 -->
+              <div class="grid grid-cols-2 gap-6 pt-4 border-t border-white/10">
+                <div>
+                  <div class="text-2xl md:text-3xl text-amber-400 mb-1" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
+                    500+
+                  </div>
+                  <div class="text-xs text-gray-300" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                    Product Category
+                  </div>
                 </div>
-                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div class="text-2xl md:text-3xl font-bold text-orange-400 mb-1" style="font-weight: 900;">SOC 2</div>
-                  <div class="text-xs text-gray-400" style="font-weight: 400;">Certified</div>
+                <div>
+                  <div class="flex items-baseline gap-1 text-2xl md:text-3xl text-amber-400 mb-1" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
+                    <span>3-7</span>
+                    <span class="text-sm font-bold text-amber-400">days</span>
+                  </div>
+                  <div class="text-xs text-gray-300" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                    Delivery
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="relative rounded-xl overflow-hidden bg-gradient-to-br from-orange-900/20 to-red-900/20">
-              <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80" alt="Security" class="w-full h-full object-cover opacity-70">
+
+            <!-- 右侧大圆角图片 -->
+            <div class="relative h-[380px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+              <img
+                src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80"
+                alt="Warehouse Stock"
+                class="w-full h-full object-cover"
+              />
             </div>
           </div>
+
         </div>
       </div>
     </section>
 
-    <!-- ================= Section 4: Manifesto (1:1 还原截图无卡片透底 + 彩色柱体分割样式) ================= -->
-    <section id="section-4" class="snap-section relative flex flex-col justify-center px-8 md:px-16 pt-20 overflow-hidden bg-[#06080e]">
-      <!-- 动态背景图与暗角遮罩 -->
-      <div class="absolute inset-0 bg-cover bg-center opacity-25 mix-blend-luminosity filter brightness-75 contrast-125 pointer-events-none" style={`background-image: url('${section4BackgroundImage}');`}></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-[#06080e] via-[#06080e]/80 to-[#06080e]/60 pointer-events-none"></div>
-      <div class="absolute -left-20 top-1/4 w-[500px] h-[500px] bg-blue-700/10 rounded-full filter blur-[150px] pointer-events-none"></div>
-      <div class="absolute -right-20 bottom-1/4 w-[500px] h-[500px] bg-blue-900/15 rounded-full filter blur-[150px] pointer-events-none"></div>
+    <!-- ================= Section 4: Manifesto (高清晰原图背景 + 截图 1:1 独立配色) ================= -->
+    <section id="section-4" class="snap-section relative flex flex-col justify-center px-8 md:px-16 lg:px-24 pt-16 pb-12 overflow-hidden bg-[#06080d]">
+      <!-- 高清背景原图：移除所有黑色渐变遮罩、模糊光斑和变暗滤镜，让背景完整透亮呈现 -->
+      <div
+        class="absolute inset-0 bg-cover bg-center pointer-events-none select-none z-0"
+        style={`background-image: url('${section4BackgroundImage}');`}
+      ></div>
 
-      <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col justify-between h-[82vh]">
-        <!-- 头部标题区 -->
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-3 text-xs font-mono tracking-widest text-blue-400 uppercase">
-              <span class="text-blue-500 font-bold">§ 04</span>
-              <span class="text-gray-600">——</span>
-              <span class="text-gray-300">{section4SubtitleLeft}</span>
-            </div>
-            <div class="flex items-center gap-2 text-xs font-mono text-gray-400">
-              <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-              <span class="tracking-widest uppercase">{section4BadgeRight}</span>
-            </div>
-          </div>
-
-          <h2 class="font-syne text-4xl md:text-6xl lg:text-[4.25rem] font-extrabold tracking-tight text-white leading-[1.05] mb-3" set:html={section4Title}>
+      <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col justify-center h-full">
+        <!-- 头部主标题区（主标题为 Black，副标题为 Bold） -->
+        <div class="mb-14">
+          <h2 class="text-4xl md:text-6xl lg:text-[4.25rem] tracking-tight leading-[1.08] mb-4 text-white" style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;">
+            Why brands ship<br />
+            with <span class="text-[#1d63ed]">Arestun</span>
           </h2>
-          <p class="text-gray-300 text-sm md:text-base font-normal tracking-wide">
+          <p class="text-gray-100 text-sm md:text-base tracking-wide" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
             {section4Description}
           </p>
         </div>
 
-        <!-- 截图核心部分：4 个无底色直列立柱与半透明纵向分割线 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch my-auto py-4">
-          {section4Pillars.map((pillar, idx) => (
-            <div
-              class={`flex flex-col justify-between px-6 lg:px-8 py-2 relative group transition-all duration-300 ${
-                idx !== section4Pillars.length - 1 ? 'lg:border-r lg:border-white/10' : ''
-              } ${idx % 2 === 0 ? 'md:border-r md:border-white/10 lg:border-r-0' : ''}`}
-            >
-              <!-- 上半部分：序号、大数字高光与小标签 -->
+        <!-- 四列数据展示（严格还原截图中的独立配色、图标与字重标注） -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 items-start">
+          {section4Pillars.map((pillar) => (
+            <div class="flex flex-col justify-between h-full group">
+              <!-- 上半部分：序号、大数值、大写标签 -->
               <div>
-                <div class="flex items-center justify-between text-xs font-mono mb-2">
-                  <span class={`font-bold text-sm ${pillar.numColor}`}>{pillar.num}</span>
-                  <span class="text-gray-400 text-[10px] tracking-widest uppercase font-mono">PILLAR</span>
+                <!-- 序号 -> Medium，匹配各自主题色 -->
+                <div class={`text-base font-medium mb-1.5 ${pillar.numColor}`} style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">
+                  {pillar.num}
                 </div>
 
-                <!-- 大号数字专属渐变色 -->
-                <div class={`font-syne text-5xl md:text-6xl lg:text-[4.25rem] font-extrabold tracking-tight leading-none bg-gradient-to-r ${pillar.statGradient} bg-clip-text text-transparent mb-1 select-none`}>
-                  {pillar.stat}
+                <!-- 大数字 -> Bold，第4列带 million 紧密排列 -->
+                <div class="flex items-baseline mb-2 select-none">
+                  <span class={`text-5xl md:text-6xl lg:text-[4.25rem] tracking-tight leading-none ${pillar.statColor}`} style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                    {pillar.stat}
+                  </span>
+                  {pillar.statSuffix && (
+                    <span class={`text-2xl md:text-3xl ml-1 leading-none ${pillar.statColor}`} style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
+                      {pillar.statSuffix}
+                    </span>
+                  )}
                 </div>
 
-                <div class="text-[11px] font-mono tracking-wider text-gray-300 uppercase mb-8">
+                <!-- 标签 -> Medium -->
+                <div class="text-xs uppercase tracking-wider text-gray-200 mb-8" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">
                   {pillar.statLabel}
                 </div>
               </div>
 
-              <!-- 下半部分：高对比度实色图标、白标题与描述说明 -->
+              <!-- 下半部分：独立色彩图标胶囊、卡片标题、描述文本 -->
               <div>
-                <!-- 实色高亮背景微圆角方框图标 -->
-                <div class={`w-11 h-11 rounded-xl flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 transition-transform duration-300 ${pillar.iconBg}`}>
-                  <i data-lucide={pillar.icon} class="w-5 h-5"></i>
+                <!-- 图标胶囊框：精准匹配截图各列的纯正背景色 -->
+                <div class={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-md mb-5 group-hover:scale-105 transition-transform duration-300 ${pillar.iconBg}`}>
+                  <i data-lucide={pillar.icon} class="w-6 h-6"></i>
                 </div>
 
-                <h3 class="text-base md:text-lg font-bold text-white mb-2 tracking-wide group-hover:text-blue-200 transition-colors">
+                <!-- 标题 -> Bold -->
+                <h3 class="text-lg md:text-xl text-white mb-3 tracking-wide" style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;">
                   {pillar.title}
                 </h3>
-                <p class="text-xs text-gray-300/90 leading-relaxed font-normal">
+
+                <!-- 描述 -> Medium -->
+                <p class="text-xs text-gray-300 leading-relaxed font-medium" style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;">
                   {pillar.desc}
                 </p>
               </div>
             </div>
           ))}
-        </div>
-
-        <!-- 底部栏目 -->
-        <div class="flex items-center justify-between text-[11px] font-mono text-gray-400 pt-3 border-t border-white/10">
-          <div class="flex items-center gap-2">
-            <span>{section4FooterLeft}</span>
-          </div>
-          <div class="text-blue-400/90 font-mono tracking-widest">
-            {section4FooterRight}
-          </div>
         </div>
       </div>
     </section>
@@ -932,7 +930,7 @@ console.log('ACF data loaded successfully');
       <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col justify-between h-[82vh]">
         <div class="flex items-end justify-between mb-4">
           <div>
-            <h2 class="font-syne text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
+            <h2 class="font-syne text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white" style="font-weight:900">
               {accordionTitle}
             </h2>
           </div>
@@ -943,7 +941,6 @@ console.log('ACF data loaded successfully');
           </a>
         </div>
 
-        <!-- 动态渲染 6 个手风琴卡片 -->
         <div class="accordion-group flex items-stretch gap-2.5 h-[62vh] my-auto py-2">
           {accordionCards.map((card) => (
             <div
@@ -1009,7 +1006,7 @@ console.log('ACF data loaded successfully');
       </div>
     </section>
 
-    <!-- Section 6: Testimonials -->
+    <!-- ================= Section 6: Testimonials (根据图示精准修改字体) ================= -->
     <section id="section-6" class="snap-section relative flex flex-col justify-center items-center px-6 md:px-16 overflow-hidden bg-black">
       <div class="absolute inset-0 z-0 overflow-hidden">
         <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-70 filter brightness-125 contrast-110">
@@ -1020,7 +1017,12 @@ console.log('ACF data loaded successfully');
       </div>
 
       <div class="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center text-center">
-        <h2 class="font-syne text-3xl md:text-5xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-12 max-w-2xl" set:html={section5Title}>
+        <!-- 主标题 -> Black (900) -->
+        <h2
+          class="text-3xl md:text-5xl lg:text-5xl text-white tracking-tight leading-tight mb-12 max-w-2xl"
+          style="font-family: 'Inter-Black', 'Inter', sans-serif; font-weight: 900;"
+          set:html={section5Title}
+        >
         </h2>
 
         <div class="testimonial-viewport w-full relative min-h-[320px] mb-8">
@@ -1046,7 +1048,11 @@ console.log('ACF data loaded successfully');
                       <i data-lucide="quote" class="w-4 h-4 fill-blue-400 text-blue-400"></i>
                     </div>
 
-                    <p class="text-gray-300 text-sm md:text-[14px] leading-relaxed font-normal mb-8 line-clamp-4 group-hover:text-white transition-colors">
+                    <!-- 评价引言 -> Bold (700) -->
+                    <p
+                      class="text-gray-200 text-sm md:text-[15px] leading-relaxed mb-8 line-clamp-4 group-hover:text-white transition-colors"
+                      style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;"
+                    >
                       "{testimonial.quote}"
                     </p>
                   </div>
@@ -1058,8 +1064,20 @@ console.log('ACF data loaded successfully');
                       class={`w-11 h-11 rounded-full object-cover ring-2 ring-white/15 ${testimonial.grayscale ? 'grayscale contrast-125' : ''}`}
                     />
                     <div>
-                      <h5 class="text-sm font-bold text-white tracking-wide leading-snug">{testimonial.name}</h5>
-                      <span class="text-xs text-gray-400 font-mono leading-none block mt-1">{testimonial.title}</span>
+                      <!-- 客户姓名 -> Bold (700) -->
+                      <h5
+                        class="text-sm text-white tracking-wide leading-snug"
+                        style="font-family: 'Inter-Bold', 'Inter', sans-serif; font-weight: 700;"
+                      >
+                        {testimonial.name}
+                      </h5>
+                      <!-- 职位与公司 -> Medium (500) -->
+                      <span
+                        class="text-xs text-gray-400 leading-none block mt-1"
+                        style="font-family: 'Inter-Medium', 'Inter', sans-serif; font-weight: 500;"
+                      >
+                        {testimonial.title}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -1105,7 +1123,6 @@ console.log('ACF data loaded successfully');
       scrollToSection(nextIndex);
     }
 
-    // 监听全屏滑动，同步右上角与右侧导航点
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1131,7 +1148,6 @@ console.log('ACF data loaded successfully');
 
     sections.forEach(sec => observer.observe(sec));
 
-    // 监听滚动到底部时隐藏导航元素
     container.addEventListener('scroll', () => {
       const scrollTop = container.scrollTop;
       const scrollHeight = container.scrollHeight;
@@ -1148,7 +1164,6 @@ console.log('ACF data loaded successfully');
       }
     });
 
-    // Section 3: Hero Tab 切换逻辑
     const heroTabs = [
       document.getElementById('hero-tab-0'),
       document.getElementById('hero-tab-1'),
@@ -1195,7 +1210,6 @@ console.log('ACF data loaded successfully');
       indicatorBar.style.left = heroTabs[0].offsetLeft + 'px';
     }
 
-    // Section 6: 应用领域交互逻辑
     const appCols = document.querySelectorAll('.app-col');
     const appBgs = document.querySelectorAll('.app-bg-layer');
 
@@ -1224,7 +1238,6 @@ console.log('ACF data loaded successfully');
       });
     });
 
-    // Testimonials 左右切换逻辑
     let currentTestiSlide = 0;
     const testiSlides = [
       document.getElementById('testi-slide-0'),
@@ -1363,7 +1376,14 @@ console.log('ACF data loaded successfully');
   </script>
 
   <style>
-    /* 首页专用 snap 滚动容器 */
+    /* 第一屏大标题 */
+    .hero-main-heading {
+      font-family: 'Inter-Black', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -0.035em;
+    }
+
     #main-scroll {
       scroll-snap-type: y mandatory;
       overflow-y: scroll;
@@ -1379,7 +1399,6 @@ console.log('ACF data loaded successfully');
       scroll-snap-align: none;
     }
 
-    /* 手风琴卡片过渡动效 */
     .accordion-item {
       flex: 1;
       min-width: 72px;
